@@ -289,14 +289,12 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             float smallNotchLength = centreX * 0.05f;
 
             // Draw the five-minute (and even-hour) notches.
-            float innerNotchRadius = outerNotchRadius - largeNotchLength;
             float outerNotchRadius = centreX;
             for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
                 float tickRot = (float) (tickIndex * Math.PI * 2 / 12);
                 drawNotch(canvas, tickRot, outerNotchRadius, largeNotchLength, largeNotchPaint);
             }
             // Draw the single-minute notches.
-            innerNotchRadius = outerNotchRadius - smallNotchLength;
             outerNotchRadius = centreX;
             for (int tickIndex = 0; tickIndex < 60; tickIndex++) {
                 // Don't repeat the five-minute notches.
