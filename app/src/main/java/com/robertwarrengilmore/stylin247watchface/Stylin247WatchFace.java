@@ -277,7 +277,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         daySectorPaint.setStrokeWidth(centreX * 0.01f);
 
         sunPaint.setColor(Color.WHITE);
-        sunPaint.clearShadowLayer();
+        sunPaint.setShadowLayer(centreX * 0.1f, 0, 0, Color.WHITE);
 
         nightSectorPaint.setColor(Color.WHITE);
         nightSectorPaint.setStyle(Paint.Style.STROKE);
@@ -292,6 +292,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         daySectorPaint.setStyle(Paint.Style.FILL);
 
         sunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
+        // TODO Experiment with drawing triangles instead of aura.
         sunPaint.setShadowLayer(centreX * 0.1f, 0, 0, Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
 
         nightSectorPaint.setColor(Color.HSVToColor(new float[]{230f, 0.25f, 0.25f}));
