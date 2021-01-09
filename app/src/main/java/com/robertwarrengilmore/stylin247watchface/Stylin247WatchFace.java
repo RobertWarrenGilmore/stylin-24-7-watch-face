@@ -91,7 +91,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         private Paint hourPaint = new Paint();
         private Paint minutePaint = new Paint();
         private Paint secondPaint = new Paint();
-        private Paint centerPaint = new Paint();
+        private Paint centrePaint = new Paint();
         private Paint smallNotchPaint = new Paint();
         private Paint largeNotchPaint = new Paint();
         private Paint backgroundPaint = new Paint();
@@ -121,8 +121,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             secondPaint.setAntiAlias(true);
             secondPaint.setStrokeCap(Paint.Cap.SQUARE);
 
-            centerPaint.setAntiAlias(true);
-            centerPaint.setStyle(Paint.Style.FILL);
+            centrePaint.setAntiAlias(true);
+            centrePaint.setStyle(Paint.Style.FILL);
 
             largeNotchPaint.setAntiAlias(true);
             largeNotchPaint.setStrokeCap(Paint.Cap.SQUARE);
@@ -184,23 +184,23 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
                 hourPaint.setColor(Color.WHITE);
                 minutePaint.setColor(Color.WHITE);
                 secondPaint.setColor(Color.WHITE);
-                centerPaint.setColor(Color.WHITE);
+                centrePaint.setColor(Color.WHITE);
 
                 hourPaint.clearShadowLayer();
                 minutePaint.clearShadowLayer();
                 secondPaint.clearShadowLayer();
-                centerPaint.clearShadowLayer();
+                centrePaint.clearShadowLayer();
 
             } else {
                 hourPaint.setColor(Color.BLACK);
                 minutePaint.setColor(Color.BLACK);
                 secondPaint.setColor(Color.BLACK);
-                centerPaint.setColor(Color.BLACK);
+                centrePaint.setColor(Color.BLACK);
 
                 hourPaint.setShadowLayer(centreX * 0.01f, 0, 0, Color.BLACK);
                 minutePaint.setShadowLayer(centreX * 0.01f, 0, 0, Color.BLACK);
                 secondPaint.setShadowLayer(centreX * 0.01f, 0, 0, Color.BLACK);
-                centerPaint.setShadowLayer(centreX * 0.01f, 0, 0, Color.BLACK);
+                centrePaint.setShadowLayer(centreX * 0.01f, 0, 0, Color.BLACK);
             }
         }
 
@@ -234,8 +234,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             super.onSurfaceChanged(holder, format, width, height);
 
             /*
-             * Find the coordinates of the center point on the screen, and ignore the window
-             * insets, so that, on round watches with a "chin", the watch face is centered on the
+             * Find the coordinates of the centre point on the screen, and ignore the window
+             * insets, so that, on round watches with a "chin", the watch face is centred on the
              * entire screen, not just the usable portion.
              */
             centreX = width / 2f;
@@ -324,7 +324,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             float secondHandLength = centreX * 0.9f;
             float minuteHandLength = centreX * 0.9f;
             float hourHandLength = centreX * 0.667f;
-            float centerCircleRadius = centreX * 0.03f;
+            float centreCircleRadius = centreX * 0.03f;
 
             /*
              * These calculations reflect the rotation in degrees per unit of time, e.g.,
@@ -380,8 +380,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             canvas.drawCircle(
                     centreX,
                     centreY,
-                    centerCircleRadius,
-                    centerPaint);
+                    centreCircleRadius,
+                    centrePaint);
 
             /* Restore the canvas" original orientation. */
             canvas.restore();
