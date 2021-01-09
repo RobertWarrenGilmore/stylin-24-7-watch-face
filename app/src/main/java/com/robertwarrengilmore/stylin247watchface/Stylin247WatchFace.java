@@ -325,13 +325,10 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
         private void drawHands(Canvas canvas) {
 
-            /*
-             * Calculate lengths of different hands based on watch screen size.
-             */
             float secondHandLength = centerX * 0.9f;
             float minuteHandLength = centerX * 0.9f;
             float hourHandLength = centerX * 0.667f;
-            float centerCircleRadius = centerX * 0.01f;
+            float centerCircleRadius = centerX * 0.03f;
 
             /*
              * These calculations reflect the rotation in degrees per unit of time, e.g.,
