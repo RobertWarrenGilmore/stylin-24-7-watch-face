@@ -414,6 +414,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
       // TODO Show calendar events as curved blocks just outside of the hour disc, and allow the user to tap on them to see info about the events. (Events from three hours ago to 21 hours in the future should be shown).
       // TODO Move all TODOs into Quire or Github issues.
+      // TODO Remove Pallette API because we're not using it.
+      // TODO Update preview image.
     }
 
     private void drawHands(Canvas canvas) {
