@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Stylin\' 24-7 watch face</string>
+    <string name="message">Watch face tapped</string>
+    <string name="my_analog_name">My Analog</string>
+</resources>

@@ -1,0 +1,2 @@
+include ':app'
+rootProject.name = "Stylin' 24-7 watch face"
