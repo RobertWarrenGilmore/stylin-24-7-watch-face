@@ -357,7 +357,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
               (int) (centreX + dayNightDiscRadius),
               (int) (centreY + dayNightDiscRadius));
 
-      // TODO Draw sectors according to sunrise and sunset times.
+      // TODO Draw sectors according to sunrise and sunset times. (This can be calculated fairly accurately based on the date (say 12-22 and 06-22 are the solstices and call that good enough) (Use the difference between the longitude-based time and the civil time zone offset to get the astronomical noon offset.) (Use the longitude to determine the day length in combination with the calendar date.)
       canvas.drawArc(new RectF(boundingBox), 180f, 180f, true, daySectorPaint);
       canvas.drawArc(new RectF(boundingBox), 0f, 180f, true, nightSectorPaint);
 
