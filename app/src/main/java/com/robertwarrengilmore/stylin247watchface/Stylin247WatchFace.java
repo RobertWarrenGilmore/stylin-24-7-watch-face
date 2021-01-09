@@ -180,7 +180,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
                 nightSectorPaint.setStyle(Paint.Style.STROKE);
             } else {
                 backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.4f}));
-                
+
                 daySectorPaint.setColor(Color.HSVToColor(new float[]{200f, 0.25f, 0.6f}));
                 daySectorPaint.setStyle(Paint.Style.FILL);
                 daySectorPaint.setStrokeWidth(centreX * 0.01f);
