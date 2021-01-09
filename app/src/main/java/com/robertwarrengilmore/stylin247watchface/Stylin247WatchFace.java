@@ -362,6 +362,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
       // TODO Experiment with drawing stars.
       // TODO Experiment with painting the sun and moon over the hands.
+      // TODO Experiment with drawing the weather. (Don't forget to turn the sun red if it's hazy.)
       drawSun(canvas, centreX, centreY * 0.7f, centreX * 0.15f);
       drawMoon(canvas, centreX, centreY * 1.3f, centreX * 0.15f, MOON_PHASE);
     }
