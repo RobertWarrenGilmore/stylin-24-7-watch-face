@@ -116,22 +116,22 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         private void initialiseStyles() {
 
             hourPaint.setAntiAlias(true);
-            hourPaint.setStrokeCap(Paint.Cap.SQUARE);
+            hourPaint.setStrokeCap(Paint.Cap.BUTT);
 
             minutePaint.setAntiAlias(true);
-            minutePaint.setStrokeCap(Paint.Cap.SQUARE);
+            minutePaint.setStrokeCap(Paint.Cap.BUTT);
 
             secondPaint.setAntiAlias(true);
-            secondPaint.setStrokeCap(Paint.Cap.SQUARE);
+            secondPaint.setStrokeCap(Paint.Cap.BUTT);
 
             centrePaint.setAntiAlias(true);
             centrePaint.setStyle(Paint.Style.FILL);
 
             largeNotchPaint.setAntiAlias(true);
-            largeNotchPaint.setStrokeCap(Paint.Cap.SQUARE);
+            largeNotchPaint.setStrokeCap(Paint.Cap.BUTT);
 
             smallNotchPaint.setAntiAlias(true);
-            smallNotchPaint.setStrokeCap(Paint.Cap.SQUARE);
+            smallNotchPaint.setStrokeCap(Paint.Cap.BUTT);
 
             daySectorPaint.setAntiAlias(true);
 
