@@ -4,19 +4,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-
-import androidx.palette.graphics.Palette;
 
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
@@ -80,13 +73,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     }
 
     private class Engine extends CanvasWatchFaceService.Engine {
-        private static final float HOUR_STROKE_WIDTH = 5f;
-        private static final float MINUTE_STROKE_WIDTH = 3f;
-        private static final float SECOND_TICK_STROKE_WIDTH = 2f;
 
-        private static final float CENTER_GAP_AND_CIRCLE_RADIUS = 4f;
-
-        private static final int SHADOW_RADIUS = 6;
         /* Handler to update the time once a second in interactive mode. */
         private final Handler updateTimeHandler = new EngineHandler(this);
         private Calendar calendar;
@@ -101,13 +88,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         private boolean muteMode;
         private float centerX;
         private float centerY;
-        private float secondHandLength;
-        private float minuteHandLength;
-        private float hourHandLength;
-        /* Colors for all hands (hour, minute, seconds, ticks) based on photo loaded. */
-        private int watchHandColor;
-        private int watchHandHighlightColor;
-        private int watchHandShadowColor;
         private Paint hourPaint = new Paint();
         private Paint minutePaint = new Paint();
         private Paint secondPaint = new Paint();
@@ -115,11 +95,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         private Paint smallNotchPaint = new Paint();
         private Paint largeNotchPaint = new Paint();
         private Paint backgroundPaint = new Paint();
-        //        private Bitmap mBackgroundBitmap;
-//        private Bitmap mGrayBackgroundBitmap;
         private boolean ambient;
-        private boolean lowBitAmbient;
-        private boolean burnInProtection;
 
         @Override
         public void onCreate(SurfaceHolder holder) {
@@ -135,29 +111,22 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         }
 
         private void initialiseStyles() {
-            backgroundPaint.setColor(Color.BLACK);
 
-            hourPaint.setStrokeWidth(HOUR_STROKE_WIDTH);
             hourPaint.setAntiAlias(true);
             hourPaint.setStrokeCap(Paint.Cap.SQUARE);
 
-            minutePaint.setStrokeWidth(MINUTE_STROKE_WIDTH);
             minutePaint.setAntiAlias(true);
             minutePaint.setStrokeCap(Paint.Cap.SQUARE);
 
-            secondPaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
             secondPaint.setAntiAlias(true);
             secondPaint.setStrokeCap(Paint.Cap.SQUARE);
 
-            centerPaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
             centerPaint.setAntiAlias(true);
             centerPaint.setStyle(Paint.Style.FILL);
 
-            largeNotchPaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
             largeNotchPaint.setAntiAlias(true);
             largeNotchPaint.setStrokeCap(Paint.Cap.SQUARE);
 
-            smallNotchPaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
             smallNotchPaint.setAntiAlias(true);
             smallNotchPaint.setStrokeCap(Paint.Cap.SQUARE);
 
@@ -165,6 +134,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         }
 
         private void updateStyles() {
+            updateBackgroundStyles();
             updateHandStyles();
             updateNotchStyles();
         }
@@ -173,13 +143,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         public void onDestroy() {
             updateTimeHandler.removeMessages(MSG_UPDATE_TIME);
             super.onDestroy();
-        }
-
-        @Override
-        public void onPropertiesChanged(Bundle properties) {
-            super.onPropertiesChanged(properties);
-            lowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
-            burnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
         }
 
         @Override
@@ -201,7 +164,24 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             updateTimer();
         }
 
+        private void updateBackgroundStyles() {
+            if (ambient) {
+                backgroundPaint.setColor(Color.BLACK);
+            } else {
+                backgroundPaint.setColor(Color.DKGRAY);
+            }
+        }
+
         private void updateHandStyles() {
+            /*
+             * Calculate widths of different hands based on watch screen size.
+             */
+            hourPaint.setStrokeWidth(centerX * 0.04f);
+            minutePaint.setStrokeWidth(centerX * 0.02f);
+            secondPaint.setStrokeWidth(centerX * 0.01f);
+            largeNotchPaint.setStrokeWidth(centerX * 0.02f);
+            smallNotchPaint.setStrokeWidth(centerX * 0.0125f);
+
             if (ambient) {
                 hourPaint.setColor(Color.WHITE);
                 minutePaint.setColor(Color.WHITE);
@@ -219,10 +199,10 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
                 secondPaint.setColor(Color.BLACK);
                 centerPaint.setColor(Color.BLACK);
 
-                hourPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, watchHandShadowColor);
-                minutePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, watchHandShadowColor);
-                secondPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, watchHandShadowColor);
-                centerPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, watchHandShadowColor);
+                hourPaint.setShadowLayer(centerX * 0.01f, 0, 0, Color.BLACK);
+                minutePaint.setShadowLayer(centerX * 0.01f, 0, 0, Color.BLACK);
+                secondPaint.setShadowLayer(centerX * 0.01f, 0, 0, Color.BLACK);
+                centerPaint.setShadowLayer(centerX * 0.01f, 0, 0, Color.BLACK);
             }
         }
 
@@ -263,48 +243,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             centerX = width / 2f;
             centerY = height / 2f;
 
-            /*
-             * Calculate lengths of different hands based on watch screen size.
-             */
-            secondHandLength = (float) (centerX * 0.9);
-            minuteHandLength = (float) (centerX * 0.9);
-            hourHandLength = (float) (centerX * 0.667);
-
-//            /* Scale loaded background image (more efficient) if surface dimensions change. */
-//            float scale = ((float) width) / (float) mBackgroundBitmap.getWidth();
-//
-//            mBackgroundBitmap = Bitmap.createScaledBitmap(mBackgroundBitmap,
-//                    (int) (mBackgroundBitmap.getWidth() * scale),
-//                    (int) (mBackgroundBitmap.getHeight() * scale), true);
-//
-//            /*
-//             * Create a gray version of the image only if it will look nice on the device in
-//             * ambient mode. That means we don"t want devices that support burn-in
-//             * protection (slight movements in pixels, not great for images going all the way to
-//             * edges) and low ambient mode (degrades image quality).
-//             *
-//             * Also, if your watch face will know about all images ahead of time (users aren"t
-//             * selecting their own photos for the watch face), it will be more
-//             * efficient to create a black/white version (png, etc.) and load that when you need it.
-//             */
-//            if (!mBurnInProtection && !mLowBitAmbient) {
-//                initGrayBackgroundBitmap();
-//            }
+            updateStyles();
         }
-
-//        private void initGrayBackgroundBitmap() {
-//            mGrayBackgroundBitmap = Bitmap.createBitmap(
-//                    mBackgroundBitmap.getWidth(),
-//                    mBackgroundBitmap.getHeight(),
-//                    Bitmap.Config.ARGB_8888);
-//            Canvas canvas = new Canvas(mGrayBackgroundBitmap);
-//            Paint grayPaint = new Paint();
-//            ColorMatrix colorMatrix = new ColorMatrix();
-//            colorMatrix.setSaturation(0);
-//            ColorMatrixColorFilter filter = new ColorMatrixColorFilter(colorMatrix);
-//            grayPaint.setColorFilter(filter);
-//            canvas.drawBitmap(mBackgroundBitmap, 0, 0, grayPaint);
-//        }
 
         /**
          * Captures tap event (and tap type). The {@link WatchFaceService#TAP_TYPE_TAP} case can be
@@ -340,22 +280,17 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         }
 
         private void drawBackground(Canvas canvas) {
-
-            if (ambient && (lowBitAmbient || burnInProtection)) {
-                canvas.drawColor(Color.BLACK);
-            } else if (ambient) {
-                canvas.drawColor(Color.BLACK);
-//                canvas.drawBitmap(mGrayBackgroundBitmap, 0, 0, mBackgroundPaint);
-            } else {
-                canvas.drawColor(Color.DKGRAY);
-//                canvas.drawBitmap(mBackgroundBitmap, 0, 0, mBackgroundPaint);
-            }
+            canvas.drawPaint(backgroundPaint);
         }
 
         private void drawNotches(Canvas canvas) {
+
+            float largeNotchLength = centerX * 0.425f;
+            float smallNotchLength = centerX * 0.05f;
+
             // Draw the five-minute (and even-hour) notches.
-            float innerNotchRadius = hourHandLength * 0.9f;
             float outerNotchRadius = centerX;
+            float innerNotchRadius = outerNotchRadius - largeNotchLength;
             for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
                 float tickRot = (float) (tickIndex * Math.PI * 2 / 12);
                 float innerX = (float) Math.sin(tickRot) * innerNotchRadius;
@@ -366,8 +301,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
                         centerX + outerX, centerY + outerY, largeNotchPaint);
             }
             // Now draw the single-minute notches.
-            innerNotchRadius = minuteHandLength;
             outerNotchRadius = centerX;
+            innerNotchRadius = outerNotchRadius - smallNotchLength;
             for (int tickIndex = 0; tickIndex < 60; tickIndex++) {
                 if (tickIndex % 5 == 0) {
                     continue;
@@ -381,8 +316,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
                         centerX + outerX, centerY + outerY, smallNotchPaint);
             }
             // Draw the odd-hour notches.
-            innerNotchRadius = hourHandLength * 0.95f;
-            outerNotchRadius = hourHandLength;
+            outerNotchRadius = centerX * 0.667f;
+            innerNotchRadius = outerNotchRadius - smallNotchLength;
             for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
                 float tickRot = (float) (tickIndex * Math.PI * 2 / 12) + (float) (Math.PI * 2 / 24);
                 float innerX = (float) Math.sin(tickRot) * innerNotchRadius;
@@ -395,6 +330,14 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         }
 
         private void drawHands(Canvas canvas) {
+
+            /*
+             * Calculate lengths of different hands based on watch screen size.
+             */
+            float secondHandLength = centerX * 0.9f;
+            float minuteHandLength = centerX * 0.9f;
+            float hourHandLength = centerX * 0.667f;
+            float centerCircleRadius = centerX * 0.01f;
 
             /*
              * These calculations reflect the rotation in degrees per unit of time, e.g.,
@@ -418,7 +361,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             canvas.rotate(hoursRotation, centerX, centerY);
             canvas.drawLine(
                     centerX,
-                    centerY - CENTER_GAP_AND_CIRCLE_RADIUS,
+                    centerY,
                     centerX,
                     centerY - hourHandLength,
                     hourPaint);
@@ -426,7 +369,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             canvas.rotate(minutesRotation - hoursRotation, centerX, centerY);
             canvas.drawLine(
                     centerX,
-                    centerY - CENTER_GAP_AND_CIRCLE_RADIUS,
+                    centerY,
                     centerX,
                     centerY - minuteHandLength,
                     minutePaint);
@@ -439,7 +382,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
                 canvas.rotate(secondsRotation - minutesRotation, centerX, centerY);
                 canvas.drawLine(
                         centerX,
-                        centerY - CENTER_GAP_AND_CIRCLE_RADIUS,
+                        centerY,
                         centerX,
                         centerY - secondHandLength,
                         secondPaint);
@@ -448,7 +391,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             canvas.drawCircle(
                     centerX,
                     centerY,
-                    CENTER_GAP_AND_CIRCLE_RADIUS,
+                    centerCircleRadius,
                     centerPaint);
 
             /* Restore the canvas" original orientation. */
