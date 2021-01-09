@@ -156,8 +156,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             super.onAmbientModeChanged(inAmbientMode);
             ambient = inAmbientMode;
 
-            // TODO Refactor so that the styles of both the hands and the background are changed on ambient mode changed instead of determining the background style at painting time.
-
             updateStyles();
 
             /* Check and trigger whether or not timer should be running (only in active mode). */
