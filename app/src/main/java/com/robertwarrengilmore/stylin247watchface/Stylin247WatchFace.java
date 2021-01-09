@@ -76,7 +76,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   private class Engine extends CanvasWatchFaceService.Engine {
 
     // TODO Change the moon's phase based on the date.
-    private final float MOON_PHASE = 0.375f;
+    private final float MOON_PHASE = 0.875f;
 
     /* Handler to update the time once a second in interactive mode. */
     private final Handler updateTimeHandler = new EngineHandler(this);
@@ -470,9 +470,10 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
     private void drawMoon(Canvas canvas, float centreX, float centreY, float radius, float phase) {
       canvas.drawCircle(centreX, centreY, radius, moonDarkPaint);
-      canvas.drawCircle(centreX, centreY, radius, moonLinePaint);
-      // TODO Draw the curved part of the moon.
-      boolean litOnRight = phase < 0.5f;
+      final boolean litOnRight = phase > 0.5f;
+      final boolean mostlyLit = phase > 0.25f && phase < 0.75f;
+      final boolean curveGoesRight = litOnRight ^ mostlyLit;
+      final float curveOffset = (float) Math.cos(phase * 2 * Math.PI) * radius;
       canvas.drawArc(centreX - radius,
           centreY - radius,
           centreX + radius,
@@ -481,6 +482,20 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           180f,
           true,
           moonLitPaint);
+      canvas.drawOval(centreX - curveOffset,
+          centreY - radius,
+          centreX + curveOffset,
+          centreY + radius,
+          mostlyLit ? moonLitPaint : moonDarkPaint);
+      canvas.drawArc(centreX - curveOffset,
+          centreY - radius,
+          centreX + curveOffset,
+          centreY + radius,
+          curveGoesRight ? 90f : 270f,
+          180f,
+          false,
+          moonLinePaint);
+      canvas.drawCircle(centreX, centreY, radius, moonLinePaint);
     }
 
     private void registerReceiver() {
