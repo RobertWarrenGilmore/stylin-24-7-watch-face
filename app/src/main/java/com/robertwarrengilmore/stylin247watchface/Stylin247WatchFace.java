@@ -293,40 +293,34 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             float innerNotchRadius = outerNotchRadius - largeNotchLength;
             for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
                 float tickRot = (float) (tickIndex * Math.PI * 2 / 12);
-                float innerX = (float) Math.sin(tickRot) * innerNotchRadius;
-                float innerY = (float) -Math.cos(tickRot) * innerNotchRadius;
-                float outerX = (float) Math.sin(tickRot) * outerNotchRadius;
-                float outerY = (float) -Math.cos(tickRot) * outerNotchRadius;
-                canvas.drawLine(centerX + innerX, centerY + innerY,
-                        centerX + outerX, centerY + outerY, largeNotchPaint);
+                drawNotch(canvas, tickRot, outerNotchRadius, largeNotchLength, largeNotchPaint);
             }
-            // Now draw the single-minute notches.
+            // Draw the single-minute notches.
             outerNotchRadius = centerX;
             innerNotchRadius = outerNotchRadius - smallNotchLength;
             for (int tickIndex = 0; tickIndex < 60; tickIndex++) {
+                // Don't repeat the five-minute notches.
                 if (tickIndex % 5 == 0) {
                     continue;
                 }
                 float tickRot = (float) (tickIndex * Math.PI * 2 / 60);
-                float innerX = (float) Math.sin(tickRot) * innerNotchRadius;
-                float innerY = (float) -Math.cos(tickRot) * innerNotchRadius;
-                float outerX = (float) Math.sin(tickRot) * outerNotchRadius;
-                float outerY = (float) -Math.cos(tickRot) * outerNotchRadius;
-                canvas.drawLine(centerX + innerX, centerY + innerY,
-                        centerX + outerX, centerY + outerY, smallNotchPaint);
+                drawNotch(canvas, tickRot, outerNotchRadius, smallNotchLength, smallNotchPaint);
             }
             // Draw the odd-hour notches.
             outerNotchRadius = centerX * 0.667f;
-            innerNotchRadius = outerNotchRadius - smallNotchLength;
             for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
                 float tickRot = (float) (tickIndex * Math.PI * 2 / 12) + (float) (Math.PI * 2 / 24);
-                float innerX = (float) Math.sin(tickRot) * innerNotchRadius;
-                float innerY = (float) -Math.cos(tickRot) * innerNotchRadius;
-                float outerX = (float) Math.sin(tickRot) * outerNotchRadius;
-                float outerY = (float) -Math.cos(tickRot) * outerNotchRadius;
-                canvas.drawLine(centerX + innerX, centerY + innerY,
-                        centerX + outerX, centerY + outerY, smallNotchPaint);
+                drawNotch(canvas, tickRot, outerNotchRadius, smallNotchLength, smallNotchPaint);
             }
+        }
+
+        private void drawNotch(Canvas canvas, float angle, float outerRadius, float length, Paint paint) {
+            float innerX = (float) Math.sin(angle) * (outerRadius - length);
+            float innerY = (float) -Math.cos(angle) * (outerRadius - length);
+            float outerX = (float) Math.sin(angle) * outerRadius;
+            float outerY = (float) -Math.cos(angle) * outerRadius;
+            canvas.drawLine(centerX + innerX, centerY + innerY,
+                    centerX + outerX, centerY + outerY, paint);
         }
 
         private void drawHands(Canvas canvas) {
