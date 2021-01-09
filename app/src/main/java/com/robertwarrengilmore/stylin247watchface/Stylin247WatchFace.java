@@ -437,7 +437,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       // The hour hand moves 15 degrees per hour on a 24-hour clock, not 30.
       float
           hoursRotation =
-          ((calendar.get(Calendar.HOUR_OF_DAY) + partialHour)  * (360 / 24f)) + 180;
+          ((calendar.get(Calendar.HOUR_OF_DAY) + partialHour) * (360 / 24f)) + 180;
       /*
        * Save the canvas state before we can begin to rotate it.
        */
