@@ -416,6 +416,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       // TODO Move all TODOs into Quire or Github issues.
       // TODO Remove Pallette API because we're not using it.
       // TODO Update preview image.
+      // TODO Refactor all cartesian-to-polar conversion math into a helper. This helper should multiply the input radius (from 0 to 1) by the screen radius, so that users of the helper don't have to multiply everything by screen radius. (Maybe make another helper that just multiplies the argument by the screen radius, so that things like stroke widths can similarly be scaled.)
+      // TODO Turn all dimensions into constants.
     }
 
     private void drawHands(Canvas canvas) {
