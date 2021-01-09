@@ -75,6 +75,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
   private class Engine extends CanvasWatchFaceService.Engine {
 
+    // TODO Change the moon's phase based on the date.
     private final float MOON_PHASE = 0.375f;
 
     /* Handler to update the time once a second in interactive mode. */
@@ -348,7 +349,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       canvas.drawPaint(backgroundPaint);
 
       float dayNightDiscRadius = centreX * 0.667f;
-      // TODO Change automatic formatting to enforce line length.
       Rect
           boundingBox =
           new Rect((int) (centreX - dayNightDiscRadius),
@@ -356,9 +356,11 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
               (int) (centreX + dayNightDiscRadius),
               (int) (centreY + dayNightDiscRadius));
 
+      // TODO Draw sectors according to sunrise and sunset times.
       canvas.drawArc(new RectF(boundingBox), 180f, 180f, true, daySectorPaint);
       canvas.drawArc(new RectF(boundingBox), 0f, 180f, true, nightSectorPaint);
 
+      // TODO Experiment with drawing stars.
       // TODO Experiment with painting the sun and moon over the hands.
       drawSun(canvas, centreX, centreY * 0.7f, centreX * 0.15f);
       drawMoon(canvas, centreX, centreY * 1.3f, centreX * 0.15f, MOON_PHASE);
@@ -467,6 +469,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     private void drawMoon(Canvas canvas, float centreX, float centreY, float radius, float phase) {
       canvas.drawCircle(centreX, centreY, radius, moonDarkPaint);
       canvas.drawCircle(centreX, centreY, radius, moonLinePaint);
+      // TODO Draw the curved part of the moon.
       boolean litOnRight = phase < 0.5f;
       canvas.drawArc(centreX - radius,
           centreY - radius,
@@ -476,7 +479,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           180f,
           true,
           moonLitPaint);
-
     }
 
     private void registerReceiver() {
