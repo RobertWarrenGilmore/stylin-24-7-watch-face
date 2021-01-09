@@ -88,36 +88,36 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
         private static final int SHADOW_RADIUS = 6;
         /* Handler to update the time once a second in interactive mode. */
-        private final Handler mUpdateTimeHandler = new EngineHandler(this);
-        private Calendar mCalendar;
-        private final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
+        private final Handler updateTimeHandler = new EngineHandler(this);
+        private Calendar calendar;
+        private final BroadcastReceiver timeZoneReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                mCalendar.setTimeZone(TimeZone.getDefault());
+                calendar.setTimeZone(TimeZone.getDefault());
                 invalidate();
             }
         };
-        private boolean mRegisteredTimeZoneReceiver = false;
-        private boolean mMuteMode;
-        private float mCenterX;
-        private float mCenterY;
-        private float mSecondHandLength;
-        private float sMinuteHandLength;
-        private float sHourHandLength;
+        private boolean registeredTimeZoneReceiver = false;
+        private boolean muteMode;
+        private float centerX;
+        private float centerY;
+        private float secondHandLength;
+        private float minuteHandLength;
+        private float hourHandLength;
         /* Colors for all hands (hour, minute, seconds, ticks) based on photo loaded. */
-        private int mWatchHandColor;
-        private int mWatchHandHighlightColor;
-        private int mWatchHandShadowColor;
-        private Paint mHourPaint;
-        private Paint mMinutePaint;
-        private Paint mSecondPaint;
-        private Paint mTickAndCirclePaint;
-        private Paint mBackgroundPaint;
+        private int watchHandColor;
+        private int watchHandHighlightColor;
+        private int watchHandShadowColor;
+        private Paint hourPaint;
+        private Paint minutePaint;
+        private Paint secondPaint;
+        private Paint tickAndCirclePaint;
+        private Paint backgroundPaint;
         //        private Bitmap mBackgroundBitmap;
 //        private Bitmap mGrayBackgroundBitmap;
-        private boolean mAmbient;
-        private boolean mLowBitAmbient;
-        private boolean mBurnInProtection;
+        private boolean ambient;
+        private boolean lowBitAmbient;
+        private boolean burnInProtection;
 
         @Override
         public void onCreate(SurfaceHolder holder) {
@@ -127,15 +127,15 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
                     .setAcceptsTapEvents(true)
                     .build());
 
-            mCalendar = Calendar.getInstance();
+            calendar = Calendar.getInstance();
 
             initializeBackground();
             initializeWatchFace();
         }
 
         private void initializeBackground() {
-            mBackgroundPaint = new Paint();
-            mBackgroundPaint.setColor(Color.BLACK);
+            backgroundPaint = new Paint();
+            backgroundPaint.setColor(Color.BLACK);
 //            mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.watchface_service_bg);
 //
 //            /* Extracts colors from background image to improve watchface style. */
@@ -154,50 +154,50 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
         private void initializeWatchFace() {
             /* Set defaults for colors */
-            mWatchHandColor = Color.WHITE;
-            mWatchHandHighlightColor = Color.RED;
-            mWatchHandShadowColor = Color.BLACK;
+            watchHandColor = Color.WHITE;
+            watchHandHighlightColor = Color.RED;
+            watchHandShadowColor = Color.BLACK;
 
-            mHourPaint = new Paint();
-            mHourPaint.setColor(mWatchHandColor);
-            mHourPaint.setStrokeWidth(HOUR_STROKE_WIDTH);
-            mHourPaint.setAntiAlias(true);
-            mHourPaint.setStrokeCap(Paint.Cap.ROUND);
-            mHourPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+            hourPaint = new Paint();
+            hourPaint.setColor(watchHandColor);
+            hourPaint.setStrokeWidth(HOUR_STROKE_WIDTH);
+            hourPaint.setAntiAlias(true);
+            hourPaint.setStrokeCap(Paint.Cap.ROUND);
+            hourPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, watchHandShadowColor);
 
-            mMinutePaint = new Paint();
-            mMinutePaint.setColor(mWatchHandColor);
-            mMinutePaint.setStrokeWidth(MINUTE_STROKE_WIDTH);
-            mMinutePaint.setAntiAlias(true);
-            mMinutePaint.setStrokeCap(Paint.Cap.ROUND);
-            mMinutePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+            minutePaint = new Paint();
+            minutePaint.setColor(watchHandColor);
+            minutePaint.setStrokeWidth(MINUTE_STROKE_WIDTH);
+            minutePaint.setAntiAlias(true);
+            minutePaint.setStrokeCap(Paint.Cap.ROUND);
+            minutePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, watchHandShadowColor);
 
-            mSecondPaint = new Paint();
-            mSecondPaint.setColor(mWatchHandHighlightColor);
-            mSecondPaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
-            mSecondPaint.setAntiAlias(true);
-            mSecondPaint.setStrokeCap(Paint.Cap.ROUND);
-            mSecondPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+            secondPaint = new Paint();
+            secondPaint.setColor(watchHandHighlightColor);
+            secondPaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
+            secondPaint.setAntiAlias(true);
+            secondPaint.setStrokeCap(Paint.Cap.ROUND);
+            secondPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, watchHandShadowColor);
 
-            mTickAndCirclePaint = new Paint();
-            mTickAndCirclePaint.setColor(mWatchHandColor);
-            mTickAndCirclePaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
-            mTickAndCirclePaint.setAntiAlias(true);
-            mTickAndCirclePaint.setStyle(Paint.Style.STROKE);
-            mTickAndCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+            tickAndCirclePaint = new Paint();
+            tickAndCirclePaint.setColor(watchHandColor);
+            tickAndCirclePaint.setStrokeWidth(SECOND_TICK_STROKE_WIDTH);
+            tickAndCirclePaint.setAntiAlias(true);
+            tickAndCirclePaint.setStyle(Paint.Style.STROKE);
+            tickAndCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, watchHandShadowColor);
         }
 
         @Override
         public void onDestroy() {
-            mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
+            updateTimeHandler.removeMessages(MSG_UPDATE_TIME);
             super.onDestroy();
         }
 
         @Override
         public void onPropertiesChanged(Bundle properties) {
             super.onPropertiesChanged(properties);
-            mLowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
-            mBurnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
+            lowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
+            burnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
         }
 
         @Override
@@ -209,7 +209,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         @Override
         public void onAmbientModeChanged(boolean inAmbientMode) {
             super.onAmbientModeChanged(inAmbientMode);
-            mAmbient = inAmbientMode;
+            ambient = inAmbientMode;
 
             // TODO Refactor so that the styles of both the hands and the background are changed on ambient mode changed instead of determining the background style at painting time.
 
@@ -220,37 +220,37 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         }
 
         private void updateWatchHandStyle() {
-            if (mAmbient) {
-                mHourPaint.setColor(Color.WHITE);
-                mMinutePaint.setColor(Color.WHITE);
-                mSecondPaint.setColor(Color.WHITE);
-                mTickAndCirclePaint.setColor(Color.WHITE);
+            if (ambient) {
+                hourPaint.setColor(Color.WHITE);
+                minutePaint.setColor(Color.WHITE);
+                secondPaint.setColor(Color.WHITE);
+                tickAndCirclePaint.setColor(Color.WHITE);
 
-                mHourPaint.setAntiAlias(true);
-                mMinutePaint.setAntiAlias(true);
-                mSecondPaint.setAntiAlias(true);
-                mTickAndCirclePaint.setAntiAlias(true);
+                hourPaint.setAntiAlias(true);
+                minutePaint.setAntiAlias(true);
+                secondPaint.setAntiAlias(true);
+                tickAndCirclePaint.setAntiAlias(true);
 
-                mHourPaint.clearShadowLayer();
-                mMinutePaint.clearShadowLayer();
-                mSecondPaint.clearShadowLayer();
-                mTickAndCirclePaint.clearShadowLayer();
+                hourPaint.clearShadowLayer();
+                minutePaint.clearShadowLayer();
+                secondPaint.clearShadowLayer();
+                tickAndCirclePaint.clearShadowLayer();
 
             } else {
-                mHourPaint.setColor(mWatchHandColor);
-                mMinutePaint.setColor(mWatchHandColor);
-                mSecondPaint.setColor(mWatchHandHighlightColor);
-                mTickAndCirclePaint.setColor(mWatchHandColor);
+                hourPaint.setColor(watchHandColor);
+                minutePaint.setColor(watchHandColor);
+                secondPaint.setColor(watchHandHighlightColor);
+                tickAndCirclePaint.setColor(watchHandColor);
 
-                mHourPaint.setAntiAlias(true);
-                mMinutePaint.setAntiAlias(true);
-                mSecondPaint.setAntiAlias(true);
-                mTickAndCirclePaint.setAntiAlias(true);
+                hourPaint.setAntiAlias(true);
+                minutePaint.setAntiAlias(true);
+                secondPaint.setAntiAlias(true);
+                tickAndCirclePaint.setAntiAlias(true);
 
-                mHourPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
-                mMinutePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
-                mSecondPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
-                mTickAndCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, mWatchHandShadowColor);
+                hourPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, watchHandShadowColor);
+                minutePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, watchHandShadowColor);
+                secondPaint.setShadowLayer(SHADOW_RADIUS, 0, 0, watchHandShadowColor);
+                tickAndCirclePaint.setShadowLayer(SHADOW_RADIUS, 0, 0, watchHandShadowColor);
             }
         }
 
@@ -260,11 +260,11 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             boolean inMuteMode = (interruptionFilter == WatchFaceService.INTERRUPTION_FILTER_NONE);
 
             /* Dim display in mute mode. */
-            if (mMuteMode != inMuteMode) {
-                mMuteMode = inMuteMode;
-                mHourPaint.setAlpha(inMuteMode ? 100 : 255);
-                mMinutePaint.setAlpha(inMuteMode ? 100 : 255);
-                mSecondPaint.setAlpha(inMuteMode ? 80 : 255);
+            if (muteMode != inMuteMode) {
+                muteMode = inMuteMode;
+                hourPaint.setAlpha(inMuteMode ? 100 : 255);
+                minutePaint.setAlpha(inMuteMode ? 100 : 255);
+                secondPaint.setAlpha(inMuteMode ? 80 : 255);
                 invalidate();
             }
         }
@@ -278,15 +278,15 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
              * insets, so that, on round watches with a "chin", the watch face is centered on the
              * entire screen, not just the usable portion.
              */
-            mCenterX = width / 2f;
-            mCenterY = height / 2f;
+            centerX = width / 2f;
+            centerY = height / 2f;
 
             /*
              * Calculate lengths of different hands based on watch screen size.
              */
-            mSecondHandLength = (float) (mCenterX * 0.9);
-            sMinuteHandLength = (float) (mCenterX * 0.9);
-            sHourHandLength = (float) (mCenterX * 0.667);
+            secondHandLength = (float) (centerX * 0.9);
+            minuteHandLength = (float) (centerX * 0.9);
+            hourHandLength = (float) (centerX * 0.667);
 
 //            /* Scale loaded background image (more efficient) if surface dimensions change. */
 //            float scale = ((float) width) / (float) mBackgroundBitmap.getWidth();
@@ -350,7 +350,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         @Override
         public void onDraw(Canvas canvas, Rect bounds) {
             long now = System.currentTimeMillis();
-            mCalendar.setTimeInMillis(now);
+            calendar.setTimeInMillis(now);
 
             drawBackground(canvas);
             drawNotches(canvas);
@@ -359,9 +359,9 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
         private void drawBackground(Canvas canvas) {
 
-            if (mAmbient && (mLowBitAmbient || mBurnInProtection)) {
+            if (ambient && (lowBitAmbient || burnInProtection)) {
                 canvas.drawColor(Color.BLACK);
-            } else if (mAmbient) {
+            } else if (ambient) {
                 canvas.drawColor(Color.BLACK);
 //                canvas.drawBitmap(mGrayBackgroundBitmap, 0, 0, mBackgroundPaint);
             } else {
@@ -372,20 +372,20 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
         private void drawNotches(Canvas canvas) {
             // Draw the five-minute (and even-hour) notches.
-            float innerNotchRadius = sHourHandLength * 0.9f;
-            float outerNotchRadius = mCenterX;
+            float innerNotchRadius = hourHandLength * 0.9f;
+            float outerNotchRadius = centerX;
             for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
                 float tickRot = (float) (tickIndex * Math.PI * 2 / 12);
                 float innerX = (float) Math.sin(tickRot) * innerNotchRadius;
                 float innerY = (float) -Math.cos(tickRot) * innerNotchRadius;
                 float outerX = (float) Math.sin(tickRot) * outerNotchRadius;
                 float outerY = (float) -Math.cos(tickRot) * outerNotchRadius;
-                canvas.drawLine(mCenterX + innerX, mCenterY + innerY,
-                        mCenterX + outerX, mCenterY + outerY, mTickAndCirclePaint);
+                canvas.drawLine(centerX + innerX, centerY + innerY,
+                        centerX + outerX, centerY + outerY, tickAndCirclePaint);
             }
             // Now draw the single-minute notches.
-            innerNotchRadius = sMinuteHandLength;
-            outerNotchRadius = mCenterX;
+            innerNotchRadius = minuteHandLength;
+            outerNotchRadius = centerX;
             for (int tickIndex = 0; tickIndex < 60; tickIndex++) {
                 if (tickIndex % 5 == 0) {
                     continue;
@@ -395,20 +395,20 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
                 float innerY = (float) -Math.cos(tickRot) * innerNotchRadius;
                 float outerX = (float) Math.sin(tickRot) * outerNotchRadius;
                 float outerY = (float) -Math.cos(tickRot) * outerNotchRadius;
-                canvas.drawLine(mCenterX + innerX, mCenterY + innerY,
-                        mCenterX + outerX, mCenterY + outerY, mTickAndCirclePaint);
+                canvas.drawLine(centerX + innerX, centerY + innerY,
+                        centerX + outerX, centerY + outerY, tickAndCirclePaint);
             }
             // Draw the odd-hour notches.
-            innerNotchRadius = sHourHandLength * 0.95f;
-            outerNotchRadius = sHourHandLength;
+            innerNotchRadius = hourHandLength * 0.95f;
+            outerNotchRadius = hourHandLength;
             for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
                 float tickRot = (float) (tickIndex * Math.PI * 2 / 12) + (float) (Math.PI * 2 / 24);
                 float innerX = (float) Math.sin(tickRot) * innerNotchRadius;
                 float innerY = (float) -Math.cos(tickRot) * innerNotchRadius;
                 float outerX = (float) Math.sin(tickRot) * outerNotchRadius;
                 float outerY = (float) -Math.cos(tickRot) * outerNotchRadius;
-                canvas.drawLine(mCenterX + innerX, mCenterY + innerY,
-                        mCenterX + outerX, mCenterY + outerY, mTickAndCirclePaint);
+                canvas.drawLine(centerX + innerX, centerY + innerY,
+                        centerX + outerX, centerY + outerY, tickAndCirclePaint);
             }
         }
 
@@ -419,54 +419,54 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
              * 360 / 60 = 6 and 360 / 12 = 30.
              */
             final float seconds =
-                    (mCalendar.get(Calendar.SECOND) + mCalendar.get(Calendar.MILLISECOND) / 1000f);
+                    (calendar.get(Calendar.SECOND) + calendar.get(Calendar.MILLISECOND) / 1000f);
             final float secondsRotation = seconds * 6f;
 
-            final float minutesRotation = mCalendar.get(Calendar.MINUTE) * 6f;
+            final float minutesRotation = calendar.get(Calendar.MINUTE) * 6f;
 
-            final float hourHandOffset = mCalendar.get(Calendar.MINUTE) / 2f;
-            final float hoursRotation = (mCalendar.get(Calendar.HOUR) * 30) + hourHandOffset;
+            final float hourHandOffset = calendar.get(Calendar.MINUTE) / 2f;
+            final float hoursRotation = (calendar.get(Calendar.HOUR) * 30) + hourHandOffset;
 
             /*
              * Save the canvas state before we can begin to rotate it.
              */
             canvas.save();
 
-            canvas.rotate(hoursRotation, mCenterX, mCenterY);
+            canvas.rotate(hoursRotation, centerX, centerY);
             canvas.drawLine(
-                    mCenterX,
-                    mCenterY - CENTER_GAP_AND_CIRCLE_RADIUS,
-                    mCenterX,
-                    mCenterY - sHourHandLength,
-                    mHourPaint);
+                    centerX,
+                    centerY - CENTER_GAP_AND_CIRCLE_RADIUS,
+                    centerX,
+                    centerY - hourHandLength,
+                    hourPaint);
 
-            canvas.rotate(minutesRotation - hoursRotation, mCenterX, mCenterY);
+            canvas.rotate(minutesRotation - hoursRotation, centerX, centerY);
             canvas.drawLine(
-                    mCenterX,
-                    mCenterY - CENTER_GAP_AND_CIRCLE_RADIUS,
-                    mCenterX,
-                    mCenterY - sMinuteHandLength,
-                    mMinutePaint);
+                    centerX,
+                    centerY - CENTER_GAP_AND_CIRCLE_RADIUS,
+                    centerX,
+                    centerY - minuteHandLength,
+                    minutePaint);
 
             /*
              * Ensure the "seconds" hand is drawn only when we are in interactive mode.
              * Otherwise, we only update the watch face once a minute.
              */
-            if (!mAmbient) {
-                canvas.rotate(secondsRotation - minutesRotation, mCenterX, mCenterY);
+            if (!ambient) {
+                canvas.rotate(secondsRotation - minutesRotation, centerX, centerY);
                 canvas.drawLine(
-                        mCenterX,
-                        mCenterY - CENTER_GAP_AND_CIRCLE_RADIUS,
-                        mCenterX,
-                        mCenterY - mSecondHandLength,
-                        mSecondPaint);
+                        centerX,
+                        centerY - CENTER_GAP_AND_CIRCLE_RADIUS,
+                        centerX,
+                        centerY - secondHandLength,
+                        secondPaint);
 
             }
             canvas.drawCircle(
-                    mCenterX,
-                    mCenterY,
+                    centerX,
+                    centerY,
                     CENTER_GAP_AND_CIRCLE_RADIUS,
-                    mTickAndCirclePaint);
+                    tickAndCirclePaint);
 
             /* Restore the canvas" original orientation. */
             canvas.restore();
@@ -479,7 +479,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             if (visible) {
                 registerReceiver();
                 /* Update time zone in case it changed while we weren"t visible. */
-                mCalendar.setTimeZone(TimeZone.getDefault());
+                calendar.setTimeZone(TimeZone.getDefault());
                 invalidate();
             } else {
                 unregisterReceiver();
@@ -490,38 +490,38 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         }
 
         private void registerReceiver() {
-            if (mRegisteredTimeZoneReceiver) {
+            if (registeredTimeZoneReceiver) {
                 return;
             }
-            mRegisteredTimeZoneReceiver = true;
+            registeredTimeZoneReceiver = true;
             IntentFilter filter = new IntentFilter(Intent.ACTION_TIMEZONE_CHANGED);
-            Stylin247WatchFace.this.registerReceiver(mTimeZoneReceiver, filter);
+            Stylin247WatchFace.this.registerReceiver(timeZoneReceiver, filter);
         }
 
         private void unregisterReceiver() {
-            if (!mRegisteredTimeZoneReceiver) {
+            if (!registeredTimeZoneReceiver) {
                 return;
             }
-            mRegisteredTimeZoneReceiver = false;
-            Stylin247WatchFace.this.unregisterReceiver(mTimeZoneReceiver);
+            registeredTimeZoneReceiver = false;
+            Stylin247WatchFace.this.unregisterReceiver(timeZoneReceiver);
         }
 
         /**
-         * Starts/stops the {@link #mUpdateTimeHandler} timer based on the state of the watch face.
+         * Starts/stops the {@link #updateTimeHandler} timer based on the state of the watch face.
          */
         private void updateTimer() {
-            mUpdateTimeHandler.removeMessages(MSG_UPDATE_TIME);
+            updateTimeHandler.removeMessages(MSG_UPDATE_TIME);
             if (shouldTimerBeRunning()) {
-                mUpdateTimeHandler.sendEmptyMessage(MSG_UPDATE_TIME);
+                updateTimeHandler.sendEmptyMessage(MSG_UPDATE_TIME);
             }
         }
 
         /**
-         * Returns whether the {@link #mUpdateTimeHandler} timer should be running. The timer
+         * Returns whether the {@link #updateTimeHandler} timer should be running. The timer
          * should only run in active mode.
          */
         private boolean shouldTimerBeRunning() {
-            return isVisible() && !mAmbient;
+            return isVisible() && !ambient;
         }
 
         /**
@@ -533,7 +533,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
                 long timeMs = System.currentTimeMillis();
                 long delayMs = INTERACTIVE_UPDATE_RATE_MS
                         - (timeMs % INTERACTIVE_UPDATE_RATE_MS);
-                mUpdateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
+                updateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
             }
         }
     }
