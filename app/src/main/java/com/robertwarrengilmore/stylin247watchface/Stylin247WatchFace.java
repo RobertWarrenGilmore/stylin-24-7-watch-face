@@ -354,7 +354,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
             drawBackground(canvas);
             drawNotches(canvas);
-            drawWatchFace(canvas);
+            drawHands(canvas);
         }
 
         private void drawBackground(Canvas canvas) {
@@ -412,7 +412,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             }
         }
 
-        private void drawWatchFace(Canvas canvas) {
+        private void drawHands(Canvas canvas) {
 
             /*
              * These calculations reflect the rotation in degrees per unit of time, e.g.,
