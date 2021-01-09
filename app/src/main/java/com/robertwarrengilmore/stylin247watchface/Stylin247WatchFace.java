@@ -425,18 +425,18 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
        */
       final float
           seconds =
-          (calendar.get(Calendar.SECOND) /*+ calendar.get(Calendar.MILLISECOND) / 1000f*/);
+          (calendar.get(Calendar.SECOND) + calendar.get(Calendar.MILLISECOND) / 1000f);
       final float secondsRotation = seconds * (360 / 60f);
 
       // In ambient mode, the minute hand should tick instead of moving gradually.
-      final float minuteHandOffset = ambient ? 0 : (secondsRotation / 60);
-      final float minutesRotation = calendar.get(Calendar.MINUTE) * (360 / 60f) + minuteHandOffset;
+      final float partialMinute = ambient ? 0 : (calendar.get(Calendar.SECOND) / 60f);
+      final float minutesRotation = (calendar.get(Calendar.MINUTE) + partialMinute) * (360 / 60f);
 
-      final float hourHandOffset = minutesRotation / 24;
+      final float partialHour = calendar.get(Calendar.MINUTE) / 60f;
       // The hour hand moves 15 degrees per hour on a 24-hour clock, not 30.
       float
           hoursRotation =
-          (calendar.get(Calendar.HOUR_OF_DAY) * (360 / 24f)) + hourHandOffset + 180;
+          ((calendar.get(Calendar.HOUR_OF_DAY) + partialHour)  * (360 / 24f)) + 180;
       /*
        * Save the canvas state before we can begin to rotate it.
        */
