@@ -112,6 +112,108 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       initialiseStyles();
     }
 
+    @Override
+    public void onDestroy() {
+      updateTimeHandler.removeMessages(MSG_UPDATE_TIME);
+      super.onDestroy();
+    }
+
+    @Override
+    public void onTimeTick() {
+      super.onTimeTick();
+      invalidate();
+    }
+
+    @Override
+    public void onAmbientModeChanged(boolean inAmbientMode) {
+      super.onAmbientModeChanged(inAmbientMode);
+      ambient = inAmbientMode;
+
+      updateStyles();
+
+      /* Check and trigger whether or not timer should be running (only in active mode). */
+      updateTimer();
+    }
+
+    @Override
+    public void onInterruptionFilterChanged(int interruptionFilter) {
+      super.onInterruptionFilterChanged(interruptionFilter);
+      boolean inMuteMode = (interruptionFilter == WatchFaceService.INTERRUPTION_FILTER_NONE);
+
+      /* Dim display in mute mode. */
+      if (muteMode != inMuteMode) {
+        muteMode = inMuteMode;
+        hourPaint.setAlpha(inMuteMode ? 100 : 255);
+        minutePaint.setAlpha(inMuteMode ? 100 : 255);
+        secondPaint.setAlpha(inMuteMode ? 80 : 255);
+        invalidate();
+      }
+    }
+
+    @Override
+    public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+      super.onSurfaceChanged(holder, format, width, height);
+
+      /*
+       * Find the coordinates of the centre point on the screen, and ignore the window
+       * insets, so that, on round watches with a "chin", the watch face is centred on the
+       * entire screen, not just the usable portion.
+       */
+      centreX = width / 2f;
+      centreY = height / 2f;
+
+      updateStyles();
+    }
+
+    /**
+     * Captures tap event (and tap type). The {@link WatchFaceService#TAP_TYPE_TAP} case can be
+     * used for implementing specific logic to handle the gesture.
+     */
+    @Override
+    public void onTapCommand(int tapType, int x, int y, long eventTime) {
+      switch (tapType) {
+        case TAP_TYPE_TOUCH:
+          // The user has started touching the screen.
+          break;
+        case TAP_TYPE_TOUCH_CANCEL:
+          // The user has started a different gesture or otherwise cancelled the tap.
+          break;
+        case TAP_TYPE_TAP:
+          // The user has completed the tap gesture.
+          // TODO: Add code to handle the tap gesture.
+          Toast.makeText(getApplicationContext(), R.string.message, Toast.LENGTH_SHORT).show();
+          break;
+      }
+      invalidate();
+    }
+
+    @Override
+    public void onDraw(Canvas canvas, Rect bounds) {
+      long now = System.currentTimeMillis();
+      calendar.setTimeInMillis(now);
+
+      drawBackground(canvas);
+      drawNotches(canvas);
+      drawHands(canvas);
+    }
+
+    @Override
+    public void onVisibilityChanged(boolean visible) {
+      super.onVisibilityChanged(visible);
+
+      if (visible) {
+        registerReceiver();
+        /* Update time zone in case it changed while we weren"t visible. */
+        calendar.setTimeZone(TimeZone.getDefault());
+        invalidate();
+      } else {
+        unregisterReceiver();
+      }
+
+      /* Check and trigger whether or not timer should be running (only in active mode). */
+      updateTimer();
+    }
+
     private void initialiseStyles() {
 
       hourPaint.setAntiAlias(true);
@@ -143,29 +245,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       updateBackgroundStyles();
       updateHandStyles();
       updateNotchStyles();
-    }
-
-    @Override
-    public void onDestroy() {
-      updateTimeHandler.removeMessages(MSG_UPDATE_TIME);
-      super.onDestroy();
-    }
-
-    @Override
-    public void onTimeTick() {
-      super.onTimeTick();
-      invalidate();
-    }
-
-    @Override
-    public void onAmbientModeChanged(boolean inAmbientMode) {
-      super.onAmbientModeChanged(inAmbientMode);
-      ambient = inAmbientMode;
-
-      updateStyles();
-
-      /* Check and trigger whether or not timer should be running (only in active mode). */
-      updateTimer();
     }
 
     private void updateBackgroundStyles() {
@@ -232,68 +311,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         largeNotchPaint.setColor(Color.BLACK);
         smallNotchPaint.setColor(Color.BLACK);
       }
-    }
-
-    @Override
-    public void onInterruptionFilterChanged(int interruptionFilter) {
-      super.onInterruptionFilterChanged(interruptionFilter);
-      boolean inMuteMode = (interruptionFilter == WatchFaceService.INTERRUPTION_FILTER_NONE);
-
-      /* Dim display in mute mode. */
-      if (muteMode != inMuteMode) {
-        muteMode = inMuteMode;
-        hourPaint.setAlpha(inMuteMode ? 100 : 255);
-        minutePaint.setAlpha(inMuteMode ? 100 : 255);
-        secondPaint.setAlpha(inMuteMode ? 80 : 255);
-        invalidate();
-      }
-    }
-
-    @Override
-    public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-      super.onSurfaceChanged(holder, format, width, height);
-
-      /*
-       * Find the coordinates of the centre point on the screen, and ignore the window
-       * insets, so that, on round watches with a "chin", the watch face is centred on the
-       * entire screen, not just the usable portion.
-       */
-      centreX = width / 2f;
-      centreY = height / 2f;
-
-      updateStyles();
-    }
-
-    /**
-     * Captures tap event (and tap type). The {@link WatchFaceService#TAP_TYPE_TAP} case can be
-     * used for implementing specific logic to handle the gesture.
-     */
-    @Override
-    public void onTapCommand(int tapType, int x, int y, long eventTime) {
-      switch (tapType) {
-        case TAP_TYPE_TOUCH:
-          // The user has started touching the screen.
-          break;
-        case TAP_TYPE_TOUCH_CANCEL:
-          // The user has started a different gesture or otherwise cancelled the tap.
-          break;
-        case TAP_TYPE_TAP:
-          // The user has completed the tap gesture.
-          // TODO: Add code to handle the tap gesture.
-          Toast.makeText(getApplicationContext(), R.string.message, Toast.LENGTH_SHORT).show();
-          break;
-      }
-      invalidate();
-    }
-
-    @Override
-    public void onDraw(Canvas canvas, Rect bounds) {
-      long now = System.currentTimeMillis();
-      calendar.setTimeInMillis(now);
-
-      drawBackground(canvas);
-      drawNotches(canvas);
-      drawHands(canvas);
     }
 
     private void drawBackground(Canvas canvas) {
@@ -405,23 +422,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
       /* Restore the canvas" original orientation. */
       canvas.restore();
-    }
-
-    @Override
-    public void onVisibilityChanged(boolean visible) {
-      super.onVisibilityChanged(visible);
-
-      if (visible) {
-        registerReceiver();
-        /* Update time zone in case it changed while we weren"t visible. */
-        calendar.setTimeZone(TimeZone.getDefault());
-        invalidate();
-      } else {
-        unregisterReceiver();
-      }
-
-      /* Check and trigger whether or not timer should be running (only in active mode). */
-      updateTimer();
     }
 
     private void registerReceiver() {
