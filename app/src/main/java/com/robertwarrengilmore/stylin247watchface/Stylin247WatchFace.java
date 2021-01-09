@@ -361,7 +361,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
              */
             final float seconds =
                     (calendar.get(Calendar.SECOND) /*+ calendar.get(Calendar.MILLISECOND) / 1000f*/);
-            final float secondsRotation = seconds * (360/60f);
+            final float secondsRotation = seconds * (360 / 60f);
 
             // In ambient mode, the minute hand should tick instead of moving gradually.
             final float minuteHandOffset = ambient ? 0 : (secondsRotation / 60);
