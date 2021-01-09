@@ -253,19 +253,19 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
         daySectorPaint.setColor(Color.WHITE);
         daySectorPaint.setStyle(Paint.Style.STROKE);
+        daySectorPaint.setStrokeWidth(centreX * 0.01f);
 
         nightSectorPaint.setColor(Color.WHITE);
         nightSectorPaint.setStyle(Paint.Style.STROKE);
+        nightSectorPaint.setStrokeWidth(centreX * 0.01f);
       } else {
         backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.4f}));
 
         daySectorPaint.setColor(Color.HSVToColor(new float[]{200f, 0.25f, 0.6f}));
         daySectorPaint.setStyle(Paint.Style.FILL);
-        daySectorPaint.setStrokeWidth(centreX * 0.01f);
 
         nightSectorPaint.setColor(Color.HSVToColor(new float[]{230f, 0.25f, 0.25f}));
         nightSectorPaint.setStyle(Paint.Style.FILL);
-        nightSectorPaint.setStrokeWidth(centreX * 0.01f);
       }
     }
 
@@ -422,6 +422,10 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
       /* Restore the canvas" original orientation. */
       canvas.restore();
+    }
+
+    private void drawSun(Canvas canvas, float sunCentreX, float sunCentreY, float radius) {
+
     }
 
     private void registerReceiver() {
