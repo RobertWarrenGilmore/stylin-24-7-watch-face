@@ -75,6 +75,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
   private class Engine extends CanvasWatchFaceService.Engine {
 
+    private final float MOON_PHASE = 0.375f;
+
     /* Handler to update the time once a second in interactive mode. */
     private final Handler updateTimeHandler = new EngineHandler(this);
     private Calendar calendar;
@@ -97,7 +99,11 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     private Paint largeNotchPaint = new Paint();
     private Paint backgroundPaint = new Paint();
     private Paint daySectorPaint = new Paint();
+    private Paint sunPaint = new Paint();
     private Paint nightSectorPaint = new Paint();
+    private Paint moonLitPaint = new Paint();
+    private Paint moonDarkPaint = new Paint();
+    private Paint moonLinePaint = new Paint();
     private boolean ambient;
 
     @Override
@@ -236,7 +242,21 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
       daySectorPaint.setAntiAlias(true);
 
+      sunPaint.setAntiAlias(true);
+      sunPaint.setStyle(Paint.Style.FILL);
+
       nightSectorPaint.setAntiAlias(true);
+
+      moonLinePaint.setAntiAlias(true);
+      moonLinePaint.setStyle(Paint.Style.STROKE);
+
+      moonLitPaint.setAntiAlias(true);
+      moonLitPaint.setStyle(Paint.Style.FILL);
+      moonLitPaint.setColor(Color.WHITE);
+
+      moonDarkPaint.setAntiAlias(true);
+      moonDarkPaint.setStyle(Paint.Style.FILL);
+      moonDarkPaint.setColor(Color.BLACK);
 
       updateStyles();
     }
@@ -255,17 +275,28 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         daySectorPaint.setStyle(Paint.Style.STROKE);
         daySectorPaint.setStrokeWidth(centreX * 0.01f);
 
+        sunPaint.setColor(Color.WHITE);
+        sunPaint.clearShadowLayer();
+
         nightSectorPaint.setColor(Color.WHITE);
         nightSectorPaint.setStyle(Paint.Style.STROKE);
         nightSectorPaint.setStrokeWidth(centreX * 0.01f);
+
+        moonLinePaint.setColor(Color.WHITE);
+        moonLinePaint.setStrokeWidth(centreX * 0.01f);
       } else {
         backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.4f}));
 
         daySectorPaint.setColor(Color.HSVToColor(new float[]{200f, 0.25f, 0.6f}));
         daySectorPaint.setStyle(Paint.Style.FILL);
 
+        sunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
+        sunPaint.setShadowLayer(centreX * 0.1f, 0, 0, Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
+
         nightSectorPaint.setColor(Color.HSVToColor(new float[]{230f, 0.25f, 0.25f}));
         nightSectorPaint.setStyle(Paint.Style.FILL);
+
+        moonLinePaint.setColor(Color.TRANSPARENT);
       }
     }
 
@@ -327,6 +358,10 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
       canvas.drawArc(new RectF(boundingBox), 180f, 180f, true, daySectorPaint);
       canvas.drawArc(new RectF(boundingBox), 0f, 180f, true, nightSectorPaint);
+
+      // TODO Experiment with painting the sun and moon over the hands.
+      drawSun(canvas, centreX, centreY * 0.7f, centreX * 0.15f);
+      drawMoon(canvas, centreX, centreY * 1.3f, centreX * 0.15f, MOON_PHASE);
     }
 
     private void drawNotches(Canvas canvas) {
@@ -425,7 +460,22 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       canvas.restore();
     }
 
-    private void drawSun(Canvas canvas, float sunCentreX, float sunCentreY, float radius) {
+    private void drawSun(Canvas canvas, float centreX, float centreY, float radius) {
+      canvas.drawCircle(centreX, centreY, radius, sunPaint);
+    }
+
+    private void drawMoon(Canvas canvas, float centreX, float centreY, float radius, float phase) {
+      canvas.drawCircle(centreX, centreY, radius, moonDarkPaint);
+      canvas.drawCircle(centreX, centreY, radius, moonLinePaint);
+      boolean litOnRight = phase < 0.5f;
+      canvas.drawArc(centreX - radius,
+          centreY - radius,
+          centreX + radius,
+          centreY + radius,
+          litOnRight ? 90f : 270f,
+          180f,
+          true,
+          moonLitPaint);
 
     }
 
