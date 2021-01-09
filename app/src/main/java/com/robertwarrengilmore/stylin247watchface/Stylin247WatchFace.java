@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Message;
 
@@ -95,6 +96,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         private Paint smallNotchPaint = new Paint();
         private Paint largeNotchPaint = new Paint();
         private Paint backgroundPaint = new Paint();
+        private Paint daySectorPaint = new Paint();
+        private Paint nightSectorPaint = new Paint();
         private boolean ambient;
 
         @Override
@@ -129,6 +132,10 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
             smallNotchPaint.setAntiAlias(true);
             smallNotchPaint.setStrokeCap(Paint.Cap.SQUARE);
+
+            daySectorPaint.setAntiAlias(true);
+
+            nightSectorPaint.setAntiAlias(true);
 
             updateStyles();
         }
@@ -165,8 +172,23 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         private void updateBackgroundStyles() {
             if (ambient) {
                 backgroundPaint.setColor(Color.BLACK);
+
+                daySectorPaint.setColor(Color.WHITE);
+                daySectorPaint.setStyle(Paint.Style.STROKE);
+
+                nightSectorPaint.setColor(Color.WHITE);
+                nightSectorPaint.setStyle(Paint.Style.STROKE);
             } else {
-                backgroundPaint.setColor(Color.DKGRAY);
+                backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.4f}));
+
+//                daySectorPaint.setARGB(255, 162, 181, 211);
+                daySectorPaint.setColor(Color.HSVToColor(new float[]{200f, 0.25f, 0.6f}));
+                daySectorPaint.setStyle(Paint.Style.FILL);
+                daySectorPaint.setStrokeWidth(centreX * 0.01f);
+
+                nightSectorPaint.setColor(Color.HSVToColor(new float[]{230f, 0.25f, 0.25f}));
+                nightSectorPaint.setStyle(Paint.Style.FILL);
+                nightSectorPaint.setStrokeWidth(centreX * 0.01f);
             }
         }
 
@@ -279,6 +301,13 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
         private void drawBackground(Canvas canvas) {
             canvas.drawPaint(backgroundPaint);
+
+            float dayNightDiscRadius = centreX * 0.667f;
+            // TODO Change automatic formatting to enforce line length.
+            Rect boundingBox = new Rect((int) (centreX - dayNightDiscRadius), (int) (centreY - dayNightDiscRadius), (int) (centreX + dayNightDiscRadius), (int) (centreY + dayNightDiscRadius));
+
+            canvas.drawArc(new RectF(boundingBox), 180f, 180f, true, daySectorPaint);
+            canvas.drawArc(new RectF(boundingBox), 0f, 180f, true, nightSectorPaint);
         }
 
         private void drawNotches(Canvas canvas) {
