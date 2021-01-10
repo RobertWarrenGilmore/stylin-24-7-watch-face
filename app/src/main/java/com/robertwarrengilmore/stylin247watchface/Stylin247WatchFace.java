@@ -75,9 +75,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
   private class Engine extends CanvasWatchFaceService.Engine {
 
-    // TODO Change the moon's phase based on the date.
-    private final float MOON_PHASE = 0.875f;
-
     /* Handler to update the time once a second in interactive mode. */
     private final Handler updateTimeHandler = new EngineHandler(this);
     private Calendar calendar;
@@ -365,7 +362,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       // TODO Experiment with painting the sun and moon over the hands.
       // TODO Experiment with drawing the weather. (Don't forget to turn the sun red if it's hazy.)
       drawSun(canvas, centreX, centreY * 0.7f, centreX * 0.15f);
-      drawMoon(canvas, centreX, centreY * 1.3f, centreX * 0.15f, MOON_PHASE);
+      float moonPhase = AstronomyCalculator.getMoonPhase(calendar.toInstant());
+      drawMoon(canvas, centreX, centreY * 1.3f, centreX * 0.15f, moonPhase);
     }
 
     private void drawNotches(Canvas canvas) {
