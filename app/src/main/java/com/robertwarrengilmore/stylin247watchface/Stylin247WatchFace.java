@@ -357,6 +357,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       canvas.drawArc(new RectF(boundingBox), 180f, 180f, true, daySectorPaint);
       canvas.drawArc(new RectF(boundingBox), 0f, 180f, true, nightSectorPaint);
 
+      // TODO Experiment with using less power in ambient mode.
       // TODO Experiment with drawing stars.
       // TODO Experiment with painting the sun and moon over the hands.
       // TODO Experiment with drawing the weather. (Don't forget to turn the sun red if it's hazy.)
