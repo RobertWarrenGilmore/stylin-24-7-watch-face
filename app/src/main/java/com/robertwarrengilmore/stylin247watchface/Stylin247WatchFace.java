@@ -304,23 +304,23 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       if (ambient) {
         backgroundPaint.setColor(Color.BLACK);
 
-        daySectorPaint.setColor(Color.WHITE);
+        daySectorPaint.setColor(Color.DKGRAY);
         daySectorPaint.setStyle(Paint.Style.STROKE);
         daySectorPaint.setStrokeWidth(absoluteDimension(AMBIENT_HOUR_DISC_STROKE_WIDTH));
 
-        sunPaint.setColor(Color.WHITE);
+        sunPaint.setColor(Color.DKGRAY);
         if (DRAW_SUN_CORONA) {
           sunPaint.setShadowLayer(absoluteDimension(SUN_CORONA_WIDTH), 0, 0, Color.WHITE);
         } else {
           sunPaint.clearShadowLayer();
         }
 
-        nightSectorPaint.setColor(Color.WHITE);
+        nightSectorPaint.setColor(Color.DKGRAY);
         nightSectorPaint.setStyle(Paint.Style.STROKE);
 
-        moonLinePaint.setColor(Color.WHITE);
+        moonLinePaint.setColor(Color.DKGRAY);
       } else {
-        backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.4f}));
+        backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.3f}));
 
         daySectorPaint.setColor(Color.HSVToColor(new float[]{200f, 0.25f, 0.6f}));
         daySectorPaint.setStyle(Paint.Style.FILL);
@@ -375,11 +375,11 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
     private void updateNotchStyles() {
       if (ambient) {
-        largeNotchPaint.setColor(Color.WHITE);
-        smallNotchPaint.setColor(Color.WHITE);
+        largeNotchPaint.setColor(Color.GRAY);
+        smallNotchPaint.setColor(Color.GRAY);
       } else {
-        largeNotchPaint.setColor(Color.BLACK);
-        smallNotchPaint.setColor(Color.BLACK);
+        largeNotchPaint.setColor(Color.HSVToColor(new float[]{0f, 00f, 0.1f}));
+        smallNotchPaint.setColor(Color.HSVToColor(new float[]{0f, 00f, 0.1f}));
       }
     }
 
