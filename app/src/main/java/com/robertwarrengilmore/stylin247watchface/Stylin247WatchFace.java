@@ -19,8 +19,6 @@ import android.view.SurfaceHolder;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
-import java.time.Duration;
-import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +38,7 @@ import java.util.concurrent.TimeUnit;
 public class Stylin247WatchFace extends CanvasWatchFaceService {
 
   private static final Location location = new Location("");
-
+  private static final boolean DRAW_LOCATION_STUFF = true;
   /*
    * Updates rate in milliseconds for interactive mode. We update once a second to advance the
    * second hand.
@@ -361,18 +359,21 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
               (int) (centreX + dayNightDiscRadius),
               (int) (centreY + dayNightDiscRadius));
 
-
-      // TODO Draw sectors according to sunrise and sunset times. (This can be calculated fairly accurately based on the date (say 12-22 and 06-22 are the solstices and call that good enough) (Use the difference between the longitude-based time and the civil time zone offset to get the astronomical noon offset.) (Use the longitude to determine the day length in combination with the calendar date.)
       // TODO Draw sun and moon at the proper positions, rotations, and sizes. (This requires the refactor to polar coordinates.)
 
 
       final float
           noonOffsetDayFraction =
-          AstronomyCalculator.getAstronomicalNoon(location, calendar).toSecondOfDay() /
-              (24f * 60 * 60 - 1);
+          DRAW_LOCATION_STUFF ?
+              (AstronomyCalculator.getAstronomicalNoon(location, calendar).toSecondOfDay() /
+                  (24f * 60 * 60 - 1)) :
+              0.5f;
       final float
           dayLengthFraction =
-          AstronomyCalculator.getDayLength(location, calendar).getSeconds() / (24f * 60 * 60 - 1);
+          DRAW_LOCATION_STUFF ?
+              (AstronomyCalculator.getDayLength(location, calendar).getSeconds() /
+                  (24f * 60 * 60 - 1)) :
+              0.5f;
       final float sunriseOffsetFraction = noonOffsetDayFraction - (dayLengthFraction / 2);
       canvas.drawArc(new RectF(boundingBox),
           90 + sunriseOffsetFraction * 360,
