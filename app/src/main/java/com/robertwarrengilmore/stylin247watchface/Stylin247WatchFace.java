@@ -141,6 +141,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       calendar = Calendar.getInstance();
 
       initialiseStyles();
+
+      // TODO Read the real location.
       // Seattle
       location.setLatitude(47.608013);
       location.setLongitude(-122.335167);
@@ -425,6 +427,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       // TODO Experiment with drawing stars.
       // TODO Experiment with painting the sun and moon over the hands.
       // TODO Experiment with drawing the weather. (Don't forget to turn the sun red if it's hazy.)
+      // TODO Create a settings screen.
 
       final float noonAngle = noonOffsetDayFraction * 360 + 180;
 
