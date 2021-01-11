@@ -142,7 +142,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
       initialiseStyles();
 
-      // TODO Read the real location.
       // Seattle
       location.setLatitude(47.608013);
       location.setLongitude(-122.335167);
@@ -219,7 +218,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           break;
         case TAP_TYPE_TAP:
           // The user has completed the tap gesture.
-          // TODO: Add code to handle the tap gesture.
           //          Toast.makeText(getApplicationContext(), R.string.message, Toast.LENGTH_SHORT).show();
           break;
       }
@@ -423,12 +421,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           true,
           nightSectorPaint);
 
-      // TODO Experiment with using less power in ambient mode.
-      // TODO Experiment with drawing stars.
-      // TODO Experiment with painting the sun and moon over the hands.
-      // TODO Experiment with drawing the weather. (Don't forget to turn the sun red if it's hazy.)
-      // TODO Create a settings screen.
-
       final float noonAngle = noonOffsetDayFraction * 360 + 180;
 
       drawSun(canvas,
@@ -478,14 +470,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       PointF inside = cartesian(angle, outerRadius - length);
       PointF outside = cartesian(angle, outerRadius);
       canvas.drawLine(inside.x, inside.y, outside.x, outside.y, paint);
-
-      // TODO Show calendar events as curved blocks just outside of the hour disc, and allow the user to tap on them to see info about the events. (Events from three hours ago to 21 hours in the future should be shown).
-      // TODO Move all TODOs into Quire or Github issues.
-      // TODO Remove Pallette API because we're not using it.
-      // TODO Update preview image.
-      // TODO Refactor all cartesian-to-polar conversion math into a helper. This helper should multiply the input radius (from 0 to 1) by the screen radius, so that users of the helper don't have to multiply everything by screen radius. (Maybe make another helper that just multiplies the argument by the screen radius, so that things like stroke widths can similarly be scaled.
-      // TODO Turn all dimensions into constants.
-      // TODO Make as many variables as possible final.
     }
 
     private void drawHands(Canvas canvas) {
