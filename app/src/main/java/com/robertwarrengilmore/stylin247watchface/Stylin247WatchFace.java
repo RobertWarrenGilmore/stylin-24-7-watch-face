@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.location.Location;
 import android.os.Handler;
 import android.os.Message;
 import android.support.wearable.watchface.CanvasWatchFaceService;
@@ -18,6 +19,8 @@ import android.view.SurfaceHolder;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +38,8 @@ import java.util.concurrent.TimeUnit;
  * https://codelabs.developers.google.com/codelabs/watchface/index.html#0
  */
 public class Stylin247WatchFace extends CanvasWatchFaceService {
+
+  private static final Location location = new Location("");
 
   /*
    * Updates rate in milliseconds for interactive mode. We update once a second to advance the
@@ -113,6 +118,9 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       calendar = Calendar.getInstance();
 
       initialiseStyles();
+      // Seattle
+      location.setLatitude(47.608013);
+      location.setLongitude(-122.335167);
     }
 
     @Override
@@ -353,9 +361,31 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
               (int) (centreX + dayNightDiscRadius),
               (int) (centreY + dayNightDiscRadius));
 
+
       // TODO Draw sectors according to sunrise and sunset times. (This can be calculated fairly accurately based on the date (say 12-22 and 06-22 are the solstices and call that good enough) (Use the difference between the longitude-based time and the civil time zone offset to get the astronomical noon offset.) (Use the longitude to determine the day length in combination with the calendar date.)
-      canvas.drawArc(new RectF(boundingBox), 180f, 180f, true, daySectorPaint);
-      canvas.drawArc(new RectF(boundingBox), 0f, 180f, true, nightSectorPaint);
+      // TODO Draw sun and moon at the proper positions, rotations, and sizes. (This requires the refactor to polar coordinates.)
+
+
+      final float
+          noonOffsetDayFraction =
+          AstronomyCalculator.getAstronomicalNoon(location, calendar).toSecondOfDay() /
+              (24f * 60 * 60 - 1);
+      System.out.println(AstronomyCalculator.getDayLength(location, calendar));
+      final float
+          dayLengthFraction =
+          AstronomyCalculator.getDayLength(location, calendar).getSeconds() / (24f * 60 * 60 - 1);
+      final float sunriseOffsetFraction = noonOffsetDayFraction - (dayLengthFraction / 2);
+      System.out.println(AstronomyCalculator.getAstronomicalNoon(location, calendar));
+      canvas.drawArc(new RectF(boundingBox),
+          90 + sunriseOffsetFraction * 360,
+          dayLengthFraction * 360,
+          true,
+          daySectorPaint);
+      canvas.drawArc(new RectF(boundingBox),
+          90 + sunriseOffsetFraction * 360 + dayLengthFraction * 360,
+          360 - dayLengthFraction * 360,
+          true,
+          nightSectorPaint);
 
       // TODO Experiment with using less power in ambient mode.
       // TODO Experiment with drawing stars.
@@ -414,8 +444,9 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       // TODO Move all TODOs into Quire or Github issues.
       // TODO Remove Pallette API because we're not using it.
       // TODO Update preview image.
-      // TODO Refactor all cartesian-to-polar conversion math into a helper. This helper should multiply the input radius (from 0 to 1) by the screen radius, so that users of the helper don't have to multiply everything by screen radius. (Maybe make another helper that just multiplies the argument by the screen radius, so that things like stroke widths can similarly be scaled.)
+      // TODO Refactor all cartesian-to-polar conversion math into a helper. This helper should multiply the input radius (from 0 to 1) by the screen radius, so that users of the helper don't have to multiply everything by screen radius. (Maybe make another helper that just multiplies the argument by the screen radius, so that things like stroke widths can similarly be scaled.
       // TODO Turn all dimensions into constants.
+      // TODO Make as many variables as possible final.
     }
 
     private void drawHands(Canvas canvas) {
