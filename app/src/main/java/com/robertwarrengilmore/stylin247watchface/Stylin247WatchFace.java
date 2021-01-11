@@ -7,6 +7,8 @@ import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.location.Location;
@@ -15,6 +17,7 @@ import android.os.Message;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
+import android.support.wearable.watchface.decompositionface.CoordConverter;
 import android.view.SurfaceHolder;
 import android.widget.Toast;
 
@@ -352,12 +355,12 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       canvas.drawPaint(backgroundPaint);
 
       float dayNightDiscRadius = centreX * 0.667f;
-      Rect
+      RectF
           boundingBox =
-          new Rect((int) (centreX - dayNightDiscRadius),
-              (int) (centreY - dayNightDiscRadius),
-              (int) (centreX + dayNightDiscRadius),
-              (int) (centreY + dayNightDiscRadius));
+          new RectF(centreX - dayNightDiscRadius,
+              centreY - dayNightDiscRadius,
+              centreX + dayNightDiscRadius,
+              centreY + dayNightDiscRadius);
 
       // TODO Draw sun and moon at the proper positions, rotations, and sizes. (This requires the refactor to polar coordinates.)
 
@@ -375,12 +378,12 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
                   (24f * 60 * 60 - 1)) :
               0.5f;
       final float sunriseOffsetFraction = noonOffsetDayFraction - (dayLengthFraction / 2);
-      canvas.drawArc(new RectF(boundingBox),
+      canvas.drawArc(boundingBox,
           90 + sunriseOffsetFraction * 360,
           dayLengthFraction * 360,
           true,
           daySectorPaint);
-      canvas.drawArc(new RectF(boundingBox),
+      canvas.drawArc(boundingBox,
           90 + sunriseOffsetFraction * 360 + dayLengthFraction * 360,
           360 - dayLengthFraction * 360,
           true,
