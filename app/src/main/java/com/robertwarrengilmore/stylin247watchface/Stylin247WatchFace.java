@@ -386,7 +386,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       // TODO Draw sun and moon at the proper positions and sizes. (This requires the refactor to polar coordinates.)
 
       final Duration
-          dayLength =
+          solarDayLength =
           DRAW_LOCATION_STUFF ?
               AstronomyCalculator.getSolarDayLength(location, calendar) :
               Duration.ofHours(12);
@@ -399,11 +399,11 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
       final float
           noonOffsetDayFraction =
-          AstronomyCalculator.getSolarNoon(location, calendar).toSecondOfDay() /
+          solarNoon.toSecondOfDay() /
               (24f * 60 * 60 - 1);
       final float
           dayLengthFraction =
-          AstronomyCalculator.getSolarDayLength(location, calendar).getSeconds() /
+         solarDayLength.getSeconds() /
               (24f * 60 * 60 - 1);
 
       final float sunriseOffsetFraction = noonOffsetDayFraction - (dayLengthFraction / 2);
