@@ -277,9 +277,11 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       sunPaint.setStyle(Paint.Style.FILL);
 
       nightSectorPaint.setAntiAlias(true);
+      nightSectorPaint.setStrokeWidth(absoluteDimension(AMBIENT_HOUR_DISC_STROKE_WIDTH));
 
       moonLinePaint.setAntiAlias(true);
       moonLinePaint.setStyle(Paint.Style.STROKE);
+      moonLinePaint.setStrokeWidth(absoluteDimension(AMBIENT_HOUR_DISC_STROKE_WIDTH));
 
       moonLitPaint.setAntiAlias(true);
       moonLitPaint.setStyle(Paint.Style.FILL);
@@ -315,10 +317,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
         nightSectorPaint.setColor(Color.WHITE);
         nightSectorPaint.setStyle(Paint.Style.STROKE);
-        nightSectorPaint.setStrokeWidth(absoluteDimension(AMBIENT_HOUR_DISC_STROKE_WIDTH));
 
         moonLinePaint.setColor(Color.WHITE);
-        moonLinePaint.setStrokeWidth(absoluteDimension(AMBIENT_HOUR_DISC_STROKE_WIDTH));
       } else {
         backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.4f}));
 
