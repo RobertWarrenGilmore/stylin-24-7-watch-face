@@ -43,11 +43,12 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   private static final Location location = new Location("");
   private static final boolean DRAW_LOCATION_STUFF = true;
   private static final boolean DRAW_SUN_CORONA = true;
+  private static final boolean DRAW_SECOND_HAND = false;
   /*
    * Updates rate in milliseconds for interactive mode. We update once a second to advance the
    * second hand.
    */
-  private static final long INTERACTIVE_UPDATE_RATE_MS = TimeUnit.SECONDS.toMillis(1);
+  private static final long INTERACTIVE_UPDATE_RATE_MS = TimeUnit.MINUTES.toMillis(1);
 
   /**
    * Handler message id for updating the time periodically in interactive mode.
@@ -500,7 +501,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
        * Ensure the second hand is drawn only when we are in interactive mode.
        * Otherwise, we only update the watch face once a minute.
        */
-      if (!ambient) {
+      if (!ambient && DRAW_SECOND_HAND) {
         canvas.drawLine(centre.x, centre.y, secondHandEnd.x, secondHandEnd.y, secondHandPaint);
       }
       canvas.drawCircle(centre.x, centre.y, absoluteDimension(HAND_CAP_RADIUS), handCapPaint);
