@@ -383,8 +383,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
               centre.x + dayNightDiscRadius,
               centre.y + dayNightDiscRadius);
 
-      // TODO Draw sun and moon at the proper positions and sizes. (This requires the refactor to polar coordinates.)
-
       final Duration
           solarDayLength =
           DRAW_LOCATION_STUFF ?
@@ -397,14 +395,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
               LocalTime.NOON;
 
 
-      final float
-          noonOffsetDayFraction =
-          solarNoon.toSecondOfDay() /
-              (24f * 60 * 60 - 1);
-      final float
-          dayLengthFraction =
-         solarDayLength.getSeconds() /
-              (24f * 60 * 60 - 1);
+      final float noonOffsetDayFraction = solarNoon.toSecondOfDay() / (24f * 60 * 60 - 1);
+      final float dayLengthFraction = solarDayLength.getSeconds() / (24f * 60 * 60 - 1);
 
       final float sunriseOffsetFraction = noonOffsetDayFraction - (dayLengthFraction / 2);
       canvas.drawArc(boundingBox,
@@ -423,13 +415,15 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       // TODO Experiment with painting the sun and moon over the hands.
       // TODO Experiment with drawing the weather. (Don't forget to turn the sun red if it's hazy.)
 
+      final float noonAngle = noonOffsetDayFraction * 360 + 180;
+
       drawSun(canvas,
-          cartesian(0f, absoluteDimension(SUN_AND_MOON_CENTRE_OFFSET)),
+          cartesian(noonAngle, absoluteDimension(SUN_AND_MOON_CENTRE_OFFSET)),
           absoluteDimension(SUN_AND_MOON_RADIUS));
       float lunarPhase = AstronomyCalculator.getLunarPhase(calendar.toInstant());
 
       drawMoon(canvas,
-          cartesian(180f, absoluteDimension(SUN_AND_MOON_CENTRE_OFFSET)),
+          cartesian(noonAngle + 180f, absoluteDimension(SUN_AND_MOON_CENTRE_OFFSET)),
           absoluteDimension(SUN_AND_MOON_RADIUS),
           lunarPhase);
     }
