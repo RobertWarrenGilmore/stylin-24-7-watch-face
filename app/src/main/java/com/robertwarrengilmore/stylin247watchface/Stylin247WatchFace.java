@@ -348,10 +348,10 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       smallNotchPaint.setStrokeWidth(absoluteDimension(SMALL_NOTCH_WIDTH));
 
       if (ambient) {
-        hourHandPaint.setColor(Color.WHITE);
-        minuteHandPaint.setColor(Color.WHITE);
-        secondHandPaint.setColor(Color.WHITE);
-        handCapPaint.setColor(Color.WHITE);
+        hourHandPaint.setColor(Color.LTGRAY);
+        minuteHandPaint.setColor(Color.LTGRAY);
+        secondHandPaint.setColor(Color.LTGRAY);
+        handCapPaint.setColor(Color.LTGRAY);
 
         hourHandPaint.clearShadowLayer();
         minuteHandPaint.clearShadowLayer();
