@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -42,6 +43,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
   private static final Location location = new Location("");
   private static final boolean DRAW_LOCATION_STUFF = true;
+  private static final boolean DRAW_SUN_CORONA = false;
   /*
    * Updates rate in milliseconds for interactive mode. We update once a second to advance the
    * second hand.
@@ -80,8 +82,11 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
   private class Engine extends CanvasWatchFaceService.Engine {
 
+    public static final float SUN_RAY_WIDTH_DEGREES = 20;
+    public static final float SUN_RAY_LENGTH = 0.35f;
+    public static final float SUN_RAY_OFFSET = 0.2f;
     private static final float AMBIENT_HOUR_DISC_STROKE_WIDTH = 0.01f;
-    private static final float SUN_AURA_WIDTH = 0.1f;
+    private static final float SUN_CORONA_WIDTH = 0.1f;
     private static final float HOUR_HAND_WIDTH = 0.04f;
     private static final float HOUR_HAND_LENGTH = 0.525f;
     private static final float MINUTE_HAND_WIDTH = 0.02f;
@@ -303,7 +308,11 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         daySectorPaint.setStrokeWidth(absoluteDimension(AMBIENT_HOUR_DISC_STROKE_WIDTH));
 
         sunPaint.setColor(Color.WHITE);
-        sunPaint.setShadowLayer(absoluteDimension(SUN_AURA_WIDTH), 0, 0, Color.WHITE);
+        if (DRAW_SUN_CORONA) {
+          sunPaint.setShadowLayer(absoluteDimension(SUN_CORONA_WIDTH), 0, 0, Color.WHITE);
+        } else {
+          sunPaint.clearShadowLayer();
+        }
 
         nightSectorPaint.setColor(Color.WHITE);
         nightSectorPaint.setStyle(Paint.Style.STROKE);
@@ -319,10 +328,14 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
         sunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
         // TODO Experiment with drawing triangles instead of aura.
-        sunPaint.setShadowLayer(absoluteDimension(SUN_AURA_WIDTH),
-            0,
-            0,
-            Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
+        if (DRAW_SUN_CORONA) {
+          sunPaint.setShadowLayer(absoluteDimension(SUN_CORONA_WIDTH),
+              0,
+              0,
+              Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
+        } else {
+          sunPaint.clearShadowLayer();
+        }
 
         nightSectorPaint.setColor(Color.HSVToColor(new float[]{230f, 0.25f, 0.25f}));
         nightSectorPaint.setStyle(Paint.Style.FILL);
@@ -511,6 +524,36 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
     private void drawSun(Canvas canvas, PointF centre, float radius) {
       canvas.drawCircle(centre.x, centre.y, radius, sunPaint);
+
+      if (!DRAW_SUN_CORONA) {
+        final float rayOffset = radius * SUN_RAY_OFFSET;
+        final float rayLength = radius * SUN_RAY_LENGTH;
+        for (int rayIndex = 0; rayIndex < 12; rayIndex++) {
+          final float rayTipAngle = (float) (rayIndex * 360 / 12);
+          final PointF rayTip = cartesian(centre, rayTipAngle, radius + rayOffset + rayLength);
+          final PointF
+              rayBottomLeft =
+              cartesian(centre, rayTipAngle - SUN_RAY_WIDTH_DEGREES / 2, rayOffset);
+          final PointF
+              rayBottomRight =
+              cartesian(centre, rayTipAngle + SUN_RAY_WIDTH_DEGREES / 2, rayOffset);
+          final float rayBottomRadius = (radius + rayOffset);
+          final RectF
+              rayOffsetBoundingBox =
+              new RectF(centre.x - rayBottomRadius,
+                  centre.y - rayBottomRadius,
+                  centre.x + rayBottomRadius,
+                  centre.y + rayBottomRadius);
+          final Path ray = new Path();
+          ray.moveTo(rayTip.x, rayTip.y);
+          ray.arcTo(rayOffsetBoundingBox,
+              rayTipAngle - SUN_RAY_WIDTH_DEGREES / 2 - 90,
+              SUN_RAY_WIDTH_DEGREES);
+          ray.close();
+          canvas.drawPath(ray, sunPaint);
+        }
+      }
+
     }
 
     private void drawMoon(Canvas canvas, PointF centre, float radius, float phase) {
