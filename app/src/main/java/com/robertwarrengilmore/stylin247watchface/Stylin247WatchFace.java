@@ -61,15 +61,15 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   }
 
   private static class EngineHandler extends Handler {
-    private final WeakReference<Stylin247WatchFace.Engine> mWeakReference;
+    private final WeakReference<Stylin247WatchFace.Engine> weakReference;
 
     public EngineHandler(Stylin247WatchFace.Engine reference) {
-      mWeakReference = new WeakReference<>(reference);
+      weakReference = new WeakReference<>(reference);
     }
 
     @Override
     public void handleMessage(Message msg) {
-      Stylin247WatchFace.Engine engine = mWeakReference.get();
+      Stylin247WatchFace.Engine engine = weakReference.get();
       if (engine != null) {
         switch (msg.what) {
           case MSG_UPDATE_TIME:
