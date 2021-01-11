@@ -327,10 +327,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
         sunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
         if (DRAW_SUN_CORONA) {
-          sunPaint.setShadowLayer(absoluteDimension(SUN_CORONA_WIDTH),
-              0,
-              0,
-              sunPaint.getColor());
+          sunPaint.setShadowLayer(absoluteDimension(SUN_CORONA_WIDTH), 0, 0, sunPaint.getColor());
         } else {
           sunPaint.clearShadowLayer();
         }
@@ -436,7 +433,11 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       // Draw the five-minute (and even-hour) notches.
       for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
         float tickRot = (float) (tickIndex * 360 / 12);
-        drawNotch(canvas, tickRot, absoluteDimension(MINUTE_NOTCH_OUTER_RADIUS), absoluteDimension(LARGE_NOTCH_LENGTH), largeNotchPaint);
+        drawNotch(canvas,
+            tickRot,
+            absoluteDimension(MINUTE_NOTCH_OUTER_RADIUS),
+            absoluteDimension(LARGE_NOTCH_LENGTH),
+            largeNotchPaint);
       }
       // Draw the single-minute notches.
       for (int tickIndex = 0; tickIndex < 60; tickIndex++) {
@@ -450,7 +451,11 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       // Draw the odd-hour notches.
       for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
         float tickRot = (float) (tickIndex * 360 / 12) + (float) (360 / 24);
-        drawNotch(canvas, tickRot, absoluteDimension(HOUR_DISC_RADIUS), absoluteDimension(SMALL_NOTCH_LENGTH), smallNotchPaint);
+        drawNotch(canvas,
+            tickRot,
+            absoluteDimension(HOUR_DISC_RADIUS),
+            absoluteDimension(SMALL_NOTCH_LENGTH),
+            smallNotchPaint);
       }
     }
 
@@ -475,7 +480,9 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       final float secondsRotation = seconds * (360 / 60f);
 
       // In ambient mode, the minute hand should tick instead of moving gradually.
-      final float partialMinute = ambient ? 0 : (calendar.get(Calendar.SECOND) / 60f);
+      final float
+          partialMinute =
+          (ambient || !DRAW_SECOND_HAND) ? 0 : (calendar.get(Calendar.SECOND) / 60f);
       final float minutesRotation = (calendar.get(Calendar.MINUTE) + partialMinute) * (360 / 60f);
 
       final float partialHour = calendar.get(Calendar.MINUTE) / 60f;
