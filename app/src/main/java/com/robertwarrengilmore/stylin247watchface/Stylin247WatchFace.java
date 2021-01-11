@@ -326,7 +326,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         daySectorPaint.setStyle(Paint.Style.FILL);
 
         sunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
-        // TODO Experiment with drawing triangles instead of aura.
         if (DRAW_SUN_CORONA) {
           sunPaint.setShadowLayer(absoluteDimension(SUN_CORONA_WIDTH),
               0,
