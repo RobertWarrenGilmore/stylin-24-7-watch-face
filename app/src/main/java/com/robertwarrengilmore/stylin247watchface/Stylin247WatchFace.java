@@ -42,7 +42,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
   private static final Location location = new Location("");
   private static final boolean DRAW_LOCATION_STUFF = true;
-  private static final boolean DRAW_SUN_CORONA = false;
+  private static final boolean DRAW_SUN_CORONA = true;
   /*
    * Updates rate in milliseconds for interactive mode. We update once a second to advance the
    * second hand.
