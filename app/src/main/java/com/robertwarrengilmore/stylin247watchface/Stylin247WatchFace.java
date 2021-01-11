@@ -95,12 +95,12 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     private static final float HAND_CAP_RADIUS = 0.03f;
     private static final float HAND_SHADOW_WIDTH = 0.01f;
     private static final float LARGE_NOTCH_WIDTH = 0.02f;
+    private static final float LARGE_NOTCH_LENGTH = 0.425f;
     private static final float SMALL_NOTCH_WIDTH = 0.0125f;
+    private static final float SMALL_NOTCH_LENGTH = 0.05f;
     private static final float HOUR_DISC_RADIUS = 0.667f;
     private static final float SUN_AND_MOON_RADIUS = 0.15f;
     private static final float SUN_AND_MOON_CENTRE_OFFSET = 0.3f;
-    private static final float LARGE_NOTCH_LENGTH = 0.425f;
-    private static final float SMALL_NOTCH_LENGTH = 0.05f;
     private static final float MINUTE_NOTCH_OUTER_RADIUS = 1f;
     /* Handler to update the time once a second in interactive mode. */
     private final Handler updateTimeHandler = new EngineHandler(this);
