@@ -385,14 +385,12 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
     private void drawBackground(Canvas canvas) {
       canvas.drawPaint(backgroundPaint);
-
-      float dayNightDiscRadius = absoluteDimension(HOUR_DISC_RADIUS);
       RectF
           boundingBox =
-          new RectF(centre.x - dayNightDiscRadius,
-              centre.y - dayNightDiscRadius,
-              centre.x + dayNightDiscRadius,
-              centre.y + dayNightDiscRadius);
+          new RectF(centre.x - absoluteDimension(HOUR_DISC_RADIUS),
+              centre.y - absoluteDimension(HOUR_DISC_RADIUS),
+              centre.x + absoluteDimension(HOUR_DISC_RADIUS),
+              centre.y + absoluteDimension(HOUR_DISC_RADIUS));
 
       final Duration
           solarDayLength =
@@ -435,15 +433,10 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     }
 
     private void drawNotches(Canvas canvas) {
-
-      float largeNotchLength = absoluteDimension(LARGE_NOTCH_LENGTH);
-      float smallNotchLength = absoluteDimension(SMALL_NOTCH_LENGTH);
-
       // Draw the five-minute (and even-hour) notches.
-      float outerNotchRadius = absoluteDimension(MINUTE_NOTCH_OUTER_RADIUS);
       for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
         float tickRot = (float) (tickIndex * 360 / 12);
-        drawNotch(canvas, tickRot, outerNotchRadius, largeNotchLength, largeNotchPaint);
+        drawNotch(canvas, tickRot, absoluteDimension(MINUTE_NOTCH_OUTER_RADIUS), absoluteDimension(LARGE_NOTCH_LENGTH), largeNotchPaint);
       }
       // Draw the single-minute notches.
       for (int tickIndex = 0; tickIndex < 60; tickIndex++) {
@@ -452,13 +445,12 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           continue;
         }
         float tickRot = (float) (tickIndex * 360 / 60);
-        drawNotch(canvas, tickRot, outerNotchRadius, smallNotchLength, smallNotchPaint);
+        drawNotch(canvas, tickRot, absoluteDimension(MINUTE_NOTCH_OUTER_RADIUS), absoluteDimension(SMALL_NOTCH_LENGTH), smallNotchPaint);
       }
       // Draw the odd-hour notches.
-      outerNotchRadius = absoluteDimension(HOUR_DISC_RADIUS);
       for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
         float tickRot = (float) (tickIndex * 360 / 12) + (float) (360 / 24);
-        drawNotch(canvas, tickRot, outerNotchRadius, smallNotchLength, smallNotchPaint);
+        drawNotch(canvas, tickRot, absoluteDimension(HOUR_DISC_RADIUS), absoluteDimension(SMALL_NOTCH_LENGTH), smallNotchPaint);
       }
     }
 
@@ -488,7 +480,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
       final float partialHour = calendar.get(Calendar.MINUTE) / 60f;
       // The hour hand moves 15 degrees per hour on a 24-hour clock, not 30.
-      float
+      final float
           hoursRotation =
           ((calendar.get(Calendar.HOUR_OF_DAY) + partialHour) * (360 / 24f)) + 180;
 
@@ -575,8 +567,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
      * Convert radial coordinates to a cartesian point.
      */
     private PointF cartesian(PointF origin, float angle, float radius) {
-      float x = origin.x + (float) Math.sin(Math.toRadians(angle)) * radius;
-      float y = origin.y + (float) -Math.cos(Math.toRadians(angle)) * radius;
+      final float x = origin.x + (float) Math.sin(Math.toRadians(angle)) * radius;
+      final float y = origin.y + (float) -Math.cos(Math.toRadians(angle)) * radius;
       return new PointF(x, y);
     }
 
