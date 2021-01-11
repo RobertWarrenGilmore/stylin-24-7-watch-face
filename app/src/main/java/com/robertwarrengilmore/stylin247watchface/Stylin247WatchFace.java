@@ -44,6 +44,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   private static final boolean DRAW_LOCATION_STUFF = true;
   private static final boolean DRAW_SUN_CORONA = true;
   private static final boolean DRAW_SECOND_HAND = false;
+  private static final boolean DRAW_SINGLE_MINUTE_NOTCHES = false;
   /*
    * Updates rate in milliseconds for interactive mode. We update once a second to advance the
    * second hand.
@@ -441,13 +442,19 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             largeNotchPaint);
       }
       // Draw the single-minute notches.
-      for (int tickIndex = 0; tickIndex < 60; tickIndex++) {
-        // Don't repeat the five-minute notches.
-        if (tickIndex % 5 == 0) {
-          continue;
+      if (DRAW_SINGLE_MINUTE_NOTCHES) {
+        for (int tickIndex = 0; tickIndex < 60; tickIndex++) {
+          // Don't repeat the five-minute notches.
+          if (tickIndex % 5 == 0) {
+            continue;
+          }
+          float tickRot = (float) (tickIndex * 360 / 60);
+          drawNotch(canvas,
+              tickRot,
+              absoluteDimension(MINUTE_NOTCH_OUTER_RADIUS),
+              absoluteDimension(SMALL_NOTCH_LENGTH),
+              smallNotchPaint);
         }
-        float tickRot = (float) (tickIndex * 360 / 60);
-        drawNotch(canvas, tickRot, absoluteDimension(MINUTE_NOTCH_OUTER_RADIUS), absoluteDimension(SMALL_NOTCH_LENGTH), smallNotchPaint);
       }
       // Draw the odd-hour notches.
       for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
