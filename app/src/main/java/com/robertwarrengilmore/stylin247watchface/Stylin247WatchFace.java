@@ -93,19 +93,19 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     private boolean muteMode;
     private float centreX;
     private float centreY;
-    private Paint hourPaint = new Paint();
-    private Paint minutePaint = new Paint();
-    private Paint secondPaint = new Paint();
-    private Paint centrePaint = new Paint();
-    private Paint smallNotchPaint = new Paint();
-    private Paint largeNotchPaint = new Paint();
-    private Paint backgroundPaint = new Paint();
-    private Paint daySectorPaint = new Paint();
-    private Paint sunPaint = new Paint();
-    private Paint nightSectorPaint = new Paint();
-    private Paint moonLitPaint = new Paint();
-    private Paint moonDarkPaint = new Paint();
-    private Paint moonLinePaint = new Paint();
+    private final Paint hourPaint = new Paint();
+    private final Paint minutePaint = new Paint();
+    private final Paint secondPaint = new Paint();
+    private final Paint centrePaint = new Paint();
+    private final Paint smallNotchPaint = new Paint();
+    private final Paint largeNotchPaint = new Paint();
+    private final Paint backgroundPaint = new Paint();
+    private final Paint daySectorPaint = new Paint();
+    private final Paint sunPaint = new Paint();
+    private final Paint nightSectorPaint = new Paint();
+    private final Paint moonLitPaint = new Paint();
+    private final Paint moonDarkPaint = new Paint();
+    private final Paint moonLinePaint = new Paint();
     private boolean ambient;
 
     @Override
