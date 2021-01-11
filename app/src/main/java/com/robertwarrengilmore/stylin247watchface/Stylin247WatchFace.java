@@ -310,7 +310,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
         sunPaint.setColor(Color.DKGRAY);
         if (DRAW_SUN_CORONA) {
-          sunPaint.setShadowLayer(absoluteDimension(SUN_CORONA_WIDTH), 0, 0, Color.WHITE);
+          sunPaint.setShadowLayer(absoluteDimension(SUN_CORONA_WIDTH), 0, 0, sunPaint.getColor());
         } else {
           sunPaint.clearShadowLayer();
         }
@@ -330,7 +330,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           sunPaint.setShadowLayer(absoluteDimension(SUN_CORONA_WIDTH),
               0,
               0,
-              Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
+              sunPaint.getColor());
         } else {
           sunPaint.clearShadowLayer();
         }
