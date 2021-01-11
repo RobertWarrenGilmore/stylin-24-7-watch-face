@@ -370,12 +370,10 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           noonOffsetDayFraction =
           AstronomyCalculator.getAstronomicalNoon(location, calendar).toSecondOfDay() /
               (24f * 60 * 60 - 1);
-      System.out.println(AstronomyCalculator.getDayLength(location, calendar));
       final float
           dayLengthFraction =
           AstronomyCalculator.getDayLength(location, calendar).getSeconds() / (24f * 60 * 60 - 1);
       final float sunriseOffsetFraction = noonOffsetDayFraction - (dayLengthFraction / 2);
-      System.out.println(AstronomyCalculator.getAstronomicalNoon(location, calendar));
       canvas.drawArc(new RectF(boundingBox),
           90 + sunriseOffsetFraction * 360,
           dayLengthFraction * 360,
