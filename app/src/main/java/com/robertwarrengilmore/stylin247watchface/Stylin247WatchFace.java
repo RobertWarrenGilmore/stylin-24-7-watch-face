@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -17,11 +16,12 @@ import android.os.Message;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
-import android.support.wearable.watchface.decompositionface.CoordConverter;
 import android.view.SurfaceHolder;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
+import java.time.Duration;
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -80,8 +80,39 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
   private class Engine extends CanvasWatchFaceService.Engine {
 
+    private static final float AMBIENT_HOUR_DISC_STROKE_WIDTH = 0.01f;
+    private static final float SUN_AURA_WIDTH = 0.1f;
+    private static final float HOUR_HAND_WIDTH = 0.04f;
+    private static final float HOUR_HAND_LENGTH = 0.525f;
+    private static final float MINUTE_HAND_WIDTH = 0.02f;
+    private static final float MINUTE_HAND_LENGTH = 0.9f;
+    private static final float SECOND_HAND_WIDTH = 0.01f;
+    private static final float SECOND_HAND_LENGTH = 0.9f;
+    private static final float HAND_CAP_RADIUS = 0.03f;
+    private static final float HAND_SHADOW_WIDTH = 0.01f;
+    private static final float LARGE_NOTCH_WIDTH = 0.02f;
+    private static final float SMALL_NOTCH_WIDTH = 0.0125f;
+    private static final float HOUR_DISC_RADIUS = 0.667f;
+    private static final float SUN_AND_MOON_RADIUS = 0.15f;
+    private static final float SUN_AND_MOON_CENTRE_OFFSET = 0.3f;
+    private static final float LARGE_NOTCH_LENGTH = 0.425f;
+    private static final float SMALL_NOTCH_LENGTH = 0.05f;
+    private static final float MINUTE_NOTCH_OUTER_RADIUS = 1f;
     /* Handler to update the time once a second in interactive mode. */
     private final Handler updateTimeHandler = new EngineHandler(this);
+    private final Paint hourHandPaint = new Paint();
+    private final Paint minuteHandPaint = new Paint();
+    private final Paint secondHandPaint = new Paint();
+    private final Paint handCapPaint = new Paint();
+    private final Paint smallNotchPaint = new Paint();
+    private final Paint largeNotchPaint = new Paint();
+    private final Paint backgroundPaint = new Paint();
+    private final Paint daySectorPaint = new Paint();
+    private final Paint sunPaint = new Paint();
+    private final Paint nightSectorPaint = new Paint();
+    private final Paint moonLitPaint = new Paint();
+    private final Paint moonDarkPaint = new Paint();
+    private final Paint moonLinePaint = new Paint();
     private Calendar calendar;
     private final BroadcastReceiver timeZoneReceiver = new BroadcastReceiver() {
       @Override
@@ -92,21 +123,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     };
     private boolean registeredTimeZoneReceiver = false;
     private boolean muteMode;
-    private float centreX;
-    private float centreY;
-    private final Paint hourPaint = new Paint();
-    private final Paint minutePaint = new Paint();
-    private final Paint secondPaint = new Paint();
-    private final Paint centrePaint = new Paint();
-    private final Paint smallNotchPaint = new Paint();
-    private final Paint largeNotchPaint = new Paint();
-    private final Paint backgroundPaint = new Paint();
-    private final Paint daySectorPaint = new Paint();
-    private final Paint sunPaint = new Paint();
-    private final Paint nightSectorPaint = new Paint();
-    private final Paint moonLitPaint = new Paint();
-    private final Paint moonDarkPaint = new Paint();
-    private final Paint moonLinePaint = new Paint();
+    private PointF centre;
+    private float faceRadius;
     private boolean ambient;
 
     @Override
@@ -122,6 +140,9 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       // Seattle
       location.setLatitude(47.608013);
       location.setLongitude(-122.335167);
+      // Tierra del Fuego
+      //      location.setLatitude(-54-(48/60f));
+      //      location.setLongitude(-68-(18/60f));
     }
 
     @Override
@@ -155,9 +176,9 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       /* Dim display in mute mode. */
       if (muteMode != inMuteMode) {
         muteMode = inMuteMode;
-        hourPaint.setAlpha(inMuteMode ? 100 : 255);
-        minutePaint.setAlpha(inMuteMode ? 100 : 255);
-        secondPaint.setAlpha(inMuteMode ? 80 : 255);
+        hourHandPaint.setAlpha(inMuteMode ? 100 : 255);
+        minuteHandPaint.setAlpha(inMuteMode ? 100 : 255);
+        secondHandPaint.setAlpha(inMuteMode ? 80 : 255);
         invalidate();
       }
     }
@@ -171,8 +192,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
        * insets, so that, on round watches with a "chin", the watch face is centred on the
        * entire screen, not just the usable portion.
        */
-      centreX = width / 2f;
-      centreY = height / 2f;
+      centre = new PointF(width / 2f, height / 2f);
+      faceRadius = width / 2f;
 
       updateStyles();
     }
@@ -228,17 +249,17 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
     private void initialiseStyles() {
 
-      hourPaint.setAntiAlias(true);
-      hourPaint.setStrokeCap(Paint.Cap.ROUND);
+      hourHandPaint.setAntiAlias(true);
+      hourHandPaint.setStrokeCap(Paint.Cap.ROUND);
 
-      minutePaint.setAntiAlias(true);
-      minutePaint.setStrokeCap(Paint.Cap.ROUND);
+      minuteHandPaint.setAntiAlias(true);
+      minuteHandPaint.setStrokeCap(Paint.Cap.ROUND);
 
-      secondPaint.setAntiAlias(true);
-      secondPaint.setStrokeCap(Paint.Cap.ROUND);
+      secondHandPaint.setAntiAlias(true);
+      secondHandPaint.setStrokeCap(Paint.Cap.ROUND);
 
-      centrePaint.setAntiAlias(true);
-      centrePaint.setStyle(Paint.Style.FILL);
+      handCapPaint.setAntiAlias(true);
+      handCapPaint.setStyle(Paint.Style.FILL);
 
       largeNotchPaint.setAntiAlias(true);
       largeNotchPaint.setStrokeCap(Paint.Cap.BUTT);
@@ -279,17 +300,17 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
         daySectorPaint.setColor(Color.WHITE);
         daySectorPaint.setStyle(Paint.Style.STROKE);
-        daySectorPaint.setStrokeWidth(centreX * 0.01f);
+        daySectorPaint.setStrokeWidth(absoluteDimension(AMBIENT_HOUR_DISC_STROKE_WIDTH));
 
         sunPaint.setColor(Color.WHITE);
-        sunPaint.setShadowLayer(centreX * 0.1f, 0, 0, Color.WHITE);
+        sunPaint.setShadowLayer(absoluteDimension(SUN_AURA_WIDTH), 0, 0, Color.WHITE);
 
         nightSectorPaint.setColor(Color.WHITE);
         nightSectorPaint.setStyle(Paint.Style.STROKE);
-        nightSectorPaint.setStrokeWidth(centreX * 0.01f);
+        nightSectorPaint.setStrokeWidth(absoluteDimension(AMBIENT_HOUR_DISC_STROKE_WIDTH));
 
         moonLinePaint.setColor(Color.WHITE);
-        moonLinePaint.setStrokeWidth(centreX * 0.01f);
+        moonLinePaint.setStrokeWidth(absoluteDimension(AMBIENT_HOUR_DISC_STROKE_WIDTH));
       } else {
         backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.4f}));
 
@@ -298,7 +319,10 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
         sunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
         // TODO Experiment with drawing triangles instead of aura.
-        sunPaint.setShadowLayer(centreX * 0.1f, 0, 0, Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
+        sunPaint.setShadowLayer(absoluteDimension(SUN_AURA_WIDTH),
+            0,
+            0,
+            Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
 
         nightSectorPaint.setColor(Color.HSVToColor(new float[]{230f, 0.25f, 0.25f}));
         nightSectorPaint.setStyle(Paint.Style.FILL);
@@ -308,36 +332,33 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     }
 
     private void updateHandStyles() {
-      /*
-       * Calculate widths of different hands based on watch screen size.
-       */
-      hourPaint.setStrokeWidth(centreX * 0.04f);
-      minutePaint.setStrokeWidth(centreX * 0.02f);
-      secondPaint.setStrokeWidth(centreX * 0.01f);
-      largeNotchPaint.setStrokeWidth(centreX * 0.02f);
-      smallNotchPaint.setStrokeWidth(centreX * 0.0125f);
+      hourHandPaint.setStrokeWidth(absoluteDimension(HOUR_HAND_WIDTH));
+      minuteHandPaint.setStrokeWidth(absoluteDimension(MINUTE_HAND_WIDTH));
+      secondHandPaint.setStrokeWidth(absoluteDimension(SECOND_HAND_WIDTH));
+      largeNotchPaint.setStrokeWidth(absoluteDimension(LARGE_NOTCH_WIDTH));
+      smallNotchPaint.setStrokeWidth(absoluteDimension(SMALL_NOTCH_WIDTH));
 
       if (ambient) {
-        hourPaint.setColor(Color.WHITE);
-        minutePaint.setColor(Color.WHITE);
-        secondPaint.setColor(Color.WHITE);
-        centrePaint.setColor(Color.WHITE);
+        hourHandPaint.setColor(Color.WHITE);
+        minuteHandPaint.setColor(Color.WHITE);
+        secondHandPaint.setColor(Color.WHITE);
+        handCapPaint.setColor(Color.WHITE);
 
-        hourPaint.clearShadowLayer();
-        minutePaint.clearShadowLayer();
-        secondPaint.clearShadowLayer();
-        centrePaint.clearShadowLayer();
+        hourHandPaint.clearShadowLayer();
+        minuteHandPaint.clearShadowLayer();
+        secondHandPaint.clearShadowLayer();
+        handCapPaint.clearShadowLayer();
 
       } else {
-        hourPaint.setColor(Color.BLACK);
-        minutePaint.setColor(Color.BLACK);
-        secondPaint.setColor(Color.HSVToColor(new float[]{0f, 0.75f, 0.75f}));
-        centrePaint.setColor(Color.BLACK);
+        hourHandPaint.setColor(Color.BLACK);
+        minuteHandPaint.setColor(Color.BLACK);
+        secondHandPaint.setColor(Color.HSVToColor(new float[]{0f, 0.75f, 0.75f}));
+        handCapPaint.setColor(Color.BLACK);
 
-        hourPaint.setShadowLayer(centreX * 0.01f, 0, 0, Color.BLACK);
-        minutePaint.setShadowLayer(centreX * 0.01f, 0, 0, Color.BLACK);
-        secondPaint.setShadowLayer(centreX * 0.01f, 0, 0, Color.BLACK);
-        centrePaint.setShadowLayer(centreX * 0.01f, 0, 0, Color.BLACK);
+        hourHandPaint.setShadowLayer(absoluteDimension(HAND_SHADOW_WIDTH), 0, 0, Color.BLACK);
+        minuteHandPaint.setShadowLayer(absoluteDimension(HAND_SHADOW_WIDTH), 0, 0, Color.BLACK);
+        secondHandPaint.setShadowLayer(absoluteDimension(HAND_SHADOW_WIDTH), 0, 0, Color.BLACK);
+        handCapPaint.setShadowLayer(absoluteDimension(HAND_SHADOW_WIDTH), 0, 0, Color.BLACK);
       }
     }
 
@@ -354,29 +375,37 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     private void drawBackground(Canvas canvas) {
       canvas.drawPaint(backgroundPaint);
 
-      float dayNightDiscRadius = centreX * 0.667f;
+      float dayNightDiscRadius = absoluteDimension(HOUR_DISC_RADIUS);
       RectF
           boundingBox =
-          new RectF(centreX - dayNightDiscRadius,
-              centreY - dayNightDiscRadius,
-              centreX + dayNightDiscRadius,
-              centreY + dayNightDiscRadius);
+          new RectF(centre.x - dayNightDiscRadius,
+              centre.y - dayNightDiscRadius,
+              centre.x + dayNightDiscRadius,
+              centre.y + dayNightDiscRadius);
 
-      // TODO Draw sun and moon at the proper positions, rotations, and sizes. (This requires the refactor to polar coordinates.)
+      // TODO Draw sun and moon at the proper positions and sizes. (This requires the refactor to polar coordinates.)
+
+      final Duration
+          dayLength =
+          DRAW_LOCATION_STUFF ?
+              AstronomyCalculator.getSolarDayLength(location, calendar) :
+              Duration.ofHours(12);
+      final LocalTime
+          solarNoon =
+          DRAW_LOCATION_STUFF ?
+              AstronomyCalculator.getSolarNoon(location, calendar) :
+              LocalTime.NOON;
 
 
       final float
           noonOffsetDayFraction =
-          DRAW_LOCATION_STUFF ?
-              (AstronomyCalculator.getAstronomicalNoon(location, calendar).toSecondOfDay() /
-                  (24f * 60 * 60 - 1)) :
-              0.5f;
+          AstronomyCalculator.getSolarNoon(location, calendar).toSecondOfDay() /
+              (24f * 60 * 60 - 1);
       final float
           dayLengthFraction =
-          DRAW_LOCATION_STUFF ?
-              (AstronomyCalculator.getDayLength(location, calendar).getSeconds() /
-                  (24f * 60 * 60 - 1)) :
-              0.5f;
+          AstronomyCalculator.getSolarDayLength(location, calendar).getSeconds() /
+              (24f * 60 * 60 - 1);
+
       final float sunriseOffsetFraction = noonOffsetDayFraction - (dayLengthFraction / 2);
       canvas.drawArc(boundingBox,
           90 + sunriseOffsetFraction * 360,
@@ -393,36 +422,42 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       // TODO Experiment with drawing stars.
       // TODO Experiment with painting the sun and moon over the hands.
       // TODO Experiment with drawing the weather. (Don't forget to turn the sun red if it's hazy.)
-      drawSun(canvas, centreX, centreY * 0.7f, centreX * 0.15f);
-      float moonPhase = AstronomyCalculator.getMoonPhase(calendar.toInstant());
-      drawMoon(canvas, centreX, centreY * 1.3f, centreX * 0.15f, moonPhase);
+
+      drawSun(canvas,
+          cartesian(0f, absoluteDimension(SUN_AND_MOON_CENTRE_OFFSET)),
+          absoluteDimension(SUN_AND_MOON_RADIUS));
+      float lunarPhase = AstronomyCalculator.getLunarPhase(calendar.toInstant());
+
+      drawMoon(canvas,
+          cartesian(180f, absoluteDimension(SUN_AND_MOON_CENTRE_OFFSET)),
+          absoluteDimension(SUN_AND_MOON_RADIUS),
+          lunarPhase);
     }
 
     private void drawNotches(Canvas canvas) {
 
-      float largeNotchLength = centreX * 0.425f;
-      float smallNotchLength = centreX * 0.05f;
+      float largeNotchLength = absoluteDimension(LARGE_NOTCH_LENGTH);
+      float smallNotchLength = absoluteDimension(SMALL_NOTCH_LENGTH);
 
       // Draw the five-minute (and even-hour) notches.
-      float outerNotchRadius = centreX;
+      float outerNotchRadius = absoluteDimension(MINUTE_NOTCH_OUTER_RADIUS);
       for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
-        float tickRot = (float) (tickIndex * Math.PI * 2 / 12);
+        float tickRot = (float) (tickIndex * 360 / 12);
         drawNotch(canvas, tickRot, outerNotchRadius, largeNotchLength, largeNotchPaint);
       }
       // Draw the single-minute notches.
-      outerNotchRadius = centreX;
       for (int tickIndex = 0; tickIndex < 60; tickIndex++) {
         // Don't repeat the five-minute notches.
         if (tickIndex % 5 == 0) {
           continue;
         }
-        float tickRot = (float) (tickIndex * Math.PI * 2 / 60);
+        float tickRot = (float) (tickIndex * 360 / 60);
         drawNotch(canvas, tickRot, outerNotchRadius, smallNotchLength, smallNotchPaint);
       }
       // Draw the odd-hour notches.
-      outerNotchRadius = centreX * 0.667f;
+      outerNotchRadius = absoluteDimension(HOUR_DISC_RADIUS);
       for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
-        float tickRot = (float) (tickIndex * Math.PI * 2 / 12) + (float) (Math.PI * 2 / 24);
+        float tickRot = (float) (tickIndex * 360 / 12) + (float) (360 / 24);
         drawNotch(canvas, tickRot, outerNotchRadius, smallNotchLength, smallNotchPaint);
       }
     }
@@ -432,15 +467,9 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
                            float outerRadius,
                            float length,
                            Paint paint) {
-      float innerX = (float) Math.sin(angle) * (outerRadius - length);
-      float innerY = (float) -Math.cos(angle) * (outerRadius - length);
-      float outerX = (float) Math.sin(angle) * outerRadius;
-      float outerY = (float) -Math.cos(angle) * outerRadius;
-      canvas.drawLine(centreX + innerX,
-          centreY + innerY,
-          centreX + outerX,
-          centreY + outerY,
-          paint);
+      PointF inside = cartesian(angle, outerRadius - length);
+      PointF outside = cartesian(angle, outerRadius);
+      canvas.drawLine(inside.x, inside.y, outside.x, outside.y, paint);
 
       // TODO Show calendar events as curved blocks just outside of the hour disc, and allow the user to tap on them to see info about the events. (Events from three hours ago to 21 hours in the future should be shown).
       // TODO Move all TODOs into Quire or Github issues.
@@ -452,12 +481,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     }
 
     private void drawHands(Canvas canvas) {
-
-      float secondHandLength = centreX * 0.9f;
-      float minuteHandLength = centreX * 0.9f;
-      float hourHandLength = centreX * 0.525f;
-      float centreCircleRadius = centreX * 0.03f;
-
       /*
        * These calculations reflect the rotation in degrees per unit of time, e.g.,
        * 360 / 60 = 6 and 360 / 12 = 30.
@@ -476,64 +499,77 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       float
           hoursRotation =
           ((calendar.get(Calendar.HOUR_OF_DAY) + partialHour) * (360 / 24f)) + 180;
+
+      PointF secondHandEnd = cartesian(secondsRotation, absoluteDimension(SECOND_HAND_LENGTH));
+      PointF minuteHandEnd = cartesian(minutesRotation, absoluteDimension(MINUTE_HAND_LENGTH));
+      PointF hourHandEnd = cartesian(hoursRotation, absoluteDimension(HOUR_HAND_LENGTH));
+      canvas.drawLine(centre.x, centre.y, hourHandEnd.x, hourHandEnd.y, hourHandPaint);
+      canvas.drawLine(centre.x, centre.y, minuteHandEnd.x, minuteHandEnd.y, minuteHandPaint);
       /*
-       * Save the canvas state before we can begin to rotate it.
-       */
-      canvas.save();
-
-      canvas.rotate(hoursRotation, centreX, centreY);
-      canvas.drawLine(centreX, centreY, centreX, centreY - hourHandLength, hourPaint);
-
-      canvas.rotate(minutesRotation - hoursRotation, centreX, centreY);
-      canvas.drawLine(centreX, centreY, centreX, centreY - minuteHandLength, minutePaint);
-
-      /*
-       * Ensure the "seconds" hand is drawn only when we are in interactive mode.
+       * Ensure the second hand is drawn only when we are in interactive mode.
        * Otherwise, we only update the watch face once a minute.
        */
       if (!ambient) {
-        canvas.rotate(secondsRotation - minutesRotation, centreX, centreY);
-        canvas.drawLine(centreX, centreY, centreX, centreY - secondHandLength, secondPaint);
-
+        canvas.drawLine(centre.x, centre.y, secondHandEnd.x, secondHandEnd.y, secondHandPaint);
       }
-      canvas.drawCircle(centreX, centreY, centreCircleRadius, centrePaint);
-
-      /* Restore the canvas" original orientation. */
-      canvas.restore();
+      canvas.drawCircle(centre.x, centre.y, absoluteDimension(HAND_CAP_RADIUS), handCapPaint);
     }
 
-    private void drawSun(Canvas canvas, float centreX, float centreY, float radius) {
-      canvas.drawCircle(centreX, centreY, radius, sunPaint);
+    private void drawSun(Canvas canvas, PointF centre, float radius) {
+      canvas.drawCircle(centre.x, centre.y, radius, sunPaint);
     }
 
-    private void drawMoon(Canvas canvas, float centreX, float centreY, float radius, float phase) {
-      canvas.drawCircle(centreX, centreY, radius, moonDarkPaint);
+    private void drawMoon(Canvas canvas, PointF centre, float radius, float phase) {
+      canvas.drawCircle(centre.x, centre.y, radius, moonDarkPaint);
       final boolean litOnRight = phase > 0.5f;
       final boolean mostlyLit = phase > 0.25f && phase < 0.75f;
       final boolean curveGoesRight = litOnRight ^ mostlyLit;
       final float curveOffset = (float) Math.cos(phase * 2 * Math.PI) * radius;
-      canvas.drawArc(centreX - radius,
-          centreY - radius,
-          centreX + radius,
-          centreY + radius,
+      canvas.drawArc(centre.x - radius,
+          centre.y - radius,
+          centre.x + radius,
+          centre.y + radius,
           litOnRight ? 90f : 270f,
           180f,
           true,
           moonLitPaint);
-      canvas.drawOval(centreX - curveOffset,
-          centreY - radius,
-          centreX + curveOffset,
-          centreY + radius,
+      canvas.drawOval(centre.x - curveOffset,
+          centre.y - radius,
+          centre.x + curveOffset,
+          centre.y + radius,
           mostlyLit ? moonLitPaint : moonDarkPaint);
-      canvas.drawArc(centreX - curveOffset,
-          centreY - radius,
-          centreX + curveOffset,
-          centreY + radius,
+      canvas.drawArc(centre.x - curveOffset,
+          centre.y - radius,
+          centre.x + curveOffset,
+          centre.y + radius,
           curveGoesRight ? 90f : 270f,
           180f,
           false,
           moonLinePaint);
-      canvas.drawCircle(centreX, centreY, radius, moonLinePaint);
+      canvas.drawCircle(centre.x, centre.y, radius, moonLinePaint);
+    }
+
+    /**
+     * Convert radial coordinates to a cartesian point.
+     */
+    private PointF cartesian(PointF origin, float angle, float radius) {
+      float x = origin.x + (float) Math.sin(Math.toRadians(angle)) * radius;
+      float y = origin.y + (float) -Math.cos(Math.toRadians(angle)) * radius;
+      return new PointF(x, y);
+    }
+
+    /**
+     * Convert radial coordinates relative to the centre of the face to a cartesian point.
+     */
+    private PointF cartesian(float angle, float radius) {
+      return cartesian(centre, angle, radius);
+    }
+
+    /**
+     * Convert a relative dimension (where 1 is the radius of the face) to an absolute dimension (where 1 is a pixel).
+     */
+    private float absoluteDimension(float relativeDimension) {
+      return faceRadius * relativeDimension;
     }
 
     private void registerReceiver() {
