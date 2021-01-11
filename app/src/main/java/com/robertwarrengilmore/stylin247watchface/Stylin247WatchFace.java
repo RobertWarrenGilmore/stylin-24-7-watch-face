@@ -84,7 +84,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     public static final float SUN_RAY_WIDTH_DEGREES = 20;
     public static final float SUN_RAY_LENGTH = 0.35f;
     public static final float SUN_RAY_OFFSET = 0.2f;
-    private static final float AMBIENT_HOUR_DISC_STROKE_WIDTH = 0.01f;
+    private static final float AMBIENT_HOUR_DISC_STROKE_WIDTH = 0.015f;
     private static final float SUN_CORONA_WIDTH = 0.1f;
     private static final float HOUR_HAND_WIDTH = 0.04f;
     private static final float HOUR_HAND_LENGTH = 0.525f;
@@ -277,11 +277,9 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       sunPaint.setStyle(Paint.Style.FILL);
 
       nightSectorPaint.setAntiAlias(true);
-      nightSectorPaint.setStrokeWidth(absoluteDimension(AMBIENT_HOUR_DISC_STROKE_WIDTH));
 
       moonLinePaint.setAntiAlias(true);
       moonLinePaint.setStyle(Paint.Style.STROKE);
-      moonLinePaint.setStrokeWidth(absoluteDimension(AMBIENT_HOUR_DISC_STROKE_WIDTH));
 
       moonLitPaint.setAntiAlias(true);
       moonLitPaint.setStyle(Paint.Style.FILL);
@@ -317,8 +315,10 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
         nightSectorPaint.setColor(Color.DKGRAY);
         nightSectorPaint.setStyle(Paint.Style.STROKE);
+        nightSectorPaint.setStrokeWidth(absoluteDimension(AMBIENT_HOUR_DISC_STROKE_WIDTH));
 
         moonLinePaint.setColor(Color.DKGRAY);
+        moonLinePaint.setStrokeWidth(absoluteDimension(AMBIENT_HOUR_DISC_STROKE_WIDTH));
       } else {
         backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.3f}));
 
