@@ -42,7 +42,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
   private static final Location location = new Location("");
   private static final boolean DRAW_LOCATION_STUFF = true;
-  private static final boolean DRAW_SUN_CORONA = true;
+  private static final boolean DRAW_SUN_CORONA = false;
   private static final boolean DRAW_SECOND_HAND = false;
   private static final boolean DRAW_SINGLE_MINUTE_NOTCHES = false;
   /*
@@ -137,7 +137,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     public void onCreate(SurfaceHolder holder) {
       super.onCreate(holder);
 
-      setWatchFaceStyle(new WatchFaceStyle.Builder(Stylin247WatchFace.this).setAcceptsTapEvents(true)
+      setWatchFaceStyle(new WatchFaceStyle.Builder(Stylin247WatchFace.this) .setAcceptsTapEvents(false)
           .build());
 
       calendar = Calendar.getInstance();
