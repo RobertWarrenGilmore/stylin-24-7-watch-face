@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreference
-        app:key="draw_single_minute_notches"
-        app:title="show single-minute notches"/>
+        app:key="draw_single_minute_ticks"
+        app:title="show single-minute ticks"
+        />
 
     <Preference
         app:key="credit"

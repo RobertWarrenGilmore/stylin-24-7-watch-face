@@ -13,6 +13,5 @@ public class Stylin247SettingsActivity extends FragmentActivity {
     getSupportFragmentManager().beginTransaction()
         .replace(R.id.settings_container, new SettingsFragment())
         .commit();
-
   }
 }
