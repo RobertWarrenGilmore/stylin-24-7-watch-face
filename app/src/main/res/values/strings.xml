@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">Stylin\' 24-7 watch face</string>
-    <string name="message">Watch face tapped</string>
-    <string name="my_analog_name">Stylin\' 24/7</string>
+    <string name="app_name">Stylin\' 24/7 watch face</string>
+    <string name="message">watch face tapped</string>
+    <string name="watch_face_name" translatable="false">Stylin\' 24/7</string>
+    <string name="settings_activty_name">Stylin\' 24/7 settings</string>
+    <string name="show_single_minute_ticks">show single-minute ticks</string>
+    <string name="settings_footer_text" translatable="false">RobertWarrenGilmore.com</string>
 </resources>
