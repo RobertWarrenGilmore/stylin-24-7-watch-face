@@ -2,6 +2,10 @@
 <androidx.preference.PreferenceScreen
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <Preference
+        app:key="space"
+        app:summary="\n"/>
+
     <SwitchPreference
         app:key="draw_single_minute_ticks"
         app:title="show single-minute ticks"
@@ -10,5 +14,9 @@
     <Preference
         app:key="credit"
         app:summary="RobertWarrenGilmore.com"/>
+
+    <Preference
+        app:key="space"
+        app:summary="\n"/>
 
 </androidx.preference.PreferenceScreen>
