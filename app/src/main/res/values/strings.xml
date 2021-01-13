@@ -5,4 +5,6 @@
     <string name="settings_activty_name">Stylin\' 24/7 settings</string>
     <string name="show_single_minute_ticks">show single-minute ticks</string>
     <string name="settings_footer_text" translatable="false">RobertWarrenGilmore.com</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

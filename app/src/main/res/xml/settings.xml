@@ -1,0 +1,13 @@
+<?xml version ="1.0" encoding ="utf-8"?><!--  Learn More about how to use App Actions: https://developer.android.com/guide/actions/index.html -->
+<androidx.preference.PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        app:key="draw_single_minute_notches"
+        app:title="show single-minute notches"/>
+
+    <Preference
+        app:key="credit"
+        app:summary="RobertWarrenGilmore.com"/>
+
+</androidx.preference.PreferenceScreen>
