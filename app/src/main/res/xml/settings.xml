@@ -6,8 +6,8 @@
         app:summary="\n" />
 
     <SwitchPreference
-        app:key="draw_single_minute_ticks"
-        app:title="show single-minute ticks" />
+        app:key="@string/settings_key_show_single_minute_ticks"
+        app:title="@string/show_single_minute_ticks" />
 
     <Preference
         app:key="credit"

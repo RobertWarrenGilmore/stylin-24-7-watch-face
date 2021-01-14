@@ -17,17 +17,7 @@ import android.os.Message;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
-import android.util.Log;
 import android.view.SurfaceHolder;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.wearable.DataClient;
-import com.google.android.gms.wearable.DataEvent;
-import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.DataItem;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.DataMapItem;
 
 import java.lang.ref.WeakReference;
 import java.time.Duration;
@@ -50,6 +40,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class Stylin247WatchFace extends CanvasWatchFaceService {
 
+  private Stylin247Settings settings;
+
   private static final Location location = new Location("");
   private static final boolean DRAW_LOCATION_STUFF = true;
   private static final boolean DRAW_SUN_CORONA = false;
@@ -64,6 +56,12 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
    * Handler message id for updating the time periodically in interactive mode.
    */
   private static final int MSG_UPDATE_TIME = 0;
+
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    settings = new Stylin247Settings(getApplicationContext());
+  }
 
   @Override
   public Engine onCreateEngine() {
@@ -90,8 +88,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     }
   }
 
-  private class Engine extends CanvasWatchFaceService.Engine
-      implements DataClient.OnDataChangedListener {
+  private class Engine extends CanvasWatchFaceService.Engine {
 
     public static final float SUN_RAY_WIDTH_DEGREES = 20;
     public static final float SUN_RAY_LENGTH = 0.35f;
@@ -129,9 +126,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     private final Paint moonLitPaint = new Paint();
     private final Paint moonDarkPaint = new Paint();
     private final Paint moonLinePaint = new Paint();
-
-    // Configurable by the user.
-    private boolean drawSingleMinuteNotches = false;
 
     private Calendar calendar;
     private final BroadcastReceiver timeZoneReceiver = new BroadcastReceiver() {
@@ -456,7 +450,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             largeNotchPaint);
       }
       // Draw the single-minute notches.
-      if (drawSingleMinuteNotches) {
+      if (settings.getShowSingleMinuteTicks()) {
         for (int tickIndex = 0; tickIndex < 60; tickIndex++) {
           // Don't repeat the five-minute notches.
           if (tickIndex % 5 == 0) {
@@ -659,42 +653,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         long timeMs = System.currentTimeMillis();
         long delayMs = INTERACTIVE_UPDATE_RATE_MS - (timeMs % INTERACTIVE_UPDATE_RATE_MS);
         updateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
-      }
-    }
-
-    @Override
-    public void onDataChanged(@NonNull DataEventBuffer dataEventBuffer) {
-      for (DataEvent dataEvent : dataEventBuffer) {
-        if (dataEvent.getType() == DataEvent.TYPE_CHANGED) {
-          DataItem dataItem = dataEvent.getDataItem();
-          String path = dataItem.getUri().getPath();
-          if (path.equals(Stylin247Util.PATH_WITH_FEATURE)) {
-            DataMapItem dataMapItem = DataMapItem.fromDataItem(dataItem);
-            DataMap config = dataMapItem.getDataMap();
-            updateUiFromConfig(config);
-          }
-        }
-      }
-    }
-
-    private void updateUiFromConfig(final DataMap config) {
-      boolean uiUpdated = false;
-
-      for (String configKey : config.keySet()) {
-        if (!config.containsKey(configKey)) {
-          continue;
-        }
-        switch (configKey) {
-          case Stylin247Util.KEY_DRAW_SINGLE_MINUTE_NOTCHES:
-            drawSingleMinuteNotches = config.getBoolean(configKey, drawSingleMinuteNotches);
-            uiUpdated = true;
-          default:
-            // This case is intentionally left blank.
-        }
-      }
-
-      if (uiUpdated) {
-        invalidate();
       }
     }
   }
