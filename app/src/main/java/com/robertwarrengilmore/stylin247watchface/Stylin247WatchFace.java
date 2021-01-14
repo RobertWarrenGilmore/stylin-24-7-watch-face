@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.location.Location;
 import android.os.Handler;
@@ -102,8 +101,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     };
     private boolean registeredTimeZoneReceiver = false;
     private boolean muteMode;
-    private PointF centre;
-    private float faceRadius;
     private boolean ambient;
 
     @Override
@@ -164,12 +161,10 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       super.onSurfaceChanged(holder, format, width, height);
 
       /*
-       * Find the coordinates of the centre point on the screen, and ignore the window
-       * insets, so that, on round watches with a "chin", the watch face is centred on the
-       * entire screen, not just the usable portion.
+       * Find the radius of the screen, and ignore the window insets, so that, on round watches with
+       * a "chin", the watch face is centred on the entire screen, not just the usable portion.
        */
-      centre = new PointF(width / 2f, height / 2f);
-      faceRadius = width / 2f;
+      float faceRadius = width / 2f;
 
       defaultPalette = Palette.getDefaultPalette(faceRadius);
       ambientPalette = Palette.getAmbientPalette(faceRadius);
