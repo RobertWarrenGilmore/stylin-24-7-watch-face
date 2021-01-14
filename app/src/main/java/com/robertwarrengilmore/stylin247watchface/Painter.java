@@ -111,10 +111,7 @@ class Painter {
                               float radius,
                               boolean drawRealisticSun) {
     if (drawRealisticSun) {
-      canvas.drawCircle(centre.x,
-          centre.y,
-          radius,
-          palette.getRealisticSunPaint());
+      canvas.drawCircle(centre.x, centre.y, radius, palette.getRealisticSunPaint());
       return;
     }
 
