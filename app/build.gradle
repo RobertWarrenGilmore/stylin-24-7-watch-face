@@ -38,4 +38,7 @@ dependencies {
     implementation "androidx.preference:preference:1.1.1"
     implementation 'androidx.appcompat:appcompat:1.2.0'
     compileOnly 'com.google.android.wearable:wearable:2.6.0'
+
+    compileOnly 'org.projectlombok:lombok:1.18.16'
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
 }
