@@ -5,12 +5,12 @@ import android.content.SharedPreferences;
 
 import androidx.preference.PreferenceManager;
 
-class Stylin247Settings {
+class Settings {
 
   private final Context context;
   private final SharedPreferences preferenceManager;
 
-  Stylin247Settings(Context context) {
+  Settings(Context context) {
     this.context = context;
     this.preferenceManager = PreferenceManager.getDefaultSharedPreferences(context);
   }

@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Stylin247WatchFace extends CanvasWatchFaceService {
 
-  private Stylin247Settings settings;
+  private Settings settings;
 
   private static final Location location = new Location("");
   private static final boolean DRAW_LOCATION_STUFF = true;
@@ -55,7 +55,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   @Override
   public void onCreate() {
     super.onCreate();
-    settings = new Stylin247Settings(getApplicationContext());
+    settings = new Settings(getApplicationContext());
   }
 
   @Override

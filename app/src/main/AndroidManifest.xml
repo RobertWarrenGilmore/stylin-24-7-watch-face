@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
         <activity
-            android:name=".Stylin247SettingsActivity"
+            android:name=".SettingsActivity"
             android:label="@string/settings_activty_name">
 
             <intent-filter>

@@ -3,8 +3,9 @@ package com.robertwarrengilmore.stylin247watchface;
 import android.os.Bundle;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.preference.PreferenceFragmentCompat;
 
-public class Stylin247SettingsActivity extends FragmentActivity {
+public class SettingsActivity extends FragmentActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -13,5 +14,12 @@ public class Stylin247SettingsActivity extends FragmentActivity {
     getSupportFragmentManager().beginTransaction()
         .replace(R.id.settings_container, new SettingsFragment())
         .commit();
+  }
+
+  public static class SettingsFragment extends PreferenceFragmentCompat {
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+      setPreferencesFromResource(R.xml.settings, rootKey);
+    }
   }
 }
