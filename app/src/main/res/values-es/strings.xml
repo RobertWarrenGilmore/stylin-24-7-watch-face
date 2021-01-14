@@ -4,4 +4,5 @@
     <string name="message">esfera pulsada</string>
     <string name="settings_activty_name">ajustes de Stylin\' 24/7</string>
     <string name="show_single_minute_ticks">mostrar marcas de solo minuto</string>
+    <string name="draw_realistic_sun">gráfico realistico del sol</string>
 </resources>

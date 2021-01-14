@@ -9,6 +9,10 @@
         app:key="@string/settings_key_show_single_minute_ticks"
         app:title="@string/show_single_minute_ticks" />
 
+    <SwitchPreference
+        app:key="@string/settings_key_draw_realistic_sun"
+        app:title="@string/draw_realistic_sun" />
+
     <Preference
         app:key="credit"
         app:summary="RobertWarrenGilmore.com" />

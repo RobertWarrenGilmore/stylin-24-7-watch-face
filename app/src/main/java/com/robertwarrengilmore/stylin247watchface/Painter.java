@@ -28,13 +28,13 @@ class Painter {
                    Palette palette,
                    Calendar calendar,
                    Location location,
-                   boolean showSolarCorona,
+                   boolean drawRealisticSun,
                    boolean showSingleMinuteTicks,
                    boolean showSecondHand) {
     final PointF centre = new PointF(bounds.width() / 2f, bounds.height() / 2f);
     final float faceRadius = bounds.width() / 2f;
 
-    drawBackground(canvas, palette, centre, faceRadius, calendar, location, showSolarCorona);
+    drawBackground(canvas, palette, centre, faceRadius, calendar, location, drawRealisticSun);
     drawNotches(canvas, palette, centre, faceRadius, showSingleMinuteTicks);
     drawHands(canvas, palette, centre, faceRadius, calendar, showSecondHand);
   }
@@ -45,7 +45,7 @@ class Painter {
                                      float faceRadius,
                                      Calendar calendar,
                                      Location location,
-                                     boolean showSolarCorona) {
+                                     boolean drawRealisticSun) {
     canvas.drawPaint(palette.getBackgroundPaint());
 
     float hourDiscRadius = HOUR_DISC_RADIUS * faceRadius;
@@ -88,7 +88,7 @@ class Painter {
         palette,
         cartesian(centre, noonAngle, SUN_AND_MOON_CENTRE_OFFSET * faceRadius),
         SUN_AND_MOON_RADIUS * faceRadius,
-        showSolarCorona);
+        drawRealisticSun);
     float lunarPhase = AstronomyCalculator.getLunarPhase(calendar);
 
     drawMoon(canvas,
@@ -102,14 +102,16 @@ class Painter {
                               Palette palette,
                               PointF centre,
                               float radius,
-                              boolean drawSolarCorona) {
-    if (drawSolarCorona) {
-      canvas.drawCircle(centre.x, centre.y, radius, palette.getSolarCoronaPaint());
-      canvas.drawCircle(centre.x, centre.y, radius, palette.getSunPaint());
+                              boolean drawRealisticSun) {
+    if (drawRealisticSun) {
+      canvas.drawCircle(centre.x,
+          centre.y,
+          radius,
+          palette.getRealisticSunPaint());
       return;
     }
 
-    canvas.drawCircle(centre.x, centre.y, radius, palette.getSunPaint());
+    canvas.drawCircle(centre.x, centre.y, radius, palette.getCartoonSunPaint());
     final float rayOffset = radius * SUN_RAY_OFFSET;
     final float rayLength = radius * SUN_RAY_LENGTH;
     for (int rayIndex = 0; rayIndex < 12; rayIndex++) {
@@ -134,7 +136,7 @@ class Painter {
           rayTipAngle - SUN_RAY_WIDTH_DEGREES / 2 - 90,
           SUN_RAY_WIDTH_DEGREES);
       ray.close();
-      canvas.drawPath(ray, palette.getSunPaint());
+      canvas.drawPath(ray, palette.getCartoonSunPaint());
     }
   }
 

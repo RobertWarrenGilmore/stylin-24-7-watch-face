@@ -39,7 +39,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
   private static final Location location = new Location("");
   private static final boolean DRAW_LOCATION_STUFF = true;
-  private static final boolean DRAW_SUN_CORONA = false;
   private static final boolean DRAW_SECOND_HAND = false;
   /*
    * Updates rate in milliseconds for interactive mode. We update once a second to advance the
@@ -204,8 +203,14 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
       Palette palette = ambient ? ambientPalette : defaultPalette;
 
-      Painter.draw(canvas, bounds, palette, calendar, location, DRAW_SUN_CORONA,
-          settings.getShowSingleMinuteTicks(), DRAW_SECOND_HAND);
+      Painter.draw(canvas,
+          bounds,
+          palette,
+          calendar,
+          location,
+          settings.getDrawRealisticSun(),
+          settings.getShowSingleMinuteTicks(),
+          DRAW_SECOND_HAND);
     }
 
     @Override

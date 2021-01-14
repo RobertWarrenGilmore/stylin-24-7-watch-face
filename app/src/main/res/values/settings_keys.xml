@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings_key_show_single_minute_ticks" translatable="false">show_single_minute_ticks</string>
+    <string name="settings_key_draw_realistic_sun" translatable="false">draw_realistic_sun</string>
 </resources>

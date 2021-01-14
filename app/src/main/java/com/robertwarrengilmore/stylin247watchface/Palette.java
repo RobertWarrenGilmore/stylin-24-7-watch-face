@@ -34,8 +34,8 @@ class Palette {
   private final Paint largeTickPaint = new Paint();
   private final Paint backgroundPaint = new Paint();
   private final Paint daySectorPaint = new Paint();
-  private final Paint sunPaint = new Paint();
-  private final Paint solarCoronaPaint = new Paint();
+  private final Paint cartoonSunPaint = new Paint();
+  private final Paint realisticSunPaint = new Paint();
   private final Paint nightSectorPaint = new Paint();
   private final Paint moonLitPaint = new Paint();
   private final Paint moonDarkPaint = new Paint();
@@ -69,8 +69,11 @@ class Palette {
 
     palette.daySectorPaint.setAntiAlias(true);
 
-    palette.sunPaint.setAntiAlias(true);
-    palette.sunPaint.setStyle(Paint.Style.FILL);
+    palette.cartoonSunPaint.setAntiAlias(true);
+    palette.cartoonSunPaint.setStyle(Paint.Style.FILL);
+
+    palette.realisticSunPaint.setAntiAlias(true);
+    palette.realisticSunPaint.setStyle(Paint.Style.FILL);
 
     palette.nightSectorPaint.setAntiAlias(true);
 
@@ -88,18 +91,19 @@ class Palette {
     return palette;
   }
 
-  static Palette getDefaultPalette(float scaleFactor) {
+  static Palette getDefaultPalette(float scaleFactor ) {
     Palette palette = getCommonPalette(scaleFactor);
 
     palette.daySectorPaint.setColor(Color.HSVToColor(new float[]{200f, 0.25f, 0.6f}));
     palette.daySectorPaint.setStyle(Paint.Style.FILL);
 
-    palette.sunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
+    palette.cartoonSunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
 
-    palette.solarCoronaPaint.setShadowLayer(SOLAR_CORONA_WIDTH * scaleFactor,
+    palette.realisticSunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
+    palette.realisticSunPaint.setShadowLayer(SOLAR_CORONA_WIDTH * scaleFactor,
         0,
         0,
-        palette.sunPaint.getColor());
+        palette.realisticSunPaint.getColor());
 
     palette.nightSectorPaint.setColor(Color.HSVToColor(new float[]{230f, 0.25f, 0.25f}));
     palette.nightSectorPaint.setStyle(Paint.Style.FILL);
@@ -133,11 +137,13 @@ class Palette {
     palette.daySectorPaint.setStyle(Paint.Style.STROKE);
     palette.daySectorPaint.setStrokeWidth(AMBIENT_HOUR_DISC_STROKE_WIDTH * scaleFactor);
 
-    palette.sunPaint.setColor(Color.DKGRAY);
-    palette.solarCoronaPaint.setShadowLayer(SOLAR_CORONA_WIDTH * scaleFactor,
+    palette.cartoonSunPaint.setColor(Color.DKGRAY);
+
+    palette.realisticSunPaint.setColor(Color.DKGRAY);
+    palette.realisticSunPaint.setShadowLayer(SOLAR_CORONA_WIDTH * scaleFactor,
         0,
         0,
-        palette.sunPaint.getColor());
+        palette.realisticSunPaint.getColor());
 
     palette.nightSectorPaint.setColor(Color.DKGRAY);
     palette.nightSectorPaint.setStyle(Paint.Style.STROKE);
