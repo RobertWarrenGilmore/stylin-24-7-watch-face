@@ -16,9 +16,9 @@ import android.support.wearable.watchface.WatchFaceStyle;
 import android.view.SurfaceHolder;
 
 import java.lang.ref.WeakReference;
+import java.time.Duration;
 import java.util.Calendar;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Analog watch face with a ticking second hand. In ambient mode, the second hand isn"t
@@ -38,12 +38,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
   private static final Location location = new Location("");
   private static final boolean DRAW_LOCATION_STUFF = true;
-  private static final boolean DRAW_SECOND_HAND = false;
-  /*
-   * Updates rate in milliseconds for interactive mode. We update once a second to advance the
-   * second hand.
-   */
-  private static final long INTERACTIVE_UPDATE_RATE_MS = TimeUnit.MINUTES.toMillis(1);
 
   /**
    * Handler message id for updating the time periodically in interactive mode.
@@ -205,7 +199,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           location,
           settings.getDrawRealisticSun(),
           settings.getShowSingleMinuteTicks(),
-          DRAW_SECOND_HAND);
+          settings.getShowSecondHand() && !ambient,
+          settings.getAnimateSecondHandSmoothly() && !ambient);
     }
 
     @Override
@@ -266,8 +261,19 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     private void handleUpdateTimeMessage() {
       invalidate();
       if (shouldTimerBeRunning()) {
+        Duration updateRate;
+        if (settings.getShowSecondHand()) {
+          if (settings.getAnimateSecondHandSmoothly()) {
+            updateRate = Duration.ofSeconds(1).dividedBy(20);
+          } else {
+            updateRate = Duration.ofSeconds(1);
+          }
+        } else {
+          updateRate = Duration.ofMinutes(1);
+        }
+        long updateRateMs = (updateRate.getSeconds() * 1_000) + (updateRate.getNano() / 1_000_000);
         long timeMs = System.currentTimeMillis();
-        long delayMs = INTERACTIVE_UPDATE_RATE_MS - (timeMs % INTERACTIVE_UPDATE_RATE_MS);
+        long delayMs = updateRateMs - (timeMs % updateRateMs);
         updateTimeHandler.sendEmptyMessageDelayed(MSG_UPDATE_TIME, delayMs);
       }
     }

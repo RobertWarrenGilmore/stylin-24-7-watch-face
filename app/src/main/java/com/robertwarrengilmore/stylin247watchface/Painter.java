@@ -30,13 +30,20 @@ class Painter {
                    Location location,
                    boolean drawRealisticSun,
                    boolean showSingleMinuteTicks,
-                   boolean showSecondHand) {
+                   boolean showSecondHand,
+                   boolean animateSecondHandSmoothly) {
     final PointF centre = new PointF(bounds.width() / 2f, bounds.height() / 2f);
     final float faceRadius = bounds.width() / 2f;
 
     drawBackground(canvas, palette, centre, faceRadius, calendar, location, drawRealisticSun);
     drawNotches(canvas, palette, centre, faceRadius, showSingleMinuteTicks);
-    drawHands(canvas, palette, centre, faceRadius, calendar, showSecondHand);
+    drawHands(canvas,
+        palette,
+        centre,
+        faceRadius,
+        calendar,
+        showSecondHand,
+        animateSecondHandSmoothly);
   }
 
   private static void drawBackground(Canvas canvas,
@@ -242,14 +249,16 @@ class Painter {
                                 PointF centre,
                                 float faceRadius,
                                 Calendar calendar,
-                                boolean showSecondHand) {
+                                boolean showSecondHand,
+                                boolean animateSecondHandSmoothly) {
     /*
      * These calculations reflect the rotation in degrees per unit of time, e.g.,
      * 360 / 60 = 6 and 360 / 12 = 30.
      */
     final float
-        seconds =
-        (calendar.get(Calendar.SECOND) + calendar.get(Calendar.MILLISECOND) / 1000f);
+        partialSecond =
+        animateSecondHandSmoothly ? calendar.get(Calendar.MILLISECOND) / 1000f : 0;
+    final float seconds = calendar.get(Calendar.SECOND) + partialSecond;
     final float secondsRotation = seconds * (360 / 60f);
 
     // In ambient mode, the minute hand should tick instead of moving gradually.

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings_key_show_single_minute_ticks" translatable="false">show_single_minute_ticks</string>
+    <string name="settings_key_show_second_hand" translatable="false">show_second_hand</string>
+    <string name="settings_key_animate_second_hand_smoothly" translatable="false">animate_second_hand_smoothly</string>
     <string name="settings_key_draw_realistic_sun" translatable="false">draw_realistic_sun</string>
 </resources>

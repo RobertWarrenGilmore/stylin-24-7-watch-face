@@ -10,6 +10,17 @@
         app:title="@string/show_single_minute_ticks" />
 
     <SwitchPreference
+        app:defaultValue="false"
+        app:key="@string/settings_key_show_second_hand"
+        app:title="@string/show_second_hand" />
+
+    <SwitchPreference
+        app:defaultValue="false"
+        app:dependency="@string/settings_key_show_second_hand"
+        app:key="@string/settings_key_animate_second_hand_smoothly"
+        app:title="@string/animate_second_hand_smoothly" />
+
+    <SwitchPreference
         app:key="@string/settings_key_draw_realistic_sun"
         app:title="@string/draw_realistic_sun" />
 

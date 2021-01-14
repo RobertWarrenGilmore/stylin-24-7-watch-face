@@ -5,5 +5,7 @@
     <string name="settings_activty_name">Stylin\' 24/7 settings</string>
     <string name="show_single_minute_ticks">show single-minute ticks</string>
     <string name="settings_footer_text" translatable="false">RobertWarrenGilmore.com</string>
+    <string name="show_second_hand">show second hand</string>
+    <string name="animate_second_hand_smoothly">animate second hand smoothly</string>
     <string name="draw_realistic_sun">realistic sun graphic</string>
 </resources>
