@@ -6,6 +6,7 @@
         app:summary="\n" />
 
     <SwitchPreference
+        app:defaultValue="false"
         app:key="@string/settings_key_show_single_minute_ticks"
         app:title="@string/show_single_minute_ticks" />
 
@@ -21,6 +22,7 @@
         app:title="@string/animate_second_hand_smoothly" />
 
     <SwitchPreference
+        app:defaultValue="false"
         app:key="@string/settings_key_draw_realistic_sun"
         app:title="@string/draw_realistic_sun" />
 
