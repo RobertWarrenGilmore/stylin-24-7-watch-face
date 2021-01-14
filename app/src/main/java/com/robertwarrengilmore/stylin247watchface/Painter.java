@@ -89,7 +89,7 @@ class Painter {
         cartesian(centre, noonAngle, SUN_AND_MOON_CENTRE_OFFSET * faceRadius),
         SUN_AND_MOON_RADIUS * faceRadius,
         showSolarCorona);
-    float lunarPhase = AstronomyCalculator.getLunarPhase(calendar.toInstant());
+    float lunarPhase = AstronomyCalculator.getLunarPhase(calendar);
 
     drawMoon(canvas,
         palette,

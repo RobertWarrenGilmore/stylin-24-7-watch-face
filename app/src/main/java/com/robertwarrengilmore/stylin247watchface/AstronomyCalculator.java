@@ -18,8 +18,8 @@ class AstronomyCalculator {
   /**
    * Calculates the approximate phase of the moon on a given date. The result is expressed as a float 0 <= x < 1, where 0 is a new moon, 0.5 is a full moon, and 0.9 is a waning crescent.
    */
-  static float getLunarPhase(Instant when) {
-    Duration timeSinceKnownNewMoon = Duration.between(KNOWN_NEW_MOON_INSTANT, when);
+  static float getLunarPhase(Calendar when) {
+    Duration timeSinceKnownNewMoon = Duration.between(KNOWN_NEW_MOON_INSTANT, when.toInstant());
     long secondsInLunarCycle = LUNAR_CYCLE_LENGTH.getSeconds();
     long
         secondsIntoLunarCycle =
