@@ -102,7 +102,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       super.onCreate(holder);
 
       setWatchFaceStyle(new WatchFaceStyle.Builder(Stylin247WatchFace.this).setAcceptsTapEvents(
-          false).build());
+          false).setHideStatusBar(true).build());
 
       calendar = Calendar.getInstance();
 
