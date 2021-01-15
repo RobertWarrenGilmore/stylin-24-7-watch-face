@@ -1,9 +1,7 @@
 <?xml version ="1.0" encoding ="utf-8"?><!--  Learn More about how to use App Actions: https://developer.android.com/guide/actions/index.html -->
 <androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Preference
-        app:key="space_top"
-        app:summary="\n" />
+    <Preference app:summary="\n" />
 
     <SwitchPreference
         app:defaultValue="false"
@@ -26,12 +24,8 @@
         app:key="@string/settings_key_draw_realistic_sun"
         app:title="@string/draw_realistic_sun" />
 
-    <Preference
-        app:key="credit"
-        app:summary="RobertWarrenGilmore.com" />
+    <Preference app:summary="RobertWarrenGilmore.com" />
 
-    <Preference
-        app:key="space_bottom"
-        app:summary="\n" />
+    <Preference app:summary="\n" />
 
 </androidx.preference.PreferenceScreen>
