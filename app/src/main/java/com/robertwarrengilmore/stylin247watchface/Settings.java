@@ -15,7 +15,7 @@ class Settings {
     this.preferenceManager = PreferenceManager.getDefaultSharedPreferences(context);
   }
 
-  public boolean getUseLocation() {
+  boolean getUseLocation() {
     return preferenceManager.getBoolean(context.getString(R.string.settings_key_use_location),
         false);
   }
