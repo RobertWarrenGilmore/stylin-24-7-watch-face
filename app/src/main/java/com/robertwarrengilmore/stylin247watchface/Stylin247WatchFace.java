@@ -36,9 +36,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
   private Settings settings;
 
-  private static final Location location = new Location("");
-  private static final boolean DRAW_LOCATION_STUFF = true;
-
   /**
    * Handler message id for updating the time periodically in interactive mode.
    */
@@ -105,13 +102,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           false).build());
 
       calendar = Calendar.getInstance();
-
-      // Seattle
-      location.setLatitude(47.608013);
-      location.setLongitude(-122.335167);
-      // Tierra del Fuego
-      //      location.setLatitude(-54-(48/60f));
-      //      location.setLongitude(-68-(18/60f));
     }
 
     @Override
@@ -191,6 +181,17 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       calendar.setTimeInMillis(now);
 
       Palette palette = ambient ? ambientPalette : defaultPalette;
+
+      Location location = null;
+      if (settings.getUseLocation()) {
+        location = new Location("");
+        // Seattle
+        location.setLatitude(47.608013);
+        location.setLongitude(-122.335167);
+        // Tierra del Fuego
+        //      location.setLatitude(-54-(48/60f));
+        //      location.setLongitude(-68-(18/60f));
+      }
 
       Painter.draw(canvas,
           bounds,

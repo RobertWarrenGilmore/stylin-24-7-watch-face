@@ -15,6 +15,11 @@ class Settings {
     this.preferenceManager = PreferenceManager.getDefaultSharedPreferences(context);
   }
 
+  public boolean getUseLocation() {
+    return preferenceManager.getBoolean(context.getString(R.string.settings_key_use_location),
+        false);
+  }
+
   boolean getShowSingleMinuteTicks() {
     return preferenceManager.getBoolean(context.getString(R.string.settings_key_show_single_minute_ticks),
         false);
