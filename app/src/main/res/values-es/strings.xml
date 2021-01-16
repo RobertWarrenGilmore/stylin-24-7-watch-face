@@ -9,4 +9,5 @@
     <string name="draw_realistic_sun">gráfico realistico del sol</string>
     <string name="use_location">mostrar horas locales de amanecer y atardecer</string>
     <string name="use_location_description">este ajuste requiere permisión pasiva de ubicación</string>
+    <string name="location_permission_denied">La permisión de ubicación fue negado.</string>
 </resources>

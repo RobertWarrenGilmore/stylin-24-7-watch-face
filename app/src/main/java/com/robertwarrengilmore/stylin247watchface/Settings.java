@@ -2,8 +2,12 @@ package com.robertwarrengilmore.stylin247watchface;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 
+import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
+
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 
 class Settings {
 
@@ -13,6 +17,19 @@ class Settings {
   Settings(Context context) {
     this.context = context;
     this.preferenceManager = PreferenceManager.getDefaultSharedPreferences(context);
+    if (ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION) !=
+        PackageManager.PERMISSION_GRANTED) {
+      setUseLocation(false);
+    }
+  }
+
+  boolean setUseLocation(boolean value) {
+    System.out.println("Setting use_location to " + value);
+    return
+        preferenceManager
+            .edit()
+            .putBoolean(context.getString(R.string.settings_key_use_location), value)
+            .commit();
   }
 
   boolean getUseLocation() {

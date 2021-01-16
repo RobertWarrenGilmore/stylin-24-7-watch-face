@@ -10,4 +10,5 @@
     <string name="show_second_hand">show second hand</string>
     <string name="animate_second_hand_smoothly">animate second hand smoothly</string>
     <string name="draw_realistic_sun">realistic sun graphic</string>
+    <string name="location_permission_denied">Location permission was denied.</string>
 </resources>
