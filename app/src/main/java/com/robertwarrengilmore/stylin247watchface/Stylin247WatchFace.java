@@ -18,6 +18,7 @@ import android.view.SurfaceHolder;
 import java.lang.ref.WeakReference;
 import java.time.Duration;
 import java.util.Calendar;
+import java.util.Optional;
 import java.util.TimeZone;
 
 /**
@@ -35,6 +36,7 @@ import java.util.TimeZone;
 public class Stylin247WatchFace extends CanvasWatchFaceService {
 
   private Settings settings;
+  private LocationCache locationCache;
 
   /**
    * Handler message id for updating the time periodically in interactive mode.
@@ -45,6 +47,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   public void onCreate() {
     super.onCreate();
     settings = new Settings(getApplicationContext());
+    locationCache = new LocationCache(getApplicationContext());
   }
 
   @Override
@@ -182,22 +185,16 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
       Palette palette = ambient ? ambientPalette : defaultPalette;
 
-      Location location = null;
+      Optional<Location> location = Optional.empty();
       if (settings.getUseLocation()) {
-        location = new Location("");
-        // Seattle
-        location.setLatitude(47.608013);
-        location.setLongitude(-122.335167);
-        // Tierra del Fuego
-        //      location.setLatitude(-54-(48/60f));
-        //      location.setLongitude(-68-(18/60f));
+        location = locationCache.getLocation();
       }
 
       Painter.draw(canvas,
           bounds,
           palette,
           calendar,
-          location,
+          location.orElse(null),
           settings.getDrawRealisticSun(),
           settings.getShowSingleMinuteTicks(),
           settings.getShowSecondHand() && !ambient,

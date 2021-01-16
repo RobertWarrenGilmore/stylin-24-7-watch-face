@@ -14,6 +14,8 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SwitchPreference;
 
+import java.util.Map;
+
 /* In order to clear the location permission for manual testing, run `adb pm clear com.robertwarrengilmore.stylin247watchface`. More details: https://stackoverflow.com/a/49544908/662464 */
 
 public class SettingsActivity extends FragmentActivity {
@@ -21,7 +23,7 @@ public class SettingsActivity extends FragmentActivity {
 
   private final SettingsFragment settingsFragment = new SettingsFragment();
 
-  private ActivityResultLauncher<String> requestLocationPermissionLauncher;
+  private ActivityResultLauncher<String[]> requestLocationPermissionLauncher;
 
   private String settingsKeyUseLocation;
 
@@ -40,7 +42,7 @@ public class SettingsActivity extends FragmentActivity {
 
     settingsKeyUseLocation = getApplicationContext().getString(R.string.settings_key_use_location);
     requestLocationPermissionLauncher =
-        registerForActivityResult(new ActivityResultContracts.RequestPermission(),
+        registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),
             this::onLocationPermissionAnswer);
     settingsFragment.findPreference(settingsKeyUseLocation)
         .setOnPreferenceChangeListener((Preference preference, Object newValue) -> allowChangeUseLocation(
@@ -54,15 +56,17 @@ public class SettingsActivity extends FragmentActivity {
     }
   }
 
-  private void onLocationPermissionAnswer(boolean value) {
-    if (!value) {
+  private void onLocationPermissionAnswer(Map<String, Boolean> values) {
+    boolean isGranted = values.containsValue(true);
+    if (!isGranted) {
       Toast.makeText(getApplicationContext(),
           getApplicationContext().getString(R.string.location_permission_denied),
           Toast.LENGTH_LONG).show();
     }
-    boolean changedInStorage = settings.setUseLocation(value);
+    boolean changedInStorage = settings.setUseLocation(isGranted);
     if (changedInStorage) {
-      ((SwitchPreference) settingsFragment.findPreference(settingsKeyUseLocation)).setChecked(value);
+      ((SwitchPreference) settingsFragment.findPreference(settingsKeyUseLocation)).setChecked(
+          isGranted);
     }
     setBusyDialogueVisible(false);
   }
@@ -78,7 +82,8 @@ public class SettingsActivity extends FragmentActivity {
     }
     // No permission yet. Let the permission dialogue callback (onLocationPermissionAnswer) set the preference.
     setBusyDialogueVisible(true);
-    requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION);
+    requestLocationPermissionLauncher.launch(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION});
     // TODO Detect when the permission has been denied permanently?
     return false;
   }
@@ -89,6 +94,8 @@ public class SettingsActivity extends FragmentActivity {
 
   private boolean hasLocationPermission() {
     return ActivityCompat.checkSelfPermission(getApplicationContext(),
-        Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+        ActivityCompat.checkSelfPermission(getApplicationContext(),
+            Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
   }
 }
