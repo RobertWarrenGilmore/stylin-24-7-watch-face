@@ -84,7 +84,6 @@ public class SettingsActivity extends FragmentActivity {
     setBusyDialogueVisible(true);
     requestLocationPermissionLauncher.launch(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION});
-    // TODO Detect when the permission has been denied permanently?
     return false;
   }
 
