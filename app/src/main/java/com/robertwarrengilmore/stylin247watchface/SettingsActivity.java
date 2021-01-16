@@ -3,6 +3,7 @@ package com.robertwarrengilmore.stylin247watchface;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -65,6 +66,7 @@ public class SettingsActivity extends FragmentActivity {
     if (changedInStorage) {
       ((SwitchPreference) settingsFragment.findPreference(settingsKeyUseLocation)).setChecked(value);
     }
+    setBusyDialogueVisible(false);
   }
 
   private boolean allowChangeUseLocation(boolean value) {
@@ -80,12 +82,17 @@ public class SettingsActivity extends FragmentActivity {
       System.out.println("Already have permission.");
       return true;
     }
-    // No permission yet. We will only set the setting if we get permission.
+    // No permission yet. Let the permission dialogue callback (onLocationPermissionAnswer) set the preference.
     System.out.println("Asking for permission.");
+    setBusyDialogueVisible(true);
     requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION);
     System.out.println("Done synchronously calling the launcher.");
     // TODO Detect when the permission has been denied permanently?
-    return true;
+    return false;
+  }
+
+  private void setBusyDialogueVisible(boolean visible) {
+    findViewById(R.id.busyOverlay).setVisibility(visible ? View.VISIBLE : View.GONE);
   }
 
   private boolean hasLocationPermission() {
