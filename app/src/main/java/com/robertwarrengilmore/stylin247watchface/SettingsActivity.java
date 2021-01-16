@@ -60,9 +60,7 @@ public class SettingsActivity extends FragmentActivity {
           getApplicationContext().getString(R.string.location_permission_denied),
           Toast.LENGTH_LONG).show();
     }
-    System.out.println("Setting use_location to " + value);
     boolean changedInStorage = settings.setUseLocation(value);
-    System.out.println("Did we change use_location in storage?: " + changedInStorage);
     if (changedInStorage) {
       ((SwitchPreference) settingsFragment.findPreference(settingsKeyUseLocation)).setChecked(value);
     }
@@ -70,23 +68,17 @@ public class SettingsActivity extends FragmentActivity {
   }
 
   private boolean allowChangeUseLocation(boolean value) {
-    System.out.println("Changing use_location.");
     // Setting to false is okay.
     if (!value) {
-      System.out.println("Set to false.");
       return true;
     }
-    System.out.println("Set to true.");
     // If we already have permission, no need to ask.
     if (hasLocationPermission()) {
-      System.out.println("Already have permission.");
       return true;
     }
     // No permission yet. Let the permission dialogue callback (onLocationPermissionAnswer) set the preference.
-    System.out.println("Asking for permission.");
     setBusyDialogueVisible(true);
     requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION);
-    System.out.println("Done synchronously calling the launcher.");
     // TODO Detect when the permission has been denied permanently?
     return false;
   }
