@@ -150,32 +150,42 @@ class Painter {
                                PointF centre,
                                float radius,
                                float phase) {
-    canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonDarkPaint());
-    final boolean litOnRight = phase > 0.5f;
-    final boolean mostlyLit = phase > 0.25f && phase < 0.75f;
-    final boolean curveGoesRight = litOnRight ^ mostlyLit;
     final float curveOffset = (float) Math.cos(phase * 2 * Math.PI) * radius;
-    canvas.drawArc(centre.x - radius,
-        centre.y - radius,
-        centre.x + radius,
-        centre.y + radius,
-        litOnRight ? 90f : 270f,
-        180f,
-        true,
-        palette.getMoonLitPaint());
-    canvas.drawOval(centre.x - curveOffset,
-        centre.y - radius,
-        centre.x + curveOffset,
-        centre.y + radius,
-        mostlyLit ? palette.getMoonLitPaint() : palette.getMoonDarkPaint());
-    canvas.drawArc(centre.x - curveOffset,
-        centre.y - radius,
-        centre.x + curveOffset,
-        centre.y + radius,
-        curveGoesRight ? 90f : 270f,
-        180f,
-        false,
-        palette.getMoonLinePaint());
+    final float crescentWidth = radius - Math.abs(curveOffset);
+    final boolean drawCurve = crescentWidth >= 0.25;
+    final boolean mostlyLit = phase > 0.25f && phase < 0.75f;
+    final boolean fullMoon = !drawCurve && mostlyLit;
+
+    if (fullMoon) {
+      canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonLitPaint());
+    } else {
+      canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonDarkPaint());
+    }
+    if (drawCurve) {
+      final boolean litOnRight = phase > 0.5f;
+      final boolean curveGoesRight = litOnRight ^ mostlyLit;
+      canvas.drawArc(centre.x - radius,
+          centre.y - radius,
+          centre.x + radius,
+          centre.y + radius,
+          litOnRight ? 90f : 270f,
+          180f,
+          true,
+          palette.getMoonLitPaint());
+      canvas.drawOval(centre.x - curveOffset,
+          centre.y - radius,
+          centre.x + curveOffset,
+          centre.y + radius,
+          mostlyLit ? palette.getMoonLitPaint() : palette.getMoonDarkPaint());
+      canvas.drawArc(centre.x - curveOffset,
+          centre.y - radius,
+          centre.x + curveOffset,
+          centre.y + radius,
+          curveGoesRight ? 90f : 270f,
+          180f,
+          false,
+          palette.getMoonLinePaint());
+    }
     canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonLinePaint());
   }
 
