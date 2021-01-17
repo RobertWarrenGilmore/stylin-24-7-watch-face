@@ -111,6 +111,4 @@ public class LocationCache {
     }
     return Optional.ofNullable(cachedLocation);
   }
-
-  // TODO Notify the watch face when the cache is updated, so it can redraw.
 }
