@@ -25,8 +25,6 @@ public class SettingsActivity extends FragmentActivity {
 
   private ActivityResultLauncher<String[]> requestLocationPermissionLauncher;
 
-  private String settingsKeyUseLocation;
-
   private Settings settings;
 
 
@@ -40,11 +38,10 @@ public class SettingsActivity extends FragmentActivity {
         .replace(R.id.settings_container, settingsFragment)
         .commitNow();
 
-    settingsKeyUseLocation = getApplicationContext().getString(R.string.settings_key_use_location);
     requestLocationPermissionLauncher =
         registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),
             this::onLocationPermissionAnswer);
-    settingsFragment.findPreference(settingsKeyUseLocation)
+    settingsFragment.findPreference(getString(R.string.settings_key_use_location))
         .setOnPreferenceChangeListener((Preference preference, Object newValue) -> allowChangeUseLocation(
             (boolean) newValue));
   }
@@ -60,13 +57,13 @@ public class SettingsActivity extends FragmentActivity {
     boolean isGranted = values.containsValue(true);
     if (!isGranted) {
       Toast.makeText(getApplicationContext(),
-          getApplicationContext().getString(R.string.location_permission_denied),
+          getString(R.string.location_permission_denied),
           Toast.LENGTH_LONG).show();
     }
     boolean changedInStorage = settings.setUseLocation(isGranted);
     if (changedInStorage) {
-      ((SwitchPreference) settingsFragment.findPreference(settingsKeyUseLocation)).setChecked(
-          isGranted);
+      ((SwitchPreference) settingsFragment.findPreference(getString(R.string.settings_key_use_location)))
+          .setChecked(isGranted);
     }
     setBusyDialogueVisible(false);
   }
