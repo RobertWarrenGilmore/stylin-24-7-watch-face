@@ -25,8 +25,8 @@ public class LocationCache {
   private Instant lastChange;
   private Instant lastCheck;
   private static final Duration COOL_DOWN_TIME = Duration.ofSeconds(5);
-  private static final Duration SOFT_REFRESH_DELAY = Duration.ofSeconds(30);
-  private static final Duration HARD_REFRESH_DELAY = Duration.ofMinutes(30);
+  private static final Duration SOFT_REFRESH_DELAY = Duration.ofMinutes(5);
+  private static final Duration HARD_REFRESH_DELAY = Duration.ofHours(3);
   public static final float SATISFACTORY_ACCURACY = 200_000f;
 
   LocationCache(Context context) {
@@ -59,13 +59,20 @@ public class LocationCache {
     return false;
   }
 
-  private void asyncUpdate() {
+  private synchronized void asyncUpdate() {
+    if (!shouldUpdate()) {
+      return;
+    }
     if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) !=
         PackageManager.PERMISSION_GRANTED &&
         ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) !=
             PackageManager.PERMISSION_GRANTED) {
       return;
     }
+    if (waitingOnLocationTask) {
+      return;
+    }
+    waitingOnLocationTask = true;
     Task<Location> getLocationTask;
     if (lastChange == null || lastChange.isBefore(Instant.now().minus(HARD_REFRESH_DELAY))) {
       getLocationTask =
@@ -106,9 +113,7 @@ public class LocationCache {
   }
 
   Optional<Location> getLocation() {
-    if (shouldUpdate()) {
-      asyncUpdate();
-    }
+    asyncUpdate();
     return Optional.ofNullable(cachedLocation);
   }
 }
