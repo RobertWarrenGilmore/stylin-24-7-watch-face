@@ -8,6 +8,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 class Settings {
 
@@ -17,18 +18,18 @@ class Settings {
   Settings(Context context) {
     this.context = context;
     this.preferenceManager = PreferenceManager.getDefaultSharedPreferences(context);
-    if (ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION) !=
-        PackageManager.PERMISSION_GRANTED) {
-      setUseLocation(false);
-    }
+    turnOffUseLocationIfNoPermission();
   }
 
-  boolean setUseLocation(boolean value) {
-    return
-        preferenceManager
-            .edit()
-            .putBoolean(context.getString(R.string.settings_key_use_location), value)
-            .commit();
+  private void turnOffUseLocationIfNoPermission(){
+    if (ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION) !=
+        PackageManager.PERMISSION_GRANTED &&
+        ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) !=
+            PackageManager.PERMISSION_GRANTED) {
+      preferenceManager.edit()
+          .putBoolean(context.getString(R.string.settings_key_use_location), false)
+          .apply();
+    }
   }
 
   boolean getUseLocation() {

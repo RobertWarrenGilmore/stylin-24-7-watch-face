@@ -20,20 +20,14 @@ import java.util.Map;
 
 public class SettingsActivity extends FragmentActivity {
 
-
   private final SettingsFragment settingsFragment = new SettingsFragment();
-
   private ActivityResultLauncher<String[]> requestLocationPermissionLauncher;
-
-  private Settings settings;
-
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_stylin247_settings);
 
-    settings = new Settings(getApplicationContext());
     getSupportFragmentManager().beginTransaction()
         .replace(R.id.settings_container, settingsFragment)
         .commitNow();
@@ -60,7 +54,13 @@ public class SettingsActivity extends FragmentActivity {
           getString(R.string.location_permission_denied),
           Toast.LENGTH_LONG).show();
     }
-    boolean changedInStorage = settings.setUseLocation(isGranted);
+    boolean
+        changedInStorage =
+        settingsFragment.getPreferenceManager()
+            .getSharedPreferences()
+            .edit()
+            .putBoolean(getString(R.string.settings_key_use_location), false)
+            .commit();
     if (changedInStorage) {
       ((SwitchPreference) settingsFragment.findPreference(getString(R.string.settings_key_use_location)))
           .setChecked(isGranted);
