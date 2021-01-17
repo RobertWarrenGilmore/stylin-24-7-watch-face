@@ -82,7 +82,6 @@ class Palette {
 
     palette.moonLitPaint.setAntiAlias(true);
     palette.moonLitPaint.setStyle(Paint.Style.FILL);
-    palette.moonLitPaint.setColor(Color.WHITE);
 
     palette.moonDarkPaint.setAntiAlias(true);
     palette.moonDarkPaint.setStyle(Paint.Style.FILL);
@@ -109,6 +108,8 @@ class Palette {
     palette.nightSectorPaint.setStyle(Paint.Style.FILL);
 
     palette.moonLinePaint.setColor(Color.TRANSPARENT);
+
+    palette.moonLitPaint.setColor(Color.WHITE);
 
     palette.backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.3f}));
 
@@ -151,6 +152,8 @@ class Palette {
 
     palette.moonLinePaint.setColor(Color.DKGRAY);
     palette.moonLinePaint.setStrokeWidth(AMBIENT_HOUR_DISC_STROKE_WIDTH * scaleFactor);
+
+    palette.moonLitPaint.setColor(Color.DKGRAY);
 
     palette.hourHandPaint.setColor(Color.LTGRAY);
     palette.hourHandPaint.clearShadowLayer();
