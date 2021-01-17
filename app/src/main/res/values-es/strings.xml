@@ -7,4 +7,7 @@
     <string name="show_second_hand">mostrar manecilla de segundos</string>
     <string name="animate_second_hand_smoothly">animación suave de la manecilla de segundos</string>
     <string name="draw_realistic_sun">gráfico realistico del sol</string>
+    <string name="use_location">mostrar horas locales de amanecer y atardecer</string>
+    <string name="use_location_description">Esta característica requiere permisión para acceder a la ubicación de forma pasiva.</string>
+    <string name="location_permission_denied">La permisión de ubicación fue negado.</string>
 </resources>

@@ -5,6 +5,12 @@
 
     <SwitchPreference
         app:defaultValue="false"
+        app:key="@string/settings_key_use_location"
+        app:title="@string/use_location"
+        app:summary="@string/use_location_description"/>
+
+    <SwitchPreference
+        app:defaultValue="false"
         app:key="@string/settings_key_show_single_minute_ticks"
         app:title="@string/show_single_minute_ticks" />
 

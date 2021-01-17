@@ -8,6 +8,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.location.Location;
 
+import androidx.annotation.Nullable;
+
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Calendar;
@@ -19,7 +21,6 @@ class Painter {
   public static final float SUN_RAY_LENGTH = 0.35f;
   public static final float SUN_RAY_OFFSET = 0.2f;
   private static final float HOUR_DISC_RADIUS = 0.667f;
-  private static final boolean DRAW_LOCATION_STUFF = true;
   private static final float SUN_AND_MOON_RADIUS = 0.15f;
   private static final float SUN_AND_MOON_CENTRE_OFFSET = 0.3f;
 
@@ -27,7 +28,7 @@ class Painter {
                    Rect bounds,
                    Palette palette,
                    Calendar calendar,
-                   Location location,
+                   @Nullable Location location,
                    boolean drawRealisticSun,
                    boolean showSingleMinuteTicks,
                    boolean showSecondHand,
@@ -51,7 +52,7 @@ class Painter {
                                      PointF centre,
                                      float faceRadius,
                                      Calendar calendar,
-                                     Location location,
+                                     @Nullable Location location,
                                      boolean drawRealisticSun) {
     canvas.drawPaint(palette.getBackgroundPaint());
 
@@ -66,12 +67,12 @@ class Painter {
 
     final Duration
         solarDayLength =
-        DRAW_LOCATION_STUFF ?
+        (location != null) ?
             AstronomyCalculator.getSolarDayLength(location, calendar) :
             Duration.ofHours(12);
     final LocalTime
         solarNoon =
-        DRAW_LOCATION_STUFF ? AstronomyCalculator.getSolarNoon(location, calendar) : LocalTime.NOON;
+        (location != null) ? AstronomyCalculator.getSolarNoon(location, calendar) : LocalTime.NOON;
 
 
     final float noonOffsetDayFraction = solarNoon.toSecondOfDay() / (24f * 60 * 60 - 1);

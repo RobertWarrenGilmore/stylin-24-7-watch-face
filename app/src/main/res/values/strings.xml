@@ -3,9 +3,12 @@
     <string name="message">watch face tapped</string>
     <string name="watch_face_name" translatable="false">Stylin\' 24/7</string>
     <string name="settings_activty_name">Stylin\' 24/7 settings</string>
+    <string name="use_location">show local sunrise and sunset times</string>
+    <string name="use_location_description">This feature requires permission to access the location passively.</string>
     <string name="show_single_minute_ticks">show single-minute ticks</string>
     <string name="settings_footer_text" translatable="false">RobertWarrenGilmore.com</string>
     <string name="show_second_hand">show second hand</string>
     <string name="animate_second_hand_smoothly">animate second hand smoothly</string>
     <string name="draw_realistic_sun">realistic sun graphic</string>
+    <string name="location_permission_denied">Location permission was denied.</string>
 </resources>
