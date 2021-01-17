@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">esfera de reloj Stylin\' 24/7</string>
-    <string name="message">esfera pulsada</string>
     <string name="settings_activty_name">ajustes de Stylin\' 24/7</string>
     <string name="show_single_minute_ticks">mostrar marcas de solo minuto</string>
     <string name="show_second_hand">mostrar manecilla de segundos</string>
