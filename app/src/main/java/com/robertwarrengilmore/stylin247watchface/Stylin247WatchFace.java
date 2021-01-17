@@ -64,7 +64,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   }
 
   private class Engine extends CanvasWatchFaceService.Engine {
-    /* Handler to update the time once a second in interactive mode. */
+    /* Handler to update the time in interactive mode. */
     private final Handler updateTimeHandler = new EngineHandler(this);
     private final Paint hourHandPaint = new Paint();
     private final Paint minuteHandPaint = new Paint();
@@ -112,7 +112,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       super.onAmbientModeChanged(inAmbientMode);
       ambient = inAmbientMode;
 
-      /* Check and trigger whether or not timer should be running (only in active mode). */
+      /* Check and trigger whether or not timer should be running (only in interactive mode). */
       updateTimer();
     }
 
@@ -160,7 +160,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           break;
         case TAP_TYPE_TAP:
           // The user has completed the tap gesture.
-          //          Toast.makeText(getApplicationContext(), R.string.message, Toast.LENGTH_SHORT).show();
           break;
       }
       invalidate();
