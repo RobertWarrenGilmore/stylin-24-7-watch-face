@@ -24,7 +24,6 @@ class Settings {
   }
 
   boolean setUseLocation(boolean value) {
-    System.out.println("Setting use_location to " + value);
     return
         preferenceManager
             .edit()
