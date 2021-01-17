@@ -39,6 +39,12 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   }
 
   @Override
+  public void onDestroy() {
+    super.onDestroy();
+    locationCache.stopUpdating();
+  }
+
+  @Override
   public Engine onCreateEngine() {
     return new Engine();
   }
@@ -165,6 +171,19 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       invalidate();
     }
 
+    Optional<Location> getLocation() {
+      if (settings.getUseLocation()) {
+        if (!locationCache.isUpdating()) {
+          locationCache.startUpdating();
+        }
+        return locationCache.getLocation();
+      }
+      if (locationCache.isUpdating()) {
+        locationCache.stopUpdating();
+      }
+      return Optional.empty();
+    }
+
     @Override
     public void onDraw(Canvas canvas, Rect bounds) {
       long now = System.currentTimeMillis();
@@ -172,16 +191,11 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
       Palette palette = ambient ? ambientPalette : defaultPalette;
 
-      Optional<Location> location = Optional.empty();
-      if (settings.getUseLocation()) {
-        location = locationCache.getLocation();
-      }
-
       Painter.draw(canvas,
           bounds,
           palette,
           calendar,
-          location.orElse(null),
+          getLocation().orElse(null),
           settings.getDrawRealisticSun(),
           settings.getShowSingleMinuteTicks(),
           settings.getShowSecondHand() && !ambient,

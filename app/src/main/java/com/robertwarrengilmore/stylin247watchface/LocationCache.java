@@ -1,119 +1,59 @@
 package com.robertwarrengilmore.stylin247watchface;
 
-import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.location.Location;
 
-import androidx.core.app.ActivityCompat;
-
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.Task;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.util.Optional;
+
+import lombok.Getter;
 
 public class LocationCache {
 
   private final FusedLocationProviderClient fusedLocationClient;
-  private final Context context;
   private Location cachedLocation;
-  private boolean waitingOnLocationTask = false;
-  private Instant lastChange;
-  private Instant lastCheck;
-  private static final Duration COOL_DOWN_TIME = Duration.ofSeconds(5);
-  private static final Duration SOFT_REFRESH_DELAY = Duration.ofMinutes(5);
-  private static final Duration HARD_REFRESH_DELAY = Duration.ofHours(3);
-  public static final float SATISFACTORY_ACCURACY = 200_000f;
+
+  private static final Duration FASTEST_INTERVAL = Duration.ofSeconds(1);
+  private static final Duration INTERVAL = Duration.ofHours(6);
+  private static final float SMALLEST_DISPLACEMENT = 200_000f;
+  @Getter
+  private boolean updating = false;
+
+  private final LocationCallback locationCallback = new LocationCallback() {
+    @Override
+    public void onLocationResult(LocationResult locationResult) {
+      super.onLocationResult(locationResult);
+      cachedLocation = locationResult.getLastLocation();
+    }
+  };
 
   LocationCache(Context context) {
-    this.context = context;
     fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
   }
 
-  private boolean shouldChangeLocation(Location newLocation) {
-    if (newLocation == null) {
-      return false;
-    }
-    // We have a new location to consider,
-    if (cachedLocation == null) {
-      return true;
-    }
-    // and there is already a location in the cache,
-    if (lastChange.isBefore(Instant.now().minus(SOFT_REFRESH_DELAY))) {
-      return true;
-    }
-    // which isn't stale yet,
-    if (newLocation.getAccuracy() > SATISFACTORY_ACCURACY) {
-      return false;
-    }
-    // and the new location is reasonably precise,
-    if (cachedLocation.getAccuracy() != 0f &&
-        newLocation.getAccuracy() >= cachedLocation.getAccuracy()) {
-      return true;
-    }
-    // but not as precise as the cached location.
-    return false;
+  @SuppressLint("MissingPermission")
+  void startUpdating() {
+    fusedLocationClient.requestLocationUpdates(new LocationRequest().setSmallestDisplacement(
+        SMALLEST_DISPLACEMENT)
+        .setPriority(LocationRequest.PRIORITY_LOW_POWER)
+        .setFastestInterval(FASTEST_INTERVAL.toMillis())
+        .setInterval(INTERVAL.toMillis()), locationCallback, null);
+    updating = true;
   }
 
-  private synchronized void asyncUpdate() {
-    if (!shouldUpdate()) {
-      return;
-    }
-    if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) !=
-        PackageManager.PERMISSION_GRANTED &&
-        ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) !=
-            PackageManager.PERMISSION_GRANTED) {
-      return;
-    }
-    if (waitingOnLocationTask) {
-      return;
-    }
-    waitingOnLocationTask = true;
-    Task<Location> getLocationTask;
-    if (lastChange == null || lastChange.isBefore(Instant.now().minus(HARD_REFRESH_DELAY))) {
-      getLocationTask =
-          fusedLocationClient.getCurrentLocation(LocationRequest.PRIORITY_LOW_POWER, null);
-    } else {
-      getLocationTask = fusedLocationClient.getLastLocation();
-    }
-    getLocationTask.addOnCompleteListener(lastLocationTask -> {
-      if (lastLocationTask.isSuccessful()) {
-        lastCheck = Instant.now();
-        if (lastLocationTask.getResult() != null) {
-          changeLocation(lastLocationTask.getResult());
-        }
-      }
-      waitingOnLocationTask = false;
-    });
-  }
-
-  private void changeLocation(Location newLocation) {
-    if (!shouldChangeLocation(newLocation)) {
-      return;
-    }
-    cachedLocation = newLocation;
-    lastChange = Instant.now();
-  }
-
-  private boolean shouldUpdate() {
-    if (waitingOnLocationTask) {
-      return false;
-    }
-    if (lastCheck == null) {
-      return true;
-    }
-    if (lastCheck.isAfter(Instant.now().minus(COOL_DOWN_TIME))) {
-      return false;
-    }
-    return true;
+  void stopUpdating() {
+    fusedLocationClient.removeLocationUpdates(locationCallback);
+    updating = false;
   }
 
   Optional<Location> getLocation() {
-    asyncUpdate();
     return Optional.ofNullable(cachedLocation);
   }
 }
