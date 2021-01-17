@@ -1,7 +1,7 @@
 <?xml version ="1.0" encoding ="utf-8"?><!--  Learn More about how to use App Actions: https://developer.android.com/guide/actions/index.html -->
 <androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <Preference app:summary="\n" />
+    <Preference />
 
     <SwitchPreference
         app:defaultValue="false"
@@ -32,6 +32,6 @@
 
     <Preference app:summary="RobertWarrenGilmore.com" />
 
-    <Preference app:summary="\n" />
+    <Preference />
 
 </androidx.preference.PreferenceScreen>
