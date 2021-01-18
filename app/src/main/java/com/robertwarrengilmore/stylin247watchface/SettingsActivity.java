@@ -53,17 +53,18 @@ public class SettingsActivity extends FragmentActivity {
       Toast.makeText(getApplicationContext(),
           getString(R.string.location_permission_denied),
           Toast.LENGTH_LONG).show();
-    }
-    boolean
-        changedInStorage =
-        settingsFragment.getPreferenceManager()
-            .getSharedPreferences()
-            .edit()
-            .putBoolean(getString(R.string.settings_key_use_location), false)
-            .commit();
-    if (changedInStorage) {
-      ((SwitchPreference) settingsFragment.findPreference(getString(R.string.settings_key_use_location)))
-          .setChecked(isGranted);
+    } else {
+      boolean
+          changedInStorage =
+          settingsFragment.getPreferenceManager()
+              .getSharedPreferences()
+              .edit()
+              .putBoolean(getString(R.string.settings_key_use_location), true)
+              .commit();
+      if (changedInStorage) {
+        ((SwitchPreference) settingsFragment.findPreference(getString(R.string.settings_key_use_location)))
+            .setChecked(true);
+      }
     }
     setBusyDialogueVisible(false);
   }
