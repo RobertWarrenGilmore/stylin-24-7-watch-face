@@ -3,7 +3,9 @@ package com.robertwarrengilmore.stylin247watchface;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -12,7 +14,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate;
 import androidx.preference.SwitchPreference;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.wear.widget.WearableRecyclerView;
 
 import java.util.Map;
 
@@ -44,6 +49,24 @@ public class SettingsActivity extends FragmentActivity {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
       setPreferencesFromResource(R.xml.settings, rootKey);
+    }
+
+    public RecyclerView onCreateRecyclerView(LayoutInflater inflater,
+                                             ViewGroup parent,
+                                             Bundle savedInstanceState) {
+      // This is mostly plagiarised from the method it overrides. The main difference is we use a *wearable* recycler view.
+      WearableRecyclerView
+          wearableRecyclerView =
+          (WearableRecyclerView) inflater.inflate(R.layout.settings_wearable_recycler_view,
+              parent,
+              false);
+      wearableRecyclerView.setEdgeItemsCenteringEnabled(true);
+
+      wearableRecyclerView.setLayoutManager(onCreateLayoutManager());
+      wearableRecyclerView.setAccessibilityDelegateCompat(new PreferenceRecyclerViewAccessibilityDelegate(
+          wearableRecyclerView));
+
+      return wearableRecyclerView;
     }
   }
 
