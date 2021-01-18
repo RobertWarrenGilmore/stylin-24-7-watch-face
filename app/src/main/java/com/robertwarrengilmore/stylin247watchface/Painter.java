@@ -24,15 +24,17 @@ class Painter {
   private static final float SUN_AND_MOON_RADIUS = 0.15f;
   private static final float SUN_AND_MOON_CENTRE_OFFSET = 0.3f;
 
-  static void draw(Canvas canvas,
-                   Rect bounds,
-                   Palette palette,
-                   Calendar calendar,
-                   @Nullable Location location,
-                   boolean drawRealisticSun,
-                   boolean showSingleMinuteTicks,
-                   boolean showSecondHand,
-                   boolean animateSecondHandSmoothly) {
+  static void draw(
+      Canvas canvas,
+      Rect bounds,
+      Palette palette,
+      Calendar calendar,
+      @Nullable Location location,
+      boolean drawRealisticSun,
+      boolean showSingleMinuteTicks,
+      boolean showSecondHand,
+      boolean animateSecondHandSmoothly
+  ) {
     final PointF centre = new PointF(bounds.width() / 2f, bounds.height() / 2f);
     final float faceRadius = bounds.width() / 2f;
 
@@ -44,35 +46,35 @@ class Painter {
         faceRadius,
         calendar,
         showSecondHand,
-        animateSecondHandSmoothly);
+        animateSecondHandSmoothly
+    );
   }
 
-  private static void drawBackground(Canvas canvas,
-                                     Palette palette,
-                                     PointF centre,
-                                     float faceRadius,
-                                     Calendar calendar,
-                                     @Nullable Location location,
-                                     boolean drawRealisticSun) {
+  private static void drawBackground(
+      Canvas canvas,
+      Palette palette,
+      PointF centre,
+      float faceRadius,
+      Calendar calendar,
+      @Nullable Location location,
+      boolean drawRealisticSun
+  ) {
     canvas.drawPaint(palette.getBackgroundPaint());
 
     float hourDiscRadius = HOUR_DISC_RADIUS * faceRadius;
 
-    RectF
-        boundingBox =
-        new RectF(centre.x - hourDiscRadius,
-            centre.y - hourDiscRadius,
-            centre.x + hourDiscRadius,
-            centre.y + hourDiscRadius);
+    RectF boundingBox = new RectF(centre.x - hourDiscRadius,
+        centre.y - hourDiscRadius,
+        centre.x + hourDiscRadius,
+        centre.y + hourDiscRadius
+    );
 
-    final Duration
-        solarDayLength =
-        (location != null) ?
-            AstronomyCalculator.getSolarDayLength(location, calendar) :
-            Duration.ofHours(12);
-    final LocalTime
-        solarNoon =
-        (location != null) ? AstronomyCalculator.getSolarNoon(location, calendar) : LocalTime.NOON;
+    final Duration solarDayLength = (location != null) ?
+                                    AstronomyCalculator.getSolarDayLength(location, calendar) :
+                                    Duration.ofHours(12);
+    final LocalTime solarNoon = (location != null) ?
+                                AstronomyCalculator.getSolarNoon(location, calendar) :
+                                LocalTime.NOON;
 
 
     final float noonOffsetDayFraction = solarNoon.toSecondOfDay() / (24f * 60 * 60 - 1);
@@ -83,12 +85,14 @@ class Painter {
         90 + sunriseOffsetFraction * 360,
         dayLengthFraction * 360,
         true,
-        palette.getDaySectorPaint());
+        palette.getDaySectorPaint()
+    );
     canvas.drawArc(boundingBox,
         90 + sunriseOffsetFraction * 360 + dayLengthFraction * 360,
         360 - dayLengthFraction * 360,
         true,
-        palette.getNightSectorPaint());
+        palette.getNightSectorPaint()
+    );
 
     final float noonAngle = noonOffsetDayFraction * 360 + 180;
 
@@ -96,21 +100,21 @@ class Painter {
         palette,
         cartesian(centre, noonAngle, SUN_AND_MOON_CENTRE_OFFSET * faceRadius),
         SUN_AND_MOON_RADIUS * faceRadius,
-        drawRealisticSun);
+        drawRealisticSun
+    );
     float lunarPhase = AstronomyCalculator.getLunarPhase(calendar);
 
     drawMoon(canvas,
         palette,
         cartesian(centre, noonAngle + 180f, SUN_AND_MOON_CENTRE_OFFSET * faceRadius),
         SUN_AND_MOON_RADIUS * faceRadius,
-        lunarPhase);
+        lunarPhase
+    );
   }
 
-  private static void drawSun(Canvas canvas,
-                              Palette palette,
-                              PointF centre,
-                              float radius,
-                              boolean drawRealisticSun) {
+  private static void drawSun(
+      Canvas canvas, Palette palette, PointF centre, float radius, boolean drawRealisticSun
+  ) {
     if (drawRealisticSun) {
       canvas.drawCircle(centre.x, centre.y, radius, palette.getRealisticSunPaint());
       return;
@@ -122,34 +126,34 @@ class Painter {
     for (int rayIndex = 0; rayIndex < 12; rayIndex++) {
       final float rayTipAngle = (float) (rayIndex * 360 / 12);
       final PointF rayTip = cartesian(centre, rayTipAngle, radius + rayOffset + rayLength);
-      final PointF
-          rayBottomLeft =
-          cartesian(centre, rayTipAngle - SUN_RAY_WIDTH_DEGREES / 2, rayOffset);
-      final PointF
-          rayBottomRight =
-          cartesian(centre, rayTipAngle + SUN_RAY_WIDTH_DEGREES / 2, rayOffset);
+      final PointF rayBottomLeft = cartesian(centre,
+          rayTipAngle - SUN_RAY_WIDTH_DEGREES / 2,
+          rayOffset
+      );
+      final PointF rayBottomRight = cartesian(centre,
+          rayTipAngle + SUN_RAY_WIDTH_DEGREES / 2,
+          rayOffset
+      );
       final float rayBottomRadius = (radius + rayOffset);
-      final RectF
-          rayOffsetBoundingBox =
-          new RectF(centre.x - rayBottomRadius,
-              centre.y - rayBottomRadius,
-              centre.x + rayBottomRadius,
-              centre.y + rayBottomRadius);
+      final RectF rayOffsetBoundingBox = new RectF(centre.x - rayBottomRadius,
+          centre.y - rayBottomRadius,
+          centre.x + rayBottomRadius,
+          centre.y + rayBottomRadius
+      );
       final Path ray = new Path();
       ray.moveTo(rayTip.x, rayTip.y);
       ray.arcTo(rayOffsetBoundingBox,
           rayTipAngle - SUN_RAY_WIDTH_DEGREES / 2 - 90,
-          SUN_RAY_WIDTH_DEGREES);
+          SUN_RAY_WIDTH_DEGREES
+      );
       ray.close();
       canvas.drawPath(ray, palette.getCartoonSunPaint());
     }
   }
 
-  private static void drawMoon(Canvas canvas,
-                               Palette palette,
-                               PointF centre,
-                               float radius,
-                               float phase) {
+  private static void drawMoon(
+      Canvas canvas, Palette palette, PointF centre, float radius, float phase
+  ) {
     final float curveOffset = (float) Math.cos(phase * 2 * Math.PI) * radius;
     final float crescentWidth = radius - Math.abs(curveOffset);
     final boolean drawCurve = crescentWidth >= 0.25;
@@ -171,12 +175,14 @@ class Painter {
           litOnRight ? 90f : 270f,
           180f,
           true,
-          palette.getMoonLitPaint());
+          palette.getMoonLitPaint()
+      );
       canvas.drawOval(centre.x - curveOffset,
           centre.y - radius,
           centre.x + curveOffset,
           centre.y + radius,
-          mostlyLit ? palette.getMoonLitPaint() : palette.getMoonDarkPaint());
+          mostlyLit ? palette.getMoonLitPaint() : palette.getMoonDarkPaint()
+      );
       canvas.drawArc(centre.x - curveOffset,
           centre.y - radius,
           centre.x + curveOffset,
@@ -184,7 +190,8 @@ class Painter {
           curveGoesRight ? 90f : 270f,
           180f,
           false,
-          palette.getMoonLinePaint());
+          palette.getMoonLinePaint()
+      );
     }
     canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonLinePaint());
   }
@@ -198,11 +205,9 @@ class Painter {
   private static final float SMALL_TICK_LENGTH = 0.05f;
   private static final float MINUTE_TICK_OUTER_RADIUS = 1f;
 
-  private static void drawNotches(Canvas canvas,
-                                  Palette palette,
-                                  PointF centre,
-                                  float faceRadius,
-                                  boolean showSingleMinuteTicks) {
+  private static void drawNotches(
+      Canvas canvas, Palette palette, PointF centre, float faceRadius, boolean showSingleMinuteTicks
+  ) {
     // Draw the five-minute (and even-hour) notches.
     for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
       float angle = (float) (tickIndex * 360 / 12);
@@ -211,7 +216,8 @@ class Painter {
           angle,
           MINUTE_TICK_OUTER_RADIUS * faceRadius,
           LARGE_TICK_LENGTH * faceRadius,
-          palette.getLargeTickPaint());
+          palette.getLargeTickPaint()
+      );
     }
     // Draw the single-minute ticks.
     if (showSingleMinuteTicks) {
@@ -226,7 +232,8 @@ class Painter {
             angle,
             MINUTE_TICK_OUTER_RADIUS * faceRadius,
             SMALL_TICK_LENGTH * faceRadius,
-            palette.getSmallTickPaint());
+            palette.getSmallTickPaint()
+        );
       }
     }
     // Draw the odd-hour ticks.
@@ -237,35 +244,35 @@ class Painter {
           angle,
           HOUR_DISC_RADIUS * faceRadius,
           SMALL_TICK_LENGTH * faceRadius,
-          palette.getSmallTickPaint());
+          palette.getSmallTickPaint()
+      );
     }
   }
 
-  private static void drawNotch(Canvas canvas,
-                                PointF centre,
-                                float angle,
-                                float outerRadius,
-                                float length,
-                                Paint paint) {
+  private static void drawNotch(
+      Canvas canvas, PointF centre, float angle, float outerRadius, float length, Paint paint
+  ) {
     PointF inside = cartesian(centre, angle, outerRadius - length);
     PointF outside = cartesian(centre, angle, outerRadius);
     canvas.drawLine(inside.x, inside.y, outside.x, outside.y, paint);
   }
 
-  private static void drawHands(Canvas canvas,
-                                Palette palette,
-                                PointF centre,
-                                float faceRadius,
-                                Calendar calendar,
-                                boolean showSecondHand,
-                                boolean animateSecondHandSmoothly) {
+  private static void drawHands(
+      Canvas canvas,
+      Palette palette,
+      PointF centre,
+      float faceRadius,
+      Calendar calendar,
+      boolean showSecondHand,
+      boolean animateSecondHandSmoothly
+  ) {
     /*
      * These calculations reflect the rotation in degrees per unit of time, e.g.,
      * 360 / 60 = 6 and 360 / 12 = 30.
      */
-    final float
-        partialSecond =
-        animateSecondHandSmoothly ? calendar.get(Calendar.MILLISECOND) / 1000f : 0;
+    final float partialSecond = animateSecondHandSmoothly ?
+                                calendar.get(Calendar.MILLISECOND) / 1000f :
+                                0;
     final float seconds = calendar.get(Calendar.SECOND) + partialSecond;
     final float secondsRotation = seconds * (360 / 60f);
 
@@ -275,8 +282,7 @@ class Painter {
 
     final float partialHour = calendar.get(Calendar.MINUTE) / 60f;
     // The hour hand moves 15 degrees per hour on a 24-hour clock, not 30.
-    final float
-        hoursRotation =
+    final float hoursRotation =
         ((calendar.get(Calendar.HOUR_OF_DAY) + partialHour) * (360 / 24f)) + 180;
 
     PointF secondHandEnd = cartesian(centre, secondsRotation, SECOND_HAND_LENGTH * faceRadius);
@@ -287,13 +293,15 @@ class Painter {
         centre.y,
         minuteHandEnd.x,
         minuteHandEnd.y,
-        palette.getMinuteHandPaint());
+        palette.getMinuteHandPaint()
+    );
     if (showSecondHand) {
       canvas.drawLine(centre.x,
           centre.y,
           secondHandEnd.x,
           secondHandEnd.y,
-          palette.getSecondHandPaint());
+          palette.getSecondHandPaint()
+      );
     }
     canvas.drawCircle(centre.x, centre.y, HAND_CAP_RADIUS * faceRadius, palette.getHandCapPaint());
   }

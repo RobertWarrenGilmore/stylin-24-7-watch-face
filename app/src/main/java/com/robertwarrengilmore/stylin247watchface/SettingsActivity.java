@@ -33,33 +33,35 @@ public class SettingsActivity extends FragmentActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_stylin247_settings);
 
-    getSupportFragmentManager().beginTransaction()
+    getSupportFragmentManager()
+        .beginTransaction()
         .replace(R.id.settings_container, settingsFragment)
         .commitNow();
 
-    requestLocationPermissionLauncher =
-        registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),
-            this::onLocationPermissionAnswer);
-    settingsFragment.findPreference(getString(R.string.settings_key_use_location))
+    requestLocationPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestMultiplePermissions(),
+        this::onLocationPermissionAnswer
+    );
+    settingsFragment
+        .findPreference(getString(R.string.settings_key_use_location))
         .setOnPreferenceChangeListener((Preference preference, Object newValue) -> allowChangeUseLocation(
             (boolean) newValue));
   }
 
   public static class SettingsFragment extends PreferenceFragmentCompat {
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
       setPreferencesFromResource(R.xml.settings, rootKey);
     }
 
-    public RecyclerView onCreateRecyclerView(LayoutInflater inflater,
-                                             ViewGroup parent,
-                                             Bundle savedInstanceState) {
+    public RecyclerView onCreateRecyclerView(
+        LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState
+    ) {
       // This is mostly plagiarised from the method it overrides. The main difference is we use a *wearable* recycler view.
-      WearableRecyclerView
-          wearableRecyclerView =
-          (WearableRecyclerView) inflater.inflate(R.layout.settings_wearable_recycler_view,
-              parent,
-              false);
+      WearableRecyclerView wearableRecyclerView = (WearableRecyclerView) inflater.inflate(R.layout.settings_wearable_recycler_view,
+          parent,
+          false
+      );
       wearableRecyclerView.setEdgeItemsCenteringEnabled(true);
 
       wearableRecyclerView.setLayoutManager(onCreateLayoutManager());
@@ -75,15 +77,15 @@ public class SettingsActivity extends FragmentActivity {
     if (!isGranted) {
       Toast.makeText(getApplicationContext(),
           getString(R.string.location_permission_denied),
-          Toast.LENGTH_LONG).show();
+          Toast.LENGTH_LONG
+      ).show();
     } else {
-      boolean
-          changedInStorage =
-          settingsFragment.getPreferenceManager()
-              .getSharedPreferences()
-              .edit()
-              .putBoolean(getString(R.string.settings_key_use_location), true)
-              .commit();
+      boolean changedInStorage = settingsFragment
+          .getPreferenceManager()
+          .getSharedPreferences()
+          .edit()
+          .putBoolean(getString(R.string.settings_key_use_location), true)
+          .commit();
       if (changedInStorage) {
         ((SwitchPreference) settingsFragment.findPreference(getString(R.string.settings_key_use_location)))
             .setChecked(true);
@@ -114,8 +116,10 @@ public class SettingsActivity extends FragmentActivity {
 
   private boolean hasLocationPermission() {
     return ActivityCompat.checkSelfPermission(getApplicationContext(),
-        Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-        ActivityCompat.checkSelfPermission(getApplicationContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(
+        getApplicationContext(),
+        Manifest.permission.ACCESS_FINE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED;
   }
 }

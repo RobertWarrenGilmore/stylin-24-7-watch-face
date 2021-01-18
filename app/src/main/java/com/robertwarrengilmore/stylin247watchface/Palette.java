@@ -122,7 +122,8 @@ class Palette {
     palette.realisticSunPaint.setShadowLayer(SOLAR_CORONA_WIDTH * scaleFactor,
         0,
         0,
-        palette.realisticSunPaint.getColor());
+        palette.realisticSunPaint.getColor()
+    );
 
     palette.nightSectorPaint.setColor(Color.HSVToColor(new float[]{230f, 0.25f, 0.25f}));
 
@@ -149,7 +150,8 @@ class Palette {
     palette.realisticSunPaint.setShadowLayer(SOLAR_CORONA_WIDTH * scaleFactor,
         0,
         0,
-        palette.realisticSunPaint.getColor());
+        palette.realisticSunPaint.getColor()
+    );
 
     palette.nightSectorPaint.setColor(Color.HSVToColor(new float[]{217f, 0.9f, 0.5f}));
 
@@ -180,7 +182,8 @@ class Palette {
     palette.realisticSunPaint.setShadowLayer(SOLAR_CORONA_WIDTH * scaleFactor,
         0,
         0,
-        palette.realisticSunPaint.getColor());
+        palette.realisticSunPaint.getColor()
+    );
 
     palette.nightSectorPaint.setColor(Color.DKGRAY);
     palette.nightSectorPaint.setStyle(Paint.Style.STROKE);

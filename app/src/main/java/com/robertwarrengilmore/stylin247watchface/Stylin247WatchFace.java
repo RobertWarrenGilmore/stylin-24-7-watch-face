@@ -44,6 +44,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   }
 
   private static class EngineHandler extends Handler {
+
     private final WeakReference<Stylin247WatchFace.Engine> weakReference;
 
     public EngineHandler(Stylin247WatchFace.Engine reference) {
@@ -64,6 +65,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   }
 
   private class Engine extends CanvasWatchFaceService.Engine {
+
     /* Handler to update the time in interactive mode. */
     private final Handler updateTimeHandler = new EngineHandler(this);
     private final Paint hourHandPaint = new Paint();
@@ -89,15 +91,18 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     @Override
     public void onCreate(SurfaceHolder holder) {
       super.onCreate(holder);
+      System.out.println("created watch face");
 
-      setWatchFaceStyle(new WatchFaceStyle.Builder(Stylin247WatchFace.this).setAcceptsTapEvents(
-          false).build());
+      setWatchFaceStyle(new WatchFaceStyle.Builder(Stylin247WatchFace.this)
+          .setAcceptsTapEvents(false)
+          .build());
 
       calendar = Calendar.getInstance();
     }
 
     @Override
     public void onDestroy() {
+      System.out.println("destroyed watch face");
       updateTimeHandler.removeMessages(MSG_UPDATE_TIME);
       locationCache.stopUpdating();
       super.onDestroy();
@@ -149,8 +154,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     }
 
     /**
-     * Captures tap event (and tap type). The {@link WatchFaceService#TAP_TYPE_TAP} case can be
-     * used for implementing specific logic to handle the gesture.
+     * Captures tap event (and tap type). The {@link WatchFaceService#TAP_TYPE_TAP} case can be used
+     * for implementing specific logic to handle the gesture.
      */
     @Override
     public void onTapCommand(int tapType, int x, int y, long eventTime) {
@@ -196,7 +201,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         palette = mutedPalette;
       }
 
-      Painter.draw(canvas,
+      Painter.draw(
+          canvas,
           bounds,
           palette,
           calendar,
@@ -204,7 +210,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           settings.getDrawRealisticSun(),
           settings.getShowSingleMinuteTicks(),
           settings.getShowSecondHand() && !ambient,
-          settings.getAnimateSecondHandSmoothly() && !ambient);
+          settings.getAnimateSecondHandSmoothly() && !ambient
+      );
     }
 
     @Override
@@ -252,8 +259,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     }
 
     /**
-     * Returns whether the {@link #updateTimeHandler} timer should be running. The timer
-     * should only run in active mode.
+     * Returns whether the {@link #updateTimeHandler} timer should be running. The timer should only
+     * run in active mode.
      */
     private boolean shouldTimerBeRunning() {
       return isVisible() && !ambient;

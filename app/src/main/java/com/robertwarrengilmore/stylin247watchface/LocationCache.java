@@ -41,8 +41,8 @@ public class LocationCache {
 
   @SuppressLint("MissingPermission")
   void startUpdating() {
-    fusedLocationClient.requestLocationUpdates(new LocationRequest().setSmallestDisplacement(
-        SMALLEST_DISPLACEMENT)
+    fusedLocationClient.requestLocationUpdates(new LocationRequest()
+        .setSmallestDisplacement(SMALLEST_DISPLACEMENT)
         .setPriority(LocationRequest.PRIORITY_LOW_POWER)
         .setFastestInterval(FASTEST_INTERVAL.toMillis())
         .setInterval(INTERVAL.toMillis()), locationCallback, Looper.myLooper());

@@ -26,7 +26,8 @@ class Settings {
         PackageManager.PERMISSION_GRANTED &&
         ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) !=
             PackageManager.PERMISSION_GRANTED) {
-      preferenceManager.edit()
+      preferenceManager
+          .edit()
           .putBoolean(context.getString(R.string.settings_key_use_location), false)
           .apply();
     }
@@ -34,33 +35,39 @@ class Settings {
 
   boolean getUseLocation() {
     return preferenceManager.getBoolean(context.getString(R.string.settings_key_use_location),
-        false);
+        false
+    );
   }
 
   boolean getShowSingleMinuteTicks() {
     return preferenceManager.getBoolean(context.getString(R.string.settings_key_show_single_minute_ticks),
-        false);
+        false
+    );
   }
 
   boolean getShowSecondHand() {
     return preferenceManager.getBoolean(context.getString(R.string.settings_key_show_second_hand),
-        false);
+        false
+    );
   }
 
   boolean getAnimateSecondHandSmoothly() {
     return getShowSecondHand() &&
         preferenceManager.getBoolean(context.getString(R.string.settings_key_animate_second_hand_smoothly),
-            false);
+            false
+        );
   }
 
   boolean getDrawRealisticSun() {
     return preferenceManager.getBoolean(context.getString(R.string.settings_key_draw_realistic_sun),
-        false);
+        false
+    );
   }
 
   String getColourScheme() {
     return preferenceManager.getString(context.getString(R.string.settings_key_colour_scheme),
-        context.getString(R.string.settings_colour_scheme_value_muted));
+        context.getString(R.string.settings_colour_scheme_value_muted)
+    );
   }
 }
 

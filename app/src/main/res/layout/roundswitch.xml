@@ -6,4 +6,4 @@
     android:focusable="false"
     android:clickable="false"
     android:background="@null"
-    style="@style/Widget.Wear.RoundSwitch"/>
+    style="@style/Widget.Wear.RoundSwitch" />
