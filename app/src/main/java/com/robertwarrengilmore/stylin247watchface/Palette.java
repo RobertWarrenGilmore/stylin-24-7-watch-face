@@ -132,8 +132,8 @@ class Palette {
 
     palette.backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.3f}));
 
-    palette.largeTickPaint.setColor(Color.HSVToColor(new float[]{0f, 00f, 0.1f}));
-    palette.smallTickPaint.setColor(Color.HSVToColor(new float[]{0f, 00f, 0.1f}));
+    palette.largeTickPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.1f}));
+    palette.smallTickPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.1f}));
 
     return palette;
   }
@@ -159,8 +159,8 @@ class Palette {
 
     palette.backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.3f}));
 
-    palette.largeTickPaint.setColor(Color.HSVToColor(new float[]{0f, 00f, 0.1f}));
-    palette.smallTickPaint.setColor(Color.HSVToColor(new float[]{0f, 00f, 0.1f}));
+    palette.largeTickPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.1f}));
+    palette.smallTickPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.1f}));
 
     return palette;
   }
