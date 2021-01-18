@@ -143,9 +143,9 @@ class Palette {
 
     palette.daySectorPaint.setColor(Color.HSVToColor(new float[]{185f, 1f, 1f}));
 
-    palette.cartoonSunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
+    palette.cartoonSunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.5f, 1f}));
 
-    palette.realisticSunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
+    palette.realisticSunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.5f, 1f}));
     palette.realisticSunPaint.setShadowLayer(SOLAR_CORONA_WIDTH * scaleFactor,
         0,
         0,
