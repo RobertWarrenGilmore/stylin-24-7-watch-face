@@ -21,7 +21,7 @@ class Settings {
     turnOffUseLocationIfNoPermission();
   }
 
-  private void turnOffUseLocationIfNoPermission(){
+  private void turnOffUseLocationIfNoPermission() {
     if (ActivityCompat.checkSelfPermission(context, ACCESS_COARSE_LOCATION) !=
         PackageManager.PERMISSION_GRANTED &&
         ActivityCompat.checkSelfPermission(context, ACCESS_FINE_LOCATION) !=
