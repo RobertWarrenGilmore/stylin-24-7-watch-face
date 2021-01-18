@@ -4,8 +4,8 @@
     <SwitchPreference
         app:defaultValue="false"
         app:key="@string/settings_key_use_location"
-        app:title="@string/use_location"
-        app:summary="@string/use_location_description"/>
+        app:summary="@string/use_location_description"
+        app:title="@string/use_location" />
 
     <SwitchPreference
         app:defaultValue="false"
