@@ -5,4 +5,20 @@
     <string name="settings_key_show_second_hand" translatable="false">show_second_hand</string>
     <string name="settings_key_animate_second_hand_smoothly" translatable="false">animate_second_hand_smoothly</string>
     <string name="settings_key_draw_realistic_sun" translatable="false">draw_realistic_sun</string>
+    <string name="settings_colour_scheme_key_muted" translatable="false">colour_scheme_muted</string>
+    <string name="settings_colour_scheme_key_vivid" translatable="false">colour_scheme_vivid</string>
+    <string name="settings_colour_scheme_key_monochrome" translatable="false">colour_scheme_monochrome</string>
+    <string name="settings_colour_scheme_key_earthy" translatable="false">colour_scheme_earthy</string>
+    <array name="settings_theme_values">
+        <item>@string/settings_colour_scheme_key_muted</item>
+        <item>@string/settings_colour_scheme_key_vivid</item>
+        <item>@string/settings_colour_scheme_key_monochrome</item>
+        <item>@string/settings_colour_scheme_key_earthy</item>
+    </array>
+    <array name="settings_theme_names">
+        <item>@string/settings_colour_scheme_muted</item>
+        <item>@string/settings_colour_scheme_vivid</item>
+        <item>@string/settings_colour_scheme_monochrome</item>
+        <item>@string/settings_colour_scheme_earthy</item>
+    </array>
 </resources>
