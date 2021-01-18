@@ -57,5 +57,10 @@ class Settings {
     return preferenceManager.getBoolean(context.getString(R.string.settings_key_draw_realistic_sun),
         false);
   }
+
+  String getColourScheme() {
+    return preferenceManager.getString(context.getString(R.string.settings_key_colour_scheme),
+        context.getString(R.string.settings_colour_scheme_value_muted));
+  }
 }
 

@@ -38,11 +38,12 @@
         app:title="@string/draw_realistic_sun"
         app:widgetLayout="@layout/roundswitch" />
 
-    <ListPreference
-        app:entries="@array/settings_theme_names"
-        app:entryValues="@array/settings_theme_values"
-        app:key="settings_key_colour_scheme"
-        app:title="@string/colour_scheme" />
+    <DropDownPreference
+        app:entries="@array/settings_colour_scheme_names"
+        app:entryValues="@array/settings_colour_scheme_values"
+        app:key="@string/settings_key_colour_scheme"
+        app:title="@string/colour_scheme"
+        app:defaultValue="@string/settings_colour_scheme_value_muted"/>
 
     <Preference
         app:selectable="false"

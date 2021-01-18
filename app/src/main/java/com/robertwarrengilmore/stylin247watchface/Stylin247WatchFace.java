@@ -76,7 +76,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     private final Paint minuteHandPaint = new Paint();
     private final Paint secondHandPaint = new Paint();
 
-    private Palette defaultPalette;
+    private Palette mutedPalette;
+    private Palette vividPalette;
     private Palette ambientPalette;
 
     private Calendar calendar;
@@ -147,7 +148,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
        */
       float faceRadius = width / 2f;
 
-      defaultPalette = Palette.getDefaultPalette(faceRadius);
+      mutedPalette = Palette.getMutedPalette(faceRadius);
+      vividPalette = Palette.getVividPalette(faceRadius);
       ambientPalette = Palette.getAmbientPalette(faceRadius);
     }
 
@@ -189,7 +191,15 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       long now = System.currentTimeMillis();
       calendar.setTimeInMillis(now);
 
-      Palette palette = ambient ? ambientPalette : defaultPalette;
+      String colourScheme = settings.getColourScheme();
+      Palette palette;
+      if (ambient) {
+        palette = ambientPalette;
+      } else if (colourScheme.equals(getString(R.string.settings_colour_scheme_value_vivid))) {
+        palette = vividPalette;
+      } else {
+        palette = mutedPalette;
+      }
 
       Painter.draw(canvas,
           bounds,

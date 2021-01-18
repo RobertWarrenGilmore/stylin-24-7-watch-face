@@ -11,8 +11,6 @@
     <string name="draw_realistic_sun">realistic sun graphic</string>
     <string name="location_permission_denied">Location permission was denied.</string>
     <string name="colour_scheme">colour scheme</string>
-    <string name="settings_colour_scheme_muted" >muted</string>
-    <string name="settings_colour_scheme_vivid" >vivid</string>
-    <string name="settings_colour_scheme_monochrome" >monochrome</string>
-    <string name="settings_colour_scheme_earthy" >earthy</string>
+    <string name="colour_scheme_name_muted" >muted</string>
+    <string name="colour_scheme_name_vivid" >vivid</string>
 </resources>

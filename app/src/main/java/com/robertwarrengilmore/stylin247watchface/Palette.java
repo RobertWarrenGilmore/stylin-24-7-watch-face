@@ -85,33 +85,18 @@ class Palette {
 
     palette.moonDarkPaint.setAntiAlias(true);
     palette.moonDarkPaint.setStyle(Paint.Style.FILL);
-    palette.moonDarkPaint.setColor(Color.BLACK);
 
     return palette;
   }
 
-  static Palette getDefaultPalette(float scaleFactor) {
+  private static Palette getInteractivePalette(float scaleFactor) {
     Palette palette = getCommonPalette(scaleFactor);
 
-    palette.daySectorPaint.setColor(Color.HSVToColor(new float[]{200f, 0.25f, 0.6f}));
     palette.daySectorPaint.setStyle(Paint.Style.FILL);
 
-    palette.cartoonSunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
-
-    palette.realisticSunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
-    palette.realisticSunPaint.setShadowLayer(SOLAR_CORONA_WIDTH * scaleFactor,
-        0,
-        0,
-        palette.realisticSunPaint.getColor());
-
-    palette.nightSectorPaint.setColor(Color.HSVToColor(new float[]{230f, 0.25f, 0.25f}));
     palette.nightSectorPaint.setStyle(Paint.Style.FILL);
 
     palette.moonLinePaint.setColor(Color.TRANSPARENT);
-
-    palette.moonLitPaint.setColor(Color.WHITE);
-
-    palette.backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.3f}));
 
     palette.hourHandPaint.setColor(Color.BLACK);
     palette.minuteHandPaint.setColor(Color.BLACK);
@@ -122,6 +107,57 @@ class Palette {
     palette.minuteHandPaint.setShadowLayer(HAND_SHADOW_WIDTH * scaleFactor, 0, 0, Color.BLACK);
     palette.secondHandPaint.setShadowLayer(HAND_SHADOW_WIDTH * scaleFactor, 0, 0, Color.BLACK);
     palette.handCapPaint.setShadowLayer(HAND_SHADOW_WIDTH * scaleFactor, 0, 0, Color.BLACK);
+
+    return palette;
+  }
+
+  static Palette getMutedPalette(float scaleFactor) {
+    Palette palette = getInteractivePalette(scaleFactor);
+
+    palette.daySectorPaint.setColor(Color.HSVToColor(new float[]{200f, 0.25f, 0.6f}));
+
+    palette.cartoonSunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
+
+    palette.realisticSunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
+    palette.realisticSunPaint.setShadowLayer(SOLAR_CORONA_WIDTH * scaleFactor,
+        0,
+        0,
+        palette.realisticSunPaint.getColor());
+
+    palette.nightSectorPaint.setColor(Color.HSVToColor(new float[]{230f, 0.25f, 0.25f}));
+
+    palette.moonLitPaint.setColor(Color.WHITE);
+
+    palette.moonDarkPaint.setColor(Color.BLACK);
+
+    palette.backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.3f}));
+
+    palette.largeTickPaint.setColor(Color.HSVToColor(new float[]{0f, 00f, 0.1f}));
+    palette.smallTickPaint.setColor(Color.HSVToColor(new float[]{0f, 00f, 0.1f}));
+
+    return palette;
+  }
+
+  static Palette getVividPalette(float scaleFactor) {
+    Palette palette = getInteractivePalette(scaleFactor);
+
+    palette.daySectorPaint.setColor(Color.HSVToColor(new float[]{185f, 1f, 1f}));
+
+    palette.cartoonSunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
+
+    palette.realisticSunPaint.setColor(Color.HSVToColor(new float[]{45f, 0.3f, 1f}));
+    palette.realisticSunPaint.setShadowLayer(SOLAR_CORONA_WIDTH * scaleFactor,
+        0,
+        0,
+        palette.realisticSunPaint.getColor());
+
+    palette.nightSectorPaint.setColor(Color.HSVToColor(new float[]{217f, 0.9f, 0.5f}));
+
+    palette.moonLitPaint.setColor(Color.WHITE);
+
+    palette.moonDarkPaint.setColor(Color.BLACK);
+
+    palette.backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.3f}));
 
     palette.largeTickPaint.setColor(Color.HSVToColor(new float[]{0f, 00f, 0.1f}));
     palette.smallTickPaint.setColor(Color.HSVToColor(new float[]{0f, 00f, 0.1f}));
@@ -154,6 +190,8 @@ class Palette {
     palette.moonLinePaint.setStrokeWidth(AMBIENT_HOUR_DISC_STROKE_WIDTH * scaleFactor);
 
     palette.moonLitPaint.setColor(Color.DKGRAY);
+
+    palette.moonDarkPaint.setColor(Color.BLACK);
 
     palette.hourHandPaint.setColor(Color.LTGRAY);
     palette.hourHandPaint.clearShadowLayer();

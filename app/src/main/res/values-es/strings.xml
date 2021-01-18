@@ -10,8 +10,6 @@
     <string name="use_location_description">Esta característica requiere permisión para acceder a la ubicación de forma pasiva.</string>
     <string name="location_permission_denied">La permisión de ubicación fue negado.</string>
     <string name="colour_scheme">combinación de colores</string>
-    <string name="settings_colour_scheme_muted">apagada</string>
-    <string name="settings_colour_scheme_vivid">viva</string>
-    <string name="settings_colour_scheme_monochrome">monocromática</string>
-    <string name="settings_colour_scheme_earthy">terrosa</string>
+    <string name="colour_scheme_name_muted">apagada</string>
+    <string name="colour_scheme_name_vivid">viva</string>
 </resources>
