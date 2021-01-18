@@ -39,7 +39,7 @@ class Painter {
     final float faceRadius = bounds.width() / 2f;
 
     drawBackground(canvas, palette, centre, faceRadius, calendar, location, drawRealisticSun);
-    drawNotches(canvas, palette, centre, faceRadius, showSingleMinuteTicks);
+    drawTicks(canvas, palette, centre, faceRadius, showSingleMinuteTicks);
     drawHands(canvas,
         palette,
         centre,
@@ -205,13 +205,13 @@ class Painter {
   private static final float SMALL_TICK_LENGTH = 0.05f;
   private static final float MINUTE_TICK_OUTER_RADIUS = 1f;
 
-  private static void drawNotches(
+  private static void drawTicks(
       Canvas canvas, Palette palette, PointF centre, float faceRadius, boolean showSingleMinuteTicks
   ) {
-    // Draw the five-minute (and even-hour) notches.
+    // Draw the five-minute (and even-hour) ticks.
     for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
       float angle = (float) (tickIndex * 360 / 12);
-      drawNotch(canvas,
+      drawTick(canvas,
           centre,
           angle,
           MINUTE_TICK_OUTER_RADIUS * faceRadius,
@@ -222,12 +222,12 @@ class Painter {
     // Draw the single-minute ticks.
     if (showSingleMinuteTicks) {
       for (int tickIndex = 0; tickIndex < 60; tickIndex++) {
-        // Don't repeat the five-minute notches.
+        // Don't repeat the five-minute ticks.
         if (tickIndex % 5 == 0) {
           continue;
         }
         float angle = (float) (tickIndex * 360 / 60);
-        drawNotch(canvas,
+        drawTick(canvas,
             centre,
             angle,
             MINUTE_TICK_OUTER_RADIUS * faceRadius,
@@ -239,7 +239,7 @@ class Painter {
     // Draw the odd-hour ticks.
     for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
       float angle = (float) (tickIndex * 360 / 12) + (float) (360 / 24);
-      drawNotch(canvas,
+      drawTick(canvas,
           centre,
           angle,
           HOUR_DISC_RADIUS * faceRadius,
@@ -249,7 +249,7 @@ class Painter {
     }
   }
 
-  private static void drawNotch(
+  private static void drawTick(
       Canvas canvas, PointF centre, float angle, float outerRadius, float length, Paint paint
   ) {
     PointF inside = cartesian(centre, angle, outerRadius - length);
