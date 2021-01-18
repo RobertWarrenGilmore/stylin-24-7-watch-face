@@ -90,7 +90,7 @@ class Palette {
     return palette;
   }
 
-  static Palette getDefaultPalette(float scaleFactor ) {
+  static Palette getDefaultPalette(float scaleFactor) {
     Palette palette = getCommonPalette(scaleFactor);
 
     palette.daySectorPaint.setColor(Color.HSVToColor(new float[]{200f, 0.25f, 0.6f}));
