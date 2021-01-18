@@ -38,6 +38,8 @@
         app:title="@string/draw_realistic_sun"
         app:widgetLayout="@layout/roundswitch" />
 
-    <Preference app:summary="RobertWarrenGilmore.com" app:selectable="false" />
+    <Preference
+        app:selectable="false"
+        app:summary="RobertWarrenGilmore.com" />
 
 </androidx.preference.PreferenceScreen>
