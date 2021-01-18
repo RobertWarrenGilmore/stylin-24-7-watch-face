@@ -39,12 +39,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   }
 
   @Override
-  public void onDestroy() {
-    super.onDestroy();
-    locationCache.stopUpdating();
-  }
-
-  @Override
   public Engine onCreateEngine() {
     return new Engine();
   }
@@ -105,6 +99,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     @Override
     public void onDestroy() {
       updateTimeHandler.removeMessages(MSG_UPDATE_TIME);
+      locationCache.stopUpdating();
       super.onDestroy();
     }
 

@@ -3,6 +3,7 @@ package com.robertwarrengilmore.stylin247watchface;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.location.Location;
+import android.os.Looper;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -44,7 +45,7 @@ public class LocationCache {
         SMALLEST_DISPLACEMENT)
         .setPriority(LocationRequest.PRIORITY_LOW_POWER)
         .setFastestInterval(FASTEST_INTERVAL.toMillis())
-        .setInterval(INTERVAL.toMillis()), locationCallback, null);
+        .setInterval(INTERVAL.toMillis()), locationCallback, Looper.myLooper());
     updating = true;
   }
 
