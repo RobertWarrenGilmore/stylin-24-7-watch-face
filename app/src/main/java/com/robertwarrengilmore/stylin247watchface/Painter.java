@@ -249,8 +249,6 @@ class Painter {
             LARGE_TICK_LENGTH * faceRadius,
             palette.getLargeTickPaint()
         );
-        // TODO Also implement drawing upright numbers.
-        // TODO Draw the numbers in the outer ring. This will require drawing the notches shorter and closer to the inside.
         if (showHourNumbers) {
           if (angleHourNumbers) {
             drawAngledNumber(canvas,
