@@ -231,7 +231,7 @@ class Painter {
     // Draw the hour ticks.
     for (int tickIndex = 0; tickIndex < 24; tickIndex++) {
       float angle = (float) (tickIndex * 360 / 24) + 180;
-      if (tickIndex % 2 == 0) {
+      if (tickIndex % 3 == 0) {
         drawTick(canvas,
             centre,
             angle,
