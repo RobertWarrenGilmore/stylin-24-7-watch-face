@@ -207,14 +207,6 @@ class Painter {
   private static final float SMALL_TICK_LENGTH = 0.05f;
   private static final float MINUTE_TICK_OUTER_RADIUS = 1f;
 
-  /**
-   * Does a floor mod on floats.
-   */
-  static float floatMod(float x, float y) {
-    // x mod y behaving the same way as Math.floorMod but with doubles
-    return (x - (float) Math.floor(x / y) * y);
-  }
-
   private static void drawTicks(
       Context context,
       Canvas canvas,
@@ -245,9 +237,9 @@ class Painter {
       }
     }
     // Draw the hour ticks.
-    for (int tickIndex = 0; tickIndex < 24; tickIndex++) {
-      float angle = (float) (tickIndex * 360 / 24) + 180;
-      if (tickIndex % 3 == 0) {
+    for (int hourIndex = 0; hourIndex < 24; hourIndex++) {
+      float angle = Math.floorMod(hourIndex * 360 / 24 + 180, 360);
+      if (hourIndex % 3 == 0) {
         drawTick(canvas,
             centre,
             angle,
@@ -260,7 +252,7 @@ class Painter {
         drawAngledNumber(context,
             canvas,
             centre,
-            Integer.toString(tickIndex * 2),
+            Integer.toString(hourIndex),
             angle,
             NUMBER_OUTER_RADIUS * faceRadius,
             palette.getNumberPaint()
