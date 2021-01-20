@@ -25,6 +25,7 @@ class Painter {
   private static final float SUN_AND_MOON_RADIUS = 0.15f;
   private static final float SUN_AND_MOON_CENTRE_OFFSET = 0.3f;
   private static final float NUMBER_OUTER_RADIUS = 0.85f;
+  public static final float UBUNTU_REGULAR_BASELINE_RATIO = 0.3f;
 
   static void draw(
       Context context,
@@ -286,7 +287,7 @@ class Painter {
       float outerRadius,
       Paint paint
   ) {
-    final float baseLineHeight = paint.getTextSize() * 0.22f;
+    final float baseLineHeight = paint.getTextSize() * UBUNTU_REGULAR_BASELINE_RATIO;
     //        paint.setStyle(Paint.Style.STROKE);
     final boolean flipText = angle > 90 && angle < 270;
     final int flipConstant = flipText ? -1 : 1;
