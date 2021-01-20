@@ -43,7 +43,15 @@ class Painter {
     final float faceRadius = bounds.width() / 2f;
 
     drawBackground(canvas, palette, centre, faceRadius, calendar, location, drawRealisticSun);
-    drawTicks(canvas, palette, centre, faceRadius, showHourNumbers, angleHourNumbers, showSingleMinuteTicks);
+    drawTicks(
+        canvas,
+        palette,
+        centre,
+        faceRadius,
+        showHourNumbers,
+        angleHourNumbers,
+        showSingleMinuteTicks
+    );
     drawHands(canvas,
         palette,
         centre,
