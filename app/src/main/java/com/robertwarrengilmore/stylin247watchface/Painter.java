@@ -282,19 +282,18 @@ class Painter {
   private static void drawAngledNumber(
       Canvas canvas, PointF centre, String text, float angle, float outerRadius, Paint paint
   ) {
-    final float baseLineHeight = paint.getTextSize() * UBUNTU_REGULAR_BASELINE_RATIO;
-    //        paint.setStyle(Paint.Style.STROKE);
     final boolean flipText = angle > 90 && angle < 270;
     final int flipConstant = flipText ? -1 : 1;
-    final Path path = new Path();
 
-    final PointF start = cartesian(centre,angle - flipConstant * 7.5f, outerRadius);
-    final PointF end = cartesian(centre,angle + flipConstant * 7.5f, outerRadius);
-    path.moveTo(start.x, start.y);
-    path.lineTo(end.x, end.y);
+    final PointF start = cartesian(centre, angle - flipConstant * 7.5f, outerRadius);
+    final PointF end = cartesian(centre, angle + flipConstant * 7.5f, outerRadius);
+    final float baseLineHeight = paint.getTextSize() * UBUNTU_REGULAR_BASELINE_RATIO;
     final float verticalOffset = flipText ? 0 : (paint.getTextSize() - baseLineHeight);
 
-    //        canvas.drawPath(path, paint);
+    final Path path = new Path();
+    path.moveTo(start.x, start.y);
+    path.lineTo(end.x, end.y);
+
     canvas.drawTextOnPath(text, path, 0, verticalOffset, paint);
   }
 
