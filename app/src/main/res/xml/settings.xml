@@ -11,6 +11,13 @@
 
     <SwitchPreferenceCompat
         app:defaultValue="false"
+        app:key="@string/settings_key_show_hour_numbers"
+        app:singleLineTitle="false"
+        app:title="@string/show_hour_numbers"
+        app:widgetLayout="@layout/roundswitch" />
+
+    <SwitchPreferenceCompat
+        app:defaultValue="false"
         app:key="@string/settings_key_show_single_minute_ticks"
         app:singleLineTitle="false"
         app:title="@string/show_single_minute_ticks"

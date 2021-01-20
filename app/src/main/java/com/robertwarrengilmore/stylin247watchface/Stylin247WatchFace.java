@@ -209,6 +209,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           calendar,
           getLocation().orElse(null),
           settings.getDrawRealisticSun(),
+          settings.getShowHourNumbers(),
           settings.getShowSingleMinuteTicks(),
           settings.getShowSecondHand() && !ambient,
           settings.getAnimateSecondHandSmoothly() && !ambient

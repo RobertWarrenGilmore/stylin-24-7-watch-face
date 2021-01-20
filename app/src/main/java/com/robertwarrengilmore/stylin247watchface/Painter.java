@@ -35,6 +35,7 @@ class Painter {
       Calendar calendar,
       @Nullable Location location,
       boolean drawRealisticSun,
+      boolean showHourNumbers,
       boolean showSingleMinuteTicks,
       boolean showSecondHand,
       boolean animateSecondHandSmoothly
@@ -43,7 +44,7 @@ class Painter {
     final float faceRadius = bounds.width() / 2f;
 
     drawBackground(canvas, palette, centre, faceRadius, calendar, location, drawRealisticSun);
-    drawTicks(context, canvas, palette, centre, faceRadius, showSingleMinuteTicks);
+    drawTicks(context, canvas, palette, centre, faceRadius, showHourNumbers, showSingleMinuteTicks);
     drawHands(canvas,
         palette,
         centre,
@@ -214,6 +215,7 @@ class Painter {
       Palette palette,
       PointF centre,
       float faceRadius,
+      boolean showHourNumbers,
       boolean showSingleMinuteTicks
   ) {
     // Draw the minute ticks.
@@ -250,14 +252,16 @@ class Painter {
         );
         // TODO Also implement drawing upright numbers.
         // TODO Draw the numbers in the outer ring. This will require drawing the notches shorter and closer to the inside.
-        drawAngledNumber(context,
-            canvas,
-            centre,
-            Integer.toString(hourIndex),
-            angle,
-            NUMBER_OUTER_RADIUS * faceRadius,
-            palette.getNumberPaint()
-        );
+        if (showHourNumbers) {
+          drawAngledNumber(context,
+              canvas,
+              centre,
+              Integer.toString(hourIndex),
+              angle,
+              NUMBER_OUTER_RADIUS * faceRadius,
+              palette.getNumberPaint()
+          );
+        }
       } else {
         drawTick(canvas,
             centre,
@@ -268,6 +272,7 @@ class Painter {
         );
       }
     }
+
   }
 
   private static void drawTick(
