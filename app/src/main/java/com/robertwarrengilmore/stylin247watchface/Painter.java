@@ -207,25 +207,18 @@ class Painter {
   private static void drawTicks(
       Canvas canvas, Palette palette, PointF centre, float faceRadius, boolean showSingleMinuteTicks
   ) {
-    // Draw the five-minute (and even-hour) ticks.
-    for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
-      float angle = (float) (tickIndex * 360 / 12);
-      drawTick(canvas,
-          centre,
-          angle,
-          MINUTE_TICK_OUTER_RADIUS * faceRadius,
-          LARGE_TICK_LENGTH * faceRadius,
-          palette.getLargeTickPaint()
-      );
-    }
-    // Draw the single-minute ticks.
-    if (showSingleMinuteTicks) {
-      for (int tickIndex = 0; tickIndex < 60; tickIndex++) {
-        // Don't repeat the five-minute ticks.
-        if (tickIndex % 5 == 0) {
-          continue;
-        }
-        float angle = (float) (tickIndex * 360 / 60);
+    // Draw the minute ticks.
+    for (int minuteIndex = 0; minuteIndex < 60; minuteIndex++) {
+      final float angle = (float) (minuteIndex * 360 / 60);
+      if (minuteIndex % 5 == 0) {
+        drawTick(canvas,
+            centre,
+            angle,
+            MINUTE_TICK_OUTER_RADIUS * faceRadius,
+            LARGE_TICK_LENGTH * faceRadius,
+            palette.getLargeTickPaint()
+        );
+      } else if (showSingleMinuteTicks) {
         drawTick(canvas,
             centre,
             angle,
@@ -235,16 +228,19 @@ class Painter {
         );
       }
     }
-    // Draw the odd-hour ticks.
-    for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
-      float angle = (float) (tickIndex * 360 / 12) + (float) (360 / 24);
-      drawTick(canvas,
-          centre,
-          angle,
-          HOUR_DISC_RADIUS * faceRadius,
-          SMALL_TICK_LENGTH * faceRadius,
-          palette.getSmallTickPaint()
-      );
+
+    // Draw the hour ticks.
+    for (int tickIndex = 0; tickIndex < 24; tickIndex++) {
+      float angle = (float) (tickIndex * 360 / 24) + 180;
+      if (tickIndex % 2 == 1) {
+        drawTick(canvas,
+            centre,
+            angle,
+            HOUR_DISC_RADIUS * faceRadius,
+            SMALL_TICK_LENGTH * faceRadius,
+            palette.getSmallTickPaint()
+        );
+      }
     }
   }
 
