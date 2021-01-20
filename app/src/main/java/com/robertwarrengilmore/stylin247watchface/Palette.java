@@ -12,8 +12,8 @@ class Palette {
   private static final float MINUTE_HAND_WIDTH = 0.03f;
   private static final float SECOND_HAND_WIDTH = 0.01f;
   private static final float HAND_SHADOW_WIDTH = 0.01f;
-  private static final float LARGE_TICK_WIDTH = 0.02f;
-  private static final float SMALL_TICK_WIDTH = 0.0125f;
+  private static final float LARGE_TICK_WIDTH = 0.025f;
+  private static final float SMALL_TICK_WIDTH = 0.02f;
   private static final float SOLAR_CORONA_WIDTH = 0.1f;
 
   private static final float AMBIENT_HOUR_DISC_STROKE_WIDTH = 0.015f;
