@@ -18,6 +18,14 @@
 
     <SwitchPreferenceCompat
         app:defaultValue="false"
+        app:dependency="@string/settings_key_show_hour_numbers"
+        app:key="@string/settings_key_angle_hour_numbers"
+        app:singleLineTitle="false"
+        app:title="@string/angle_hour_numbers"
+        app:widgetLayout="@layout/roundswitch" />
+
+    <SwitchPreferenceCompat
+        app:defaultValue="false"
         app:key="@string/settings_key_show_single_minute_ticks"
         app:singleLineTitle="false"
         app:title="@string/show_single_minute_ticks"
@@ -46,11 +54,11 @@
         app:widgetLayout="@layout/roundswitch" />
 
     <DropDownPreference
+        app:defaultValue="@string/settings_colour_scheme_value_muted"
         app:entries="@array/settings_colour_scheme_names"
         app:entryValues="@array/settings_colour_scheme_values"
         app:key="@string/settings_key_colour_scheme"
-        app:title="@string/colour_scheme"
-        app:defaultValue="@string/settings_colour_scheme_value_muted" />
+        app:title="@string/colour_scheme" />
 
     <Preference
         app:selectable="false"

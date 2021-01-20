@@ -45,6 +45,12 @@ class Settings {
     );
   }
 
+  public boolean getAngleHourNumbers() {
+    return preferenceManager.getBoolean(context.getString(R.string.settings_key_angle_hour_numbers),
+        false
+    );
+  }
+
   boolean getShowSingleMinuteTicks() {
     return preferenceManager.getBoolean(context.getString(R.string.settings_key_show_single_minute_ticks),
         false

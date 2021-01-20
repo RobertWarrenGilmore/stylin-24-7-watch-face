@@ -17,7 +17,7 @@ class Palette {
   private static final float HAND_SHADOW_WIDTH = 0.01f;
   private static final float LARGE_TICK_WIDTH = 0.025f;
   private static final float SMALL_TICK_WIDTH = 0.02f;
-  private static final float NUMBER_TEXT_SIZE = 0.2125f;
+  private static final float NUMBER_TEXT_SIZE = 0.175f;
   private static final float SOLAR_CORONA_WIDTH = 0.1f;
 
   private static final float AMBIENT_HOUR_DISC_STROKE_WIDTH = 0.015f;
@@ -67,7 +67,7 @@ class Palette {
     palette.numberPaint.setAntiAlias(true);
     palette.numberPaint.setTextSize(NUMBER_TEXT_SIZE * scaleFactor);
     palette.numberPaint.setTextAlign(Paint.Align.CENTER);
-    palette.numberPaint.setTypeface(ResourcesCompat.getFont(context, R.font.ubuntu_regular));
+    palette.numberPaint.setTypeface(ResourcesCompat.getFont(context, R.font.ubuntu_light));
 
     palette.daySectorPaint.setAntiAlias(true);
 

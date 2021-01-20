@@ -5,6 +5,7 @@
     <string name="use_location">show local sunrise and sunset times</string>
     <string name="use_location_description">This feature requires permission to access the location passively.</string>
     <string name="show_hour_numbers">show hour numbers</string>
+    <string name="angle_hour_numbers">show hour numbers at progressive angles around the face</string>
     <string name="show_single_minute_ticks">show single-minute ticks</string>
     <string name="settings_footer_text" translatable="false">RobertWarrenGilmore.com</string>
     <string name="show_second_hand">show second hand</string>

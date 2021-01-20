@@ -23,7 +23,7 @@ class Painter {
   private static final float HOUR_DISC_RADIUS = 0.667f;
   private static final float SUN_AND_MOON_RADIUS = 0.15f;
   private static final float SUN_AND_MOON_CENTRE_OFFSET = 0.3f;
-  private static final float NUMBER_OUTER_RADIUS = 0.85f;
+  private static final float NUMBER_OUTER_RADIUS = 0.84f;
   public static final float UBUNTU_REGULAR_BASELINE_RATIO = 0.3f;
 
   static void draw(
@@ -34,6 +34,7 @@ class Painter {
       @Nullable Location location,
       boolean drawRealisticSun,
       boolean showHourNumbers,
+      boolean angleHourNumbers,
       boolean showSingleMinuteTicks,
       boolean showSecondHand,
       boolean animateSecondHandSmoothly
@@ -42,7 +43,7 @@ class Painter {
     final float faceRadius = bounds.width() / 2f;
 
     drawBackground(canvas, palette, centre, faceRadius, calendar, location, drawRealisticSun);
-    drawTicks(canvas, palette, centre, faceRadius, showHourNumbers, showSingleMinuteTicks);
+    drawTicks(canvas, palette, centre, faceRadius, showHourNumbers, angleHourNumbers, showSingleMinuteTicks);
     drawHands(canvas,
         palette,
         centre,
@@ -213,6 +214,7 @@ class Painter {
       PointF centre,
       float faceRadius,
       boolean showHourNumbers,
+      boolean angleHourNumbers,
       boolean showSingleMinuteTicks
   ) {
     // Draw the minute ticks.
@@ -250,13 +252,23 @@ class Painter {
         // TODO Also implement drawing upright numbers.
         // TODO Draw the numbers in the outer ring. This will require drawing the notches shorter and closer to the inside.
         if (showHourNumbers) {
-          drawAngledNumber(canvas,
-              centre,
-              Integer.toString(hourIndex),
-              angle,
-              NUMBER_OUTER_RADIUS * faceRadius,
-              palette.getNumberPaint()
-          );
+          if (angleHourNumbers) {
+            drawAngledNumber(canvas,
+                centre,
+                Integer.toString(hourIndex),
+                angle,
+                NUMBER_OUTER_RADIUS * faceRadius,
+                palette.getNumberPaint()
+            );
+          } else {
+            drawUprightNumber(canvas,
+                centre,
+                Integer.toString(hourIndex),
+                angle,
+                NUMBER_OUTER_RADIUS * faceRadius,
+                palette.getNumberPaint()
+            );
+          }
         }
       } else {
         drawTick(canvas,
@@ -293,6 +305,21 @@ class Painter {
     final Path path = new Path();
     path.moveTo(start.x, start.y);
     path.lineTo(end.x, end.y);
+
+    canvas.drawTextOnPath(text, path, 0, verticalOffset, paint);
+  }
+
+  private static void drawUprightNumber(
+      Canvas canvas, PointF centre, String text, float angle, float outerRadius, Paint paint
+  ) {
+    final float baseLineHeight = paint.getTextSize() * UBUNTU_REGULAR_BASELINE_RATIO;
+    final float verticalOffset = (paint.getTextSize() - baseLineHeight) / 2;
+    final float lineLength = 0.4f * outerRadius;
+    final PointF lineCentre = cartesian(centre, angle, outerRadius - verticalOffset);
+
+    final Path path = new Path();
+    path.moveTo(lineCentre.x - lineLength / 2, lineCentre.y);
+    path.lineTo(lineCentre.x + lineLength / 2, lineCentre.y);
 
     canvas.drawTextOnPath(text, path, 0, verticalOffset, paint);
   }
