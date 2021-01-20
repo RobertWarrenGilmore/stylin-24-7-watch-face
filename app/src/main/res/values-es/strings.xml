@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">esfera de reloj Stylin\' 24/7</string>
     <string name="settings_activty_name">ajustes de Stylin\' 24/7</string>
+    <string name="show_hour_numbers">mostrar los números de las horas</string>
+    <string name="angle_hour_numbers">mostrar los números inclinados por la curva de la esfera</string>
     <string name="show_single_minute_ticks">mostrar marcas de solo minuto</string>
     <string name="show_second_hand">mostrar manecilla de segundos</string>
     <string name="animate_second_hand_smoothly">animación suave de la manecilla de segundos</string>

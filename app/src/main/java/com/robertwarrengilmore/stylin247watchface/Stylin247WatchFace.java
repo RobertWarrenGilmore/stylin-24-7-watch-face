@@ -148,9 +148,9 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
        */
       float faceRadius = width / 2f;
 
-      mutedPalette = Palette.getMutedPalette(faceRadius);
-      vividPalette = Palette.getVividPalette(faceRadius);
-      ambientPalette = Palette.getAmbientPalette(faceRadius);
+      mutedPalette = Palette.getMutedPalette(getApplicationContext(), faceRadius);
+      vividPalette = Palette.getVividPalette(getApplicationContext(), faceRadius);
+      ambientPalette = Palette.getAmbientPalette(getApplicationContext(), faceRadius);
     }
 
     /**
@@ -208,6 +208,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           calendar,
           getLocation().orElse(null),
           settings.getDrawRealisticSun(),
+          settings.getShowHourNumbers(),
+          settings.getAngleHourNumbers(),
           settings.getShowSingleMinuteTicks(),
           settings.getShowSecondHand() && !ambient,
           settings.getAnimateSecondHandSmoothly() && !ambient
