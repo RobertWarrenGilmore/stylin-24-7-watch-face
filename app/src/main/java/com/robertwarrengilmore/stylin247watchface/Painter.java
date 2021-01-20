@@ -286,14 +286,12 @@ class Painter {
     //        paint.setStyle(Paint.Style.STROKE);
     final boolean flipText = angle > 90 && angle < 270;
     final int flipConstant = flipText ? -1 : 1;
-    final RectF curveBounds = new RectF(centre.x - outerRadius,
-        centre.y - outerRadius,
-        centre.x + outerRadius,
-        centre.y + outerRadius
-    );
     final Path path = new Path();
-    path.addArc(curveBounds, angle - (15 * flipConstant) - 90, 30 * flipConstant);
 
+    final PointF start = cartesian(centre,angle - flipConstant * 7.5f, outerRadius);
+    final PointF end = cartesian(centre,angle + flipConstant * 7.5f, outerRadius);
+    path.moveTo(start.x, start.y);
+    path.lineTo(end.x, end.y);
     final float verticalOffset = flipText ? 0 : (paint.getTextSize() - baseLineHeight);
 
     //        canvas.drawPath(path, paint);
