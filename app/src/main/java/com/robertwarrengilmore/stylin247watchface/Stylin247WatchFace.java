@@ -148,9 +148,9 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
        */
       float faceRadius = width / 2f;
 
-      mutedPalette = Palette.getMutedPalette(faceRadius);
-      vividPalette = Palette.getVividPalette(faceRadius);
-      ambientPalette = Palette.getAmbientPalette(faceRadius);
+      mutedPalette = Palette.getMutedPalette(getApplicationContext(), faceRadius);
+      vividPalette = Palette.getVividPalette(getApplicationContext(), faceRadius);
+      ambientPalette = Palette.getAmbientPalette(getApplicationContext(), faceRadius);
     }
 
     /**

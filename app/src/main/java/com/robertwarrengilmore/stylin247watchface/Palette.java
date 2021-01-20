@@ -1,7 +1,10 @@
 package com.robertwarrengilmore.stylin247watchface;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+
+import androidx.core.content.res.ResourcesCompat;
 
 import lombok.Getter;
 
@@ -14,6 +17,7 @@ class Palette {
   private static final float HAND_SHADOW_WIDTH = 0.01f;
   private static final float LARGE_TICK_WIDTH = 0.025f;
   private static final float SMALL_TICK_WIDTH = 0.02f;
+  private static final float NUMBER_TEXT_SIZE = 0.2125f;
   private static final float SOLAR_CORONA_WIDTH = 0.1f;
 
   private static final float AMBIENT_HOUR_DISC_STROKE_WIDTH = 0.015f;
@@ -24,6 +28,7 @@ class Palette {
   private final Paint handCapPaint = new Paint();
   private final Paint smallTickPaint = new Paint();
   private final Paint largeTickPaint = new Paint();
+  private final Paint numberPaint = new Paint();
   private final Paint backgroundPaint = new Paint();
   private final Paint daySectorPaint = new Paint();
   private final Paint cartoonSunPaint = new Paint();
@@ -33,7 +38,7 @@ class Palette {
   private final Paint moonDarkPaint = new Paint();
   private final Paint moonLinePaint = new Paint();
 
-  private static Palette getCommonPalette(float scaleFactor) {
+  private static Palette getCommonPalette(Context context, float scaleFactor) {
     Palette palette = new Palette();
 
     palette.hourHandPaint.setAntiAlias(true);
@@ -59,6 +64,11 @@ class Palette {
     palette.smallTickPaint.setStrokeCap(Paint.Cap.BUTT);
     palette.smallTickPaint.setStrokeWidth(SMALL_TICK_WIDTH * scaleFactor);
 
+    palette.numberPaint.setAntiAlias(true);
+    palette.numberPaint.setTextSize(NUMBER_TEXT_SIZE * scaleFactor);
+    palette.numberPaint.setTextAlign(Paint.Align.CENTER);
+    palette.numberPaint.setTypeface(ResourcesCompat.getFont(context, R.font.ubuntu_regular));
+
     palette.daySectorPaint.setAntiAlias(true);
 
     palette.cartoonSunPaint.setAntiAlias(true);
@@ -81,8 +91,8 @@ class Palette {
     return palette;
   }
 
-  private static Palette getInteractivePalette(float scaleFactor) {
-    Palette palette = getCommonPalette(scaleFactor);
+  private static Palette getInteractivePalette(Context context, float scaleFactor) {
+    Palette palette = getCommonPalette(context, scaleFactor);
 
     palette.daySectorPaint.setStyle(Paint.Style.FILL);
 
@@ -103,8 +113,8 @@ class Palette {
     return palette;
   }
 
-  static Palette getMutedPalette(float scaleFactor) {
-    Palette palette = getInteractivePalette(scaleFactor);
+  static Palette getMutedPalette(Context context, float scaleFactor) {
+    Palette palette = getInteractivePalette(context, scaleFactor);
 
     palette.daySectorPaint.setColor(Color.HSVToColor(new float[]{200f, 0.25f, 0.6f}));
 
@@ -128,11 +138,13 @@ class Palette {
     palette.largeTickPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.1f}));
     palette.smallTickPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.1f}));
 
+    palette.numberPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.1f}));
+
     return palette;
   }
 
-  static Palette getVividPalette(float scaleFactor) {
-    Palette palette = getInteractivePalette(scaleFactor);
+  static Palette getVividPalette(Context context, float scaleFactor) {
+    Palette palette = getInteractivePalette(context, scaleFactor);
 
     palette.daySectorPaint.setColor(Color.HSVToColor(new float[]{185f, 1f, 1f}));
 
@@ -156,11 +168,13 @@ class Palette {
     palette.largeTickPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.1f}));
     palette.smallTickPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.1f}));
 
+    palette.numberPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.1f}));
+
     return palette;
   }
 
-  static Palette getAmbientPalette(float scaleFactor) {
-    Palette palette = getCommonPalette(scaleFactor);
+  static Palette getAmbientPalette(Context context, float scaleFactor) {
+    Palette palette = getCommonPalette(context, scaleFactor);
 
     palette.backgroundPaint.setColor(Color.BLACK);
 
@@ -202,6 +216,8 @@ class Palette {
 
     palette.largeTickPaint.setColor(Color.GRAY);
     palette.smallTickPaint.setColor(Color.GRAY);
+
+    palette.numberPaint.setColor(Color.GRAY);
 
     return palette;
   }

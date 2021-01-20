@@ -2,7 +2,6 @@ package com.robertwarrengilmore.stylin247watchface;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
@@ -11,7 +10,6 @@ import android.graphics.RectF;
 import android.location.Location;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -26,6 +24,7 @@ class Painter {
   private static final float HOUR_DISC_RADIUS = 0.667f;
   private static final float SUN_AND_MOON_RADIUS = 0.15f;
   private static final float SUN_AND_MOON_CENTRE_OFFSET = 0.3f;
+  private static final float NUMBER_OUTER_RADIUS = 0.85f;
 
   static void draw(
       Context context,
@@ -263,8 +262,8 @@ class Painter {
             centre,
             Integer.toString(tickIndex * 2),
             angle,
-            faceRadius * (MINUTE_TICK_OUTER_RADIUS - 0.15f),
-            null
+            NUMBER_OUTER_RADIUS * faceRadius,
+            palette.getNumberPaint()
         );
       } else {
         drawTick(canvas,
@@ -295,15 +294,8 @@ class Painter {
       float outerRadius,
       Paint paint
   ) {
-    paint = new Paint();
-    paint.setTextSize(outerRadius * 0.25f);
     final float baseLineHeight = paint.getTextSize() * 0.22f;
-    paint.setColor(Color.BLACK);
-    paint.setAntiAlias(true);
-    paint.setTextAlign(Paint.Align.CENTER);
-    paint.setTypeface(ResourcesCompat.getFont(context, R.font.ubuntu_condensed));
-//    paint.setStyle(Paint.Style.STROKE);
-
+    //        paint.setStyle(Paint.Style.STROKE);
     final boolean flipText = angle > 90 && angle < 270;
     final int flipConstant = flipText ? -1 : 1;
     final RectF curveBounds = new RectF(centre.x - outerRadius,
@@ -316,8 +308,7 @@ class Painter {
 
     final float verticalOffset = flipText ? 0 : (paint.getTextSize() - baseLineHeight);
 
-//    canvas.drawPath(path, paint);
-    // TODO Figure out how to compensate for the baseline of the font when calculating the vertical offset of drawTextOnPath.
+    //        canvas.drawPath(path, paint);
     canvas.drawTextOnPath(text, path, 0, verticalOffset, paint);
   }
 
