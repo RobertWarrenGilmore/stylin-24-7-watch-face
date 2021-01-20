@@ -202,7 +202,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       }
 
       Painter.draw(
-          getApplicationContext(),
           canvas,
           bounds,
           palette,

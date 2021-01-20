@@ -1,6 +1,5 @@
 package com.robertwarrengilmore.stylin247watchface;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -28,7 +27,6 @@ class Painter {
   public static final float UBUNTU_REGULAR_BASELINE_RATIO = 0.3f;
 
   static void draw(
-      Context context,
       Canvas canvas,
       Rect bounds,
       Palette palette,
@@ -44,7 +42,7 @@ class Painter {
     final float faceRadius = bounds.width() / 2f;
 
     drawBackground(canvas, palette, centre, faceRadius, calendar, location, drawRealisticSun);
-    drawTicks(context, canvas, palette, centre, faceRadius, showHourNumbers, showSingleMinuteTicks);
+    drawTicks(canvas, palette, centre, faceRadius, showHourNumbers, showSingleMinuteTicks);
     drawHands(canvas,
         palette,
         centre,
@@ -210,7 +208,6 @@ class Painter {
   private static final float MINUTE_TICK_OUTER_RADIUS = 1f;
 
   private static void drawTicks(
-      Context context,
       Canvas canvas,
       Palette palette,
       PointF centre,
@@ -253,8 +250,7 @@ class Painter {
         // TODO Also implement drawing upright numbers.
         // TODO Draw the numbers in the outer ring. This will require drawing the notches shorter and closer to the inside.
         if (showHourNumbers) {
-          drawAngledNumber(context,
-              canvas,
+          drawAngledNumber(canvas,
               centre,
               Integer.toString(hourIndex),
               angle,
@@ -284,13 +280,7 @@ class Painter {
   }
 
   private static void drawAngledNumber(
-      Context context,
-      Canvas canvas,
-      PointF centre,
-      String text,
-      float angle,
-      float outerRadius,
-      Paint paint
+      Canvas canvas, PointF centre, String text, float angle, float outerRadius, Paint paint
   ) {
     final float baseLineHeight = paint.getTextSize() * UBUNTU_REGULAR_BASELINE_RATIO;
     //        paint.setStyle(Paint.Style.STROKE);
