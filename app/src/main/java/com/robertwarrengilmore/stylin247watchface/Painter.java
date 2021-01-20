@@ -200,7 +200,7 @@ class Painter {
   private static final float MINUTE_HAND_LENGTH = 0.9f;
   private static final float SECOND_HAND_LENGTH = 0.9f;
   private static final float HAND_CAP_RADIUS = 0.03f;
-  private static final float LARGE_TICK_LENGTH = 0.425f;
+  private static final float LARGE_TICK_LENGTH = 0.11f;
   private static final float SMALL_TICK_LENGTH = 0.05f;
   private static final float MINUTE_TICK_OUTER_RADIUS = 1f;
 
@@ -228,11 +228,18 @@ class Painter {
         );
       }
     }
-
     // Draw the hour ticks.
     for (int tickIndex = 0; tickIndex < 24; tickIndex++) {
       float angle = (float) (tickIndex * 360 / 24) + 180;
-      if (tickIndex % 2 == 1) {
+      if (tickIndex % 2 == 0) {
+        drawTick(canvas,
+            centre,
+            angle,
+            HOUR_DISC_RADIUS * faceRadius,
+            LARGE_TICK_LENGTH * faceRadius,
+            palette.getLargeTickPaint()
+        );
+      } else {
         drawTick(canvas,
             centre,
             angle,
