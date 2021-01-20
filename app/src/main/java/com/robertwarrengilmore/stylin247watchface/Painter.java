@@ -1,5 +1,6 @@
 package com.robertwarrengilmore.stylin247watchface;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -7,10 +8,10 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Typeface;
 import android.location.Location;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 
 import java.time.Duration;
 import java.time.LocalTime;
@@ -27,6 +28,7 @@ class Painter {
   private static final float SUN_AND_MOON_CENTRE_OFFSET = 0.3f;
 
   static void draw(
+      Context context,
       Canvas canvas,
       Rect bounds,
       Palette palette,
@@ -41,7 +43,7 @@ class Painter {
     final float faceRadius = bounds.width() / 2f;
 
     drawBackground(canvas, palette, centre, faceRadius, calendar, location, drawRealisticSun);
-    drawTicks(canvas, palette, centre, faceRadius, showSingleMinuteTicks);
+    drawTicks(context, canvas, palette, centre, faceRadius, showSingleMinuteTicks);
     drawHands(canvas,
         palette,
         centre,
@@ -216,7 +218,12 @@ class Painter {
   }
 
   private static void drawTicks(
-      Canvas canvas, Palette palette, PointF centre, float faceRadius, boolean showSingleMinuteTicks
+      Context context,
+      Canvas canvas,
+      Palette palette,
+      PointF centre,
+      float faceRadius,
+      boolean showSingleMinuteTicks
   ) {
     // Draw the five-minute (and even-hour) ticks.
     for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
@@ -230,11 +237,12 @@ class Painter {
       );
       // TODO Also implement drawing upright numbers.
       // TODO Draw the numbers in the outer ring. This will require drawing the notches shorter and closer to the inside.
-      drawAngledNumber(canvas,
+      drawAngledNumber(context,
+          canvas,
           centre,
           Integer.toString(tickIndex * 2),
           angle,
-          faceRadius * (MINUTE_TICK_OUTER_RADIUS - LARGE_TICK_LENGTH - 0.1f),
+          faceRadius * (MINUTE_TICK_OUTER_RADIUS - 0.15f),
           null
       );
     }
@@ -277,15 +285,22 @@ class Painter {
   }
 
   private static void drawAngledNumber(
-      Canvas canvas, PointF centre, String text, float angle, float outerRadius, Paint paint
+      Context context,
+      Canvas canvas,
+      PointF centre,
+      String text,
+      float angle,
+      float outerRadius,
+      Paint paint
   ) {
     paint = new Paint();
     paint.setTextSize(outerRadius * 0.25f);
+    final float baseLineHeight = paint.getTextSize() * 0.22f;
     paint.setColor(Color.BLACK);
     paint.setAntiAlias(true);
     paint.setTextAlign(Paint.Align.CENTER);
-    paint.setTypeface(Typeface.MONOSPACE);
-    paint.setStyle(Paint.Style.STROKE);
+    paint.setTypeface(ResourcesCompat.getFont(context, R.font.ubuntu_condensed));
+//    paint.setStyle(Paint.Style.STROKE);
 
     final boolean flipText = angle > 90 && angle < 270;
     final int flipConstant = flipText ? -1 : 1;
@@ -297,9 +312,11 @@ class Painter {
     final Path path = new Path();
     path.addArc(curveBounds, angle - (15 * flipConstant) - 90, 30 * flipConstant);
 
-    canvas.drawPath(path, paint);
-    // TODO Figure out how to compensate for the baseline of he font when calculating the vertical offset of drawTextOnPath.
-    canvas.drawTextOnPath(text, path, 0, flipText ? 0 : paint.getTextSize(), paint);
+    final float verticalOffset = flipText ? 0 : (paint.getTextSize() - baseLineHeight);
+
+//    canvas.drawPath(path, paint);
+    // TODO Figure out how to compensate for the baseline of the font when calculating the vertical offset of drawTextOnPath.
+    canvas.drawTextOnPath(text, path, 0, verticalOffset, paint);
   }
 
   private static void drawHands(
