@@ -196,7 +196,6 @@ class Painter {
     canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonLinePaint());
   }
 
-
   private static final float HOUR_HAND_LENGTH = 0.525f;
   private static final float MINUTE_HAND_LENGTH = 0.9f;
   private static final float SECOND_HAND_LENGTH = 0.9f;
