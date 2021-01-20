@@ -9,19 +9,11 @@ import lombok.Getter;
 class Palette {
 
   private static final float HOUR_HAND_WIDTH = 0.04f;
-  private static final float HOUR_HAND_LENGTH = 0.525f;
   private static final float MINUTE_HAND_WIDTH = 0.03f;
-  private static final float MINUTE_HAND_LENGTH = 0.9f;
   private static final float SECOND_HAND_WIDTH = 0.01f;
-  private static final float SECOND_HAND_LENGTH = 0.9f;
-  private static final float HAND_CAP_RADIUS = 0.03f;
   private static final float HAND_SHADOW_WIDTH = 0.01f;
   private static final float LARGE_TICK_WIDTH = 0.02f;
-  private static final float LARGE_TICK_LENGTH = 0.425f;
   private static final float SMALL_TICK_WIDTH = 0.0125f;
-  private static final float SMALL_TICK_LENGTH = 0.05f;
-  private static final float MINUTE_TICK_OUTER_RADIUS = 1f;
-  private static final float HOUR_DISC_RADIUS = 0.667f;
   private static final float SOLAR_CORONA_WIDTH = 0.1f;
 
   private static final float AMBIENT_HOUR_DISC_STROKE_WIDTH = 0.015f;
