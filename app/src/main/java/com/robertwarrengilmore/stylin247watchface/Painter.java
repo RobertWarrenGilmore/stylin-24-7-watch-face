@@ -196,37 +196,29 @@ class Painter {
     canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonLinePaint());
   }
 
-
   private static final float HOUR_HAND_LENGTH = 0.525f;
   private static final float MINUTE_HAND_LENGTH = 0.9f;
   private static final float SECOND_HAND_LENGTH = 0.9f;
   private static final float HAND_CAP_RADIUS = 0.03f;
-  private static final float LARGE_TICK_LENGTH = 0.425f;
+  private static final float LARGE_TICK_LENGTH = 0.11f;
   private static final float SMALL_TICK_LENGTH = 0.05f;
   private static final float MINUTE_TICK_OUTER_RADIUS = 1f;
 
   private static void drawTicks(
       Canvas canvas, Palette palette, PointF centre, float faceRadius, boolean showSingleMinuteTicks
   ) {
-    // Draw the five-minute (and even-hour) ticks.
-    for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
-      float angle = (float) (tickIndex * 360 / 12);
-      drawTick(canvas,
-          centre,
-          angle,
-          MINUTE_TICK_OUTER_RADIUS * faceRadius,
-          LARGE_TICK_LENGTH * faceRadius,
-          palette.getLargeTickPaint()
-      );
-    }
-    // Draw the single-minute ticks.
-    if (showSingleMinuteTicks) {
-      for (int tickIndex = 0; tickIndex < 60; tickIndex++) {
-        // Don't repeat the five-minute ticks.
-        if (tickIndex % 5 == 0) {
-          continue;
-        }
-        float angle = (float) (tickIndex * 360 / 60);
+    // Draw the minute ticks.
+    for (int minuteIndex = 0; minuteIndex < 60; minuteIndex++) {
+      final float angle = (float) (minuteIndex * 360 / 60);
+      if (minuteIndex % 5 == 0) {
+        drawTick(canvas,
+            centre,
+            angle,
+            MINUTE_TICK_OUTER_RADIUS * faceRadius,
+            LARGE_TICK_LENGTH * faceRadius,
+            palette.getLargeTickPaint()
+        );
+      } else if (showSingleMinuteTicks) {
         drawTick(canvas,
             centre,
             angle,
@@ -236,16 +228,26 @@ class Painter {
         );
       }
     }
-    // Draw the odd-hour ticks.
-    for (int tickIndex = 0; tickIndex < 12; tickIndex++) {
-      float angle = (float) (tickIndex * 360 / 12) + (float) (360 / 24);
-      drawTick(canvas,
-          centre,
-          angle,
-          HOUR_DISC_RADIUS * faceRadius,
-          SMALL_TICK_LENGTH * faceRadius,
-          palette.getSmallTickPaint()
-      );
+    // Draw the hour ticks.
+    for (int tickIndex = 0; tickIndex < 24; tickIndex++) {
+      float angle = (float) (tickIndex * 360 / 24) + 180;
+      if (tickIndex % 3 == 0) {
+        drawTick(canvas,
+            centre,
+            angle,
+            HOUR_DISC_RADIUS * faceRadius,
+            LARGE_TICK_LENGTH * faceRadius,
+            palette.getLargeTickPaint()
+        );
+      } else {
+        drawTick(canvas,
+            centre,
+            angle,
+            HOUR_DISC_RADIUS * faceRadius,
+            SMALL_TICK_LENGTH * faceRadius,
+            palette.getSmallTickPaint()
+        );
+      }
     }
   }
 
