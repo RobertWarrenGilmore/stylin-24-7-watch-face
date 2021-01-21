@@ -88,8 +88,8 @@ class Painter {
                                 LocalTime.NOON;
 
 
-    final float noonOffsetDayFraction = solarNoon.toSecondOfDay() / (24f * 60 * 60 - 1);
-    final float dayLengthFraction = solarDayLength.getSeconds() / (24f * 60 * 60 - 1);
+    final float noonOffsetDayFraction = solarNoon.toSecondOfDay() / (24f * 60 * 60);
+    final float dayLengthFraction = solarDayLength.getSeconds() / (24f * 60 * 60);
 
     final float sunriseOffsetFraction = noonOffsetDayFraction - (dayLengthFraction / 2);
     canvas.drawArc(boundingBox,

@@ -87,7 +87,7 @@ class AstronomyCalculator {
         .getOffset(when.toInstant())
         .getTotalSeconds();
     final long astronomicalTimeOffsetSeconds = (long) (
-        location.getLongitude() / 360 * (24 * 60 * 60 - 1)
+        location.getLongitude() / 360 * 24 * 60 * 60
     );
     return LocalTime.NOON.plusSeconds(timeZoneOffsetSeconds - astronomicalTimeOffsetSeconds);
   }
