@@ -137,14 +137,6 @@ class Painter {
     for (int rayIndex = 0; rayIndex < 12; rayIndex++) {
       final float rayTipAngle = (float) (rayIndex * 360 / 12);
       final PointF rayTip = cartesian(centre, rayTipAngle, radius + rayOffset + rayLength);
-      final PointF rayBottomLeft = cartesian(centre,
-          rayTipAngle - SUN_RAY_WIDTH_DEGREES / 2,
-          rayOffset
-      );
-      final PointF rayBottomRight = cartesian(centre,
-          rayTipAngle + SUN_RAY_WIDTH_DEGREES / 2,
-          rayOffset
-      );
       final float rayBottomRadius = (radius + rayOffset);
       final RectF rayOffsetBoundingBox = new RectF(centre.x - rayBottomRadius,
           centre.y - rayBottomRadius,
