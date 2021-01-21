@@ -1,5 +1,6 @@
 package com.robertwarrengilmore.stylin247watchface;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.graphics.Rect;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.wearable.watchface.CanvasWatchFaceService;
 import android.support.wearable.watchface.WatchFaceService;
@@ -21,10 +23,15 @@ import android.view.SurfaceHolder;
 import androidx.core.app.ActivityCompat;
 import androidx.preference.PreferenceManager;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+
 import java.lang.ref.WeakReference;
 import java.time.Duration;
 import java.util.Calendar;
-import java.util.Optional;
 import java.util.TimeZone;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -32,7 +39,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class Stylin247WatchFace extends CanvasWatchFaceService {
 
-  private LocationCache locationCache;
+  private Location location;
   private SharedPreferences preferenceManager;
 
   /**
@@ -40,12 +47,66 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
    */
   private static final int MSG_UPDATE_TIME = 0;
 
+  public static final LocationRequest LOCATION_REQUEST = new LocationRequest()
+      .setSmallestDisplacement(200_000f)
+      .setPriority(LocationRequest.PRIORITY_LOW_POWER)
+      .setFastestInterval(Duration.ofSeconds(1).toMillis())
+      .setInterval(Duration.ofHours(6).toMillis());
+  private final LocationCallback locationCallback = new LocationCallback() {
+    @Override
+    public void onLocationResult(LocationResult locationResult) {
+      super.onLocationResult(locationResult);
+      location = locationResult.getLastLocation();
+    }
+  };
+  private FusedLocationProviderClient locationClient;
+
   @Override
   public void onCreate() {
     super.onCreate();
-    locationCache = new LocationCache(getApplicationContext());
     preferenceManager = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     turnOffUseLocationIfNoPermission();
+    locationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+    if (preferenceManager.getBoolean(getString(R.string.settings_key_use_location), false)) {
+      startLocationUpdates();
+    }
+  }
+
+  @Override
+  public void onDestroy() {
+    stopLocationUpdates();
+    super.onDestroy();
+  }
+
+  @Override
+  public boolean onUnbind(Intent intent) {
+    stopLocationUpdates();
+    super.onUnbind(intent);
+    return true;
+  }
+
+  @Override
+  public void onRebind(Intent intent) {
+    turnOffUseLocationIfNoPermission();
+    startLocationUpdates();
+    super.onRebind(intent);
+  }
+
+  private void startLocationUpdates() {
+    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+        PackageManager.PERMISSION_GRANTED &&
+        ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) !=
+            PackageManager.PERMISSION_GRANTED) {
+      return;
+    }
+    locationClient.requestLocationUpdates(LOCATION_REQUEST,
+        locationCallback,
+        Looper.myLooper()
+    );
+  }
+
+  private void stopLocationUpdates() {
+    locationClient.removeLocationUpdates(locationCallback);
   }
 
   private void turnOffUseLocationIfNoPermission() {
@@ -127,7 +188,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     public void onDestroy() {
       System.out.println("destroyed watch face");
       updateTimeHandler.removeMessages(MSG_UPDATE_TIME);
-      locationCache.stopUpdating();
       super.onDestroy();
     }
 
@@ -139,7 +199,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       ambientPalette.setLowBitAmbient(lowBitAmbient);
       ambientPalette.setBurnInProtection(burnInProtection);
     }
-
 
     @Override
     public void onTimeTick() {
@@ -210,17 +269,11 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       ambientPalette = Palette.getAmbientPalette(getApplicationContext(), faceRadius);
     }
 
-    Optional<Location> getLocation() {
+    Location getLocationIfNeeded() {
       if (preferenceManager.getBoolean(getString(R.string.settings_key_use_location), false)) {
-        if (!locationCache.isUpdating()) {
-          locationCache.startUpdating();
-        }
-        return locationCache.getLocation();
+        return location;
       }
-      if (locationCache.isUpdating()) {
-        locationCache.stopUpdating();
-      }
-      return Optional.empty();
+      return null;
     }
 
     @Override
@@ -244,7 +297,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           bounds,
           palette,
           calendar,
-          getLocation().orElse(null),
+          getLocationIfNeeded(),
           preferenceManager.getBoolean(getString(R.string.settings_key_draw_realistic_sun), false),
           preferenceManager.getBoolean(getString(R.string.settings_key_show_hour_numbers), false),
           preferenceManager.getBoolean(getString(R.string.settings_key_angle_hour_numbers), false),
