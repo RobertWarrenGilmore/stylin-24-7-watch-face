@@ -101,7 +101,6 @@ class Painter {
     final float dayLengthFraction = solarDayLength.getSeconds() / (24f * 60 * 60);
 
     final float sunriseOffsetFraction = noonOffsetDayFraction - (dayLengthFraction / 2);
-    System.out.println("dayLengthFraction == " + dayLengthFraction);
     if (dayLengthFraction == 0) {
       canvas.drawCircle(centre.x, centre.y, hourDiscRadius, palette.getNightSectorPaint());
     } else if (dayLengthFraction == 1) {
