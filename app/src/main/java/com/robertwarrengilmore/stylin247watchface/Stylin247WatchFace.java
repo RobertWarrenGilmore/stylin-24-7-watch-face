@@ -175,7 +175,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     @Override
     public void onCreate(SurfaceHolder holder) {
       super.onCreate(holder);
-      System.out.println("created watch face");
 
       setWatchFaceStyle(new WatchFaceStyle.Builder(Stylin247WatchFace.this)
           .setAcceptsTapEvents(false)
@@ -186,7 +185,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
     @Override
     public void onDestroy() {
-      System.out.println("destroyed watch face");
       updateTimeHandler.removeMessages(MSG_UPDATE_TIME);
       super.onDestroy();
     }
