@@ -46,7 +46,7 @@ class AstronomyCalculator {
     if (Float.isNaN(localSunHourAngle)) {
       // We must be in the arctic or the antarctic during summer or winter. The day length is either 24 hours or 0.
       final boolean inNorthernHemisphere = latitude > 0;
-      final boolean isNorthernSummer = sunDeclination < 0;
+      final boolean isNorthernSummer = sunDeclination > 0;
       if (inNorthernHemisphere ^ isNorthernSummer) {
         return Duration.ZERO;
       }
