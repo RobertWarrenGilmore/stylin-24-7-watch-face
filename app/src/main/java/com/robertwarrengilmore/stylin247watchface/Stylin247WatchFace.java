@@ -88,8 +88,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     private boolean registeredTimeZoneReceiver = false;
     private boolean muteMode;
     private boolean ambient;
-    private boolean lowBitAmbient;
-    private boolean burnInProtection;
     private float faceRadius;
 
     @Override
