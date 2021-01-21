@@ -62,6 +62,6 @@
 
     <Preference
         app:selectable="false"
-        app:summary="RobertWarrenGilmore.com" />
+        app:summary="@string/settings_footer_text" />
 
 </androidx.preference.PreferenceScreen>
