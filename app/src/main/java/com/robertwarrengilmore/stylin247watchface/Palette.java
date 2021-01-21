@@ -38,66 +38,80 @@ class Palette {
   private final Paint moonDarkPaint = new Paint();
   private final Paint moonLinePaint = new Paint();
 
-  private static Palette getCommonPalette(Context context, float scaleFactor) {
-    Palette palette = new Palette();
+  private final float scaleFactor;
 
-    palette.hourHandPaint.setAntiAlias(true);
-    palette.hourHandPaint.setStrokeCap(Paint.Cap.ROUND);
-    palette.hourHandPaint.setStrokeWidth(HOUR_HAND_WIDTH * scaleFactor);
+  private Palette(
+      Context context, float scaleFactor
+  ) {
+    this.scaleFactor = scaleFactor;
 
-    palette.minuteHandPaint.setAntiAlias(true);
-    palette.minuteHandPaint.setStrokeCap(Paint.Cap.ROUND);
-    palette.minuteHandPaint.setStrokeWidth(MINUTE_HAND_WIDTH * scaleFactor);
+    setLowBitAmbient(false);
+    setBurnInProtection(false);
 
-    palette.secondHandPaint.setAntiAlias(true);
-    palette.secondHandPaint.setStrokeCap(Paint.Cap.ROUND);
-    palette.secondHandPaint.setStrokeWidth(SECOND_HAND_WIDTH * scaleFactor);
+    hourHandPaint.setStrokeCap(Paint.Cap.ROUND);
+    hourHandPaint.setStrokeWidth(HOUR_HAND_WIDTH * scaleFactor);
 
-    palette.handCapPaint.setAntiAlias(true);
-    palette.handCapPaint.setStyle(Paint.Style.FILL);
+    minuteHandPaint.setStrokeCap(Paint.Cap.ROUND);
+    minuteHandPaint.setStrokeWidth(MINUTE_HAND_WIDTH * scaleFactor);
 
-    palette.largeTickPaint.setAntiAlias(true);
-    palette.largeTickPaint.setStrokeCap(Paint.Cap.BUTT);
-    palette.largeTickPaint.setStrokeWidth(LARGE_TICK_WIDTH * scaleFactor);
+    secondHandPaint.setStrokeCap(Paint.Cap.ROUND);
+    secondHandPaint.setStrokeWidth(SECOND_HAND_WIDTH * scaleFactor);
 
-    palette.smallTickPaint.setAntiAlias(true);
-    palette.smallTickPaint.setStrokeCap(Paint.Cap.BUTT);
-    palette.smallTickPaint.setStrokeWidth(SMALL_TICK_WIDTH * scaleFactor);
+    handCapPaint.setStyle(Paint.Style.FILL);
 
-    palette.numberPaint.setAntiAlias(true);
-    palette.numberPaint.setTextSize(NUMBER_TEXT_SIZE * scaleFactor);
-    palette.numberPaint.setTextAlign(Paint.Align.CENTER);
-    palette.numberPaint.setTypeface(ResourcesCompat.getFont(context, R.font.ubuntu_light));
+    largeTickPaint.setStrokeCap(Paint.Cap.BUTT);
+    largeTickPaint.setStrokeWidth(LARGE_TICK_WIDTH * scaleFactor);
 
-    palette.daySectorPaint.setAntiAlias(true);
+    smallTickPaint.setStrokeCap(Paint.Cap.BUTT);
+    smallTickPaint.setStrokeWidth(SMALL_TICK_WIDTH * scaleFactor);
 
-    palette.cartoonSunPaint.setAntiAlias(true);
-    palette.cartoonSunPaint.setStyle(Paint.Style.FILL);
+    numberPaint.setTextSize(NUMBER_TEXT_SIZE * scaleFactor);
+    numberPaint.setTextAlign(Paint.Align.CENTER);
+    numberPaint.setTypeface(ResourcesCompat.getFont(context, R.font.ubuntu_light));
 
-    palette.realisticSunPaint.setAntiAlias(true);
-    palette.realisticSunPaint.setStyle(Paint.Style.FILL);
+    moonLinePaint.setStyle(Paint.Style.STROKE);
 
-    palette.nightSectorPaint.setAntiAlias(true);
+    moonDarkPaint.setStyle(Paint.Style.FILL);
 
-    palette.moonLinePaint.setAntiAlias(true);
-    palette.moonLinePaint.setStyle(Paint.Style.STROKE);
+    moonLitPaint.setStyle(Paint.Style.FILL);
+  }
 
-    palette.moonLitPaint.setAntiAlias(true);
-    palette.moonLitPaint.setStyle(Paint.Style.FILL);
+  private void setAntiAlias(boolean value) {
+    hourHandPaint.setAntiAlias(value);
+    minuteHandPaint.setAntiAlias(value);
+    secondHandPaint.setAntiAlias(value);
+    handCapPaint.setAntiAlias(value);
+    largeTickPaint.setAntiAlias(value);
+    smallTickPaint.setAntiAlias(value);
+    numberPaint.setAntiAlias(value);
+    daySectorPaint.setAntiAlias(value);
+    cartoonSunPaint.setAntiAlias(value);
+    realisticSunPaint.setAntiAlias(value);
+    nightSectorPaint.setAntiAlias(value);
+    moonLinePaint.setAntiAlias(value);
+    moonLitPaint.setAntiAlias(value);
+    moonDarkPaint.setAntiAlias(value);
+  }
 
-    palette.moonDarkPaint.setAntiAlias(true);
-    palette.moonDarkPaint.setStyle(Paint.Style.FILL);
-
-    return palette;
+  void setLowBitAmbient(boolean lowBitAmbient) {
+    setAntiAlias(!lowBitAmbient);
+    if (lowBitAmbient) {
+      realisticSunPaint.clearShadowLayer();
+    } else {
+      realisticSunPaint.setShadowLayer(SOLAR_CORONA_WIDTH * scaleFactor,
+          0,
+          0,
+          realisticSunPaint.getColor()
+      );
+    }
   }
 
   private static Palette getInteractivePalette(Context context, float scaleFactor) {
-    Palette palette = getCommonPalette(context, scaleFactor);
+    Palette palette = new Palette(context, scaleFactor);
 
     palette.daySectorPaint.setStyle(Paint.Style.FILL);
 
     palette.nightSectorPaint.setStyle(Paint.Style.FILL);
-
     palette.moonLinePaint.setColor(Color.TRANSPARENT);
 
     palette.hourHandPaint.setColor(Color.BLACK);
@@ -173,8 +187,16 @@ class Palette {
     return palette;
   }
 
-  static Palette getAmbientPalette(Context context, float scaleFactor) {
-    Palette palette = getCommonPalette(context, scaleFactor);
+  void setBurnInProtection(boolean burnInProtection) {
+    cartoonSunPaint.setStyle(burnInProtection ? Paint.Style.STROKE : Paint.Style.FILL);
+    realisticSunPaint.setStyle(burnInProtection ? Paint.Style.STROKE : Paint.Style.FILL);
+    moonLitPaint.setAlpha(burnInProtection ? 0 : 255);
+  }
+
+  static Palette getAmbientPalette(
+      Context context, float scaleFactor
+  ) {
+    Palette palette = new Palette(context, scaleFactor);
 
     palette.backgroundPaint.setColor(Color.BLACK);
 
@@ -183,8 +205,10 @@ class Palette {
     palette.daySectorPaint.setStrokeWidth(AMBIENT_HOUR_DISC_STROKE_WIDTH * scaleFactor);
 
     palette.cartoonSunPaint.setColor(Color.DKGRAY);
+    palette.cartoonSunPaint.setStrokeWidth(AMBIENT_HOUR_DISC_STROKE_WIDTH * scaleFactor);
 
     palette.realisticSunPaint.setColor(Color.DKGRAY);
+    palette.realisticSunPaint.setStrokeWidth(AMBIENT_HOUR_DISC_STROKE_WIDTH * scaleFactor);
     palette.realisticSunPaint.setShadowLayer(SOLAR_CORONA_WIDTH * scaleFactor,
         0,
         0,
