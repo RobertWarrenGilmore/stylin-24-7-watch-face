@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -16,16 +18,22 @@ import android.support.wearable.watchface.WatchFaceService;
 import android.support.wearable.watchface.WatchFaceStyle;
 import android.view.SurfaceHolder;
 
+import androidx.core.app.ActivityCompat;
+import androidx.preference.PreferenceManager;
+
 import java.lang.ref.WeakReference;
 import java.time.Duration;
 import java.util.Calendar;
 import java.util.Optional;
 import java.util.TimeZone;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 public class Stylin247WatchFace extends CanvasWatchFaceService {
 
-  private Settings settings;
   private LocationCache locationCache;
+  private SharedPreferences preferenceManager;
 
   /**
    * Handler message id for updating the time periodically in interactive mode.
@@ -35,8 +43,21 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   @Override
   public void onCreate() {
     super.onCreate();
-    settings = new Settings(getApplicationContext());
     locationCache = new LocationCache(getApplicationContext());
+    preferenceManager = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    turnOffUseLocationIfNoPermission();
+  }
+
+  private void turnOffUseLocationIfNoPermission() {
+    if (ActivityCompat.checkSelfPermission(getApplicationContext(), ACCESS_COARSE_LOCATION) !=
+        PackageManager.PERMISSION_GRANTED &&
+        ActivityCompat.checkSelfPermission(getApplicationContext(), ACCESS_FINE_LOCATION) !=
+            PackageManager.PERMISSION_GRANTED) {
+      preferenceManager
+          .edit()
+          .putBoolean(getString(R.string.settings_key_use_location), false)
+          .apply();
+    }
   }
 
   @Override
@@ -190,7 +211,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     }
 
     Optional<Location> getLocation() {
-      if (settings.getUseLocation()) {
+      if (preferenceManager.getBoolean(getString(R.string.settings_key_use_location), false)) {
         if (!locationCache.isUpdating()) {
           locationCache.startUpdating();
         }
@@ -207,7 +228,9 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       long now = System.currentTimeMillis();
       calendar.setTimeInMillis(now);
 
-      String colourScheme = settings.getColourScheme();
+      String colourScheme = preferenceManager.getString(getString(R.string.settings_key_colour_scheme),
+          getString(R.string.settings_colour_scheme_value_muted)
+      );
       Palette palette;
       if (ambient) {
         palette = ambientPalette;
@@ -217,18 +240,23 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         palette = mutedPalette;
       }
 
-      Painter.draw(
-          canvas,
+      Painter.draw(canvas,
           bounds,
           palette,
           calendar,
           getLocation().orElse(null),
-          settings.getDrawRealisticSun(),
-          settings.getShowHourNumbers(),
-          settings.getAngleHourNumbers(),
-          settings.getShowSingleMinuteTicks(),
-          settings.getShowSecondHand() && !ambient,
-          settings.getAnimateSecondHandSmoothly() && !ambient
+          preferenceManager.getBoolean(getString(R.string.settings_key_draw_realistic_sun), false),
+          preferenceManager.getBoolean(getString(R.string.settings_key_show_hour_numbers), false),
+          preferenceManager.getBoolean(getString(R.string.settings_key_angle_hour_numbers), false),
+          preferenceManager.getBoolean(getString(R.string.settings_key_show_single_minute_ticks),
+              false
+          ),
+          preferenceManager.getBoolean(getString(R.string.settings_key_show_second_hand), false) &&
+              !ambient,
+          preferenceManager.getBoolean(getString(R.string.settings_key_show_second_hand), false) &&
+              preferenceManager.getBoolean(getString(R.string.settings_key_animate_second_hand_smoothly),
+                  false
+              ) && !ambient
       );
     }
 
@@ -291,8 +319,15 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       invalidate();
       if (shouldTimerBeRunning()) {
         Duration updateRate;
-        if (settings.getShowSecondHand()) {
-          if (settings.getAnimateSecondHandSmoothly()) {
+        if (preferenceManager.getBoolean(getString(R.string.settings_key_show_second_hand),
+            false
+        )) {
+          if (preferenceManager.getBoolean(getString(R.string.settings_key_show_second_hand),
+              false
+          ) &&
+              preferenceManager.getBoolean(getString(R.string.settings_key_animate_second_hand_smoothly),
+                  false
+              )) {
             updateRate = Duration.ofSeconds(1).dividedBy(20);
           } else {
             updateRate = Duration.ofSeconds(1);
