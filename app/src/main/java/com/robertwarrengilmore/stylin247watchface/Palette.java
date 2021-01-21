@@ -67,7 +67,7 @@ class Palette {
 
     numberPaint.setTextSize(NUMBER_TEXT_SIZE * scaleFactor);
     numberPaint.setTextAlign(Paint.Align.CENTER);
-    numberPaint.setTypeface(ResourcesCompat.getFont(context, R.font.ubuntu_light));
+    numberPaint.setTypeface(ResourcesCompat.getFont(context, R.font.ubuntu_regular));
 
     moonLinePaint.setStyle(Paint.Style.STROKE);
 
