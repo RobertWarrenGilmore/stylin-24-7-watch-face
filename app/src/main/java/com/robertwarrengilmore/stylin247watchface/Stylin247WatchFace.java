@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.location.Location;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.wearable.watchface.CanvasWatchFaceService;
@@ -87,6 +88,9 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     private boolean registeredTimeZoneReceiver = false;
     private boolean muteMode;
     private boolean ambient;
+    private boolean lowBitAmbient;
+    private boolean burnInProtection;
+    private float faceRadius;
 
     @Override
     public void onCreate(SurfaceHolder holder) {
@@ -107,6 +111,16 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       locationCache.stopUpdating();
       super.onDestroy();
     }
+
+    @Override
+    public void onPropertiesChanged(Bundle properties) {
+      super.onPropertiesChanged(properties);
+      final boolean lowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
+      final boolean burnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
+      ambientPalette.setLowBitAmbient(lowBitAmbient);
+      ambientPalette.setBurnInProtection(burnInProtection);
+    }
+
 
     @Override
     public void onTimeTick() {
@@ -146,11 +160,9 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
        * Find the radius of the screen, and ignore the window insets, so that, on round watches with
        * a "chin", the watch face is centred on the entire screen, not just the usable portion.
        */
-      float faceRadius = width / 2f;
+      faceRadius = width / 2f;
 
-      mutedPalette = Palette.getMutedPalette(getApplicationContext(), faceRadius);
-      vividPalette = Palette.getVividPalette(getApplicationContext(), faceRadius);
-      ambientPalette = Palette.getAmbientPalette(getApplicationContext(), faceRadius);
+      createPalettes();
     }
 
     /**
@@ -171,6 +183,12 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           break;
       }
       invalidate();
+    }
+
+    private void createPalettes() {
+      mutedPalette = Palette.getMutedPalette(getApplicationContext(), faceRadius);
+      vividPalette = Palette.getVividPalette(getApplicationContext(), faceRadius);
+      ambientPalette = Palette.getAmbientPalette(getApplicationContext(), faceRadius);
     }
 
     Optional<Location> getLocation() {
