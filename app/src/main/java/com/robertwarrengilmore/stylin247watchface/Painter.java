@@ -16,16 +16,24 @@ import java.util.Calendar;
 
 class Painter {
 
-
+  private static final float HOUR_DISC_RADIUS = 0.667f;
+  private static final float SUN_AND_MOON_CENTRE_OFFSET = 0.3f;
+  private static final float SUN_AND_MOON_RADIUS = 0.15f;
   public static final float SUN_RAY_WIDTH_DEGREES = 20;
   public static final float SUN_RAY_LENGTH = 0.35f;
   public static final float SUN_RAY_OFFSET = 0.2f;
-  private static final float HOUR_DISC_RADIUS = 0.667f;
-  private static final float SUN_AND_MOON_RADIUS = 0.15f;
-  private static final float SUN_AND_MOON_CENTRE_OFFSET = 0.3f;
-  private static final float NUMBER_OUTER_RADIUS = 0.84f;
-  public static final float UBUNTU_REGULAR_BASELINE_RATIO = 0.3f;
   public static final float MINIMUM_DAYLIGHT_TO_SHOW_SUN = 0.2f;
+
+  public static final float UBUNTU_REGULAR_BASELINE_RATIO = 0.3f;
+  private static final float NUMBER_OUTER_RADIUS = 0.84f;
+
+  private static final float HOUR_HAND_LENGTH = 0.525f;
+  private static final float MINUTE_HAND_LENGTH = 0.9f;
+  private static final float SECOND_HAND_LENGTH = 0.9f;
+  private static final float HAND_CAP_RADIUS = 0.03f;
+  private static final float LARGE_TICK_LENGTH = 0.11f;
+  private static final float SMALL_TICK_LENGTH = 0.05f;
+  private static final float MINUTE_TICK_OUTER_RADIUS = 1f;
 
   static void draw(
       Canvas canvas,
@@ -133,90 +141,6 @@ class Painter {
     }
   }
 
-  private static void drawSun(
-      Canvas canvas, Palette palette, PointF centre, float radius, boolean drawRealisticSun
-  ) {
-    if (drawRealisticSun) {
-      canvas.drawCircle(centre.x, centre.y, radius, palette.getRealisticSunPaint());
-      return;
-    }
-
-    canvas.drawCircle(centre.x, centre.y, radius, palette.getCartoonSunPaint());
-    final float rayOffset = radius * SUN_RAY_OFFSET;
-    final float rayLength = radius * SUN_RAY_LENGTH;
-    for (int rayIndex = 0; rayIndex < 12; rayIndex++) {
-      final float rayTipAngle = (float) (rayIndex * 360 / 12);
-      final PointF rayTip = cartesian(centre, rayTipAngle, radius + rayOffset + rayLength);
-      final float rayBottomRadius = (radius + rayOffset);
-      final RectF rayOffsetBoundingBox = new RectF(centre.x - rayBottomRadius,
-          centre.y - rayBottomRadius,
-          centre.x + rayBottomRadius,
-          centre.y + rayBottomRadius
-      );
-      final Path ray = new Path();
-      ray.moveTo(rayTip.x, rayTip.y);
-      ray.arcTo(rayOffsetBoundingBox,
-          rayTipAngle - SUN_RAY_WIDTH_DEGREES / 2 - 90,
-          SUN_RAY_WIDTH_DEGREES
-      );
-      ray.close();
-      canvas.drawPath(ray, palette.getCartoonSunPaint());
-    }
-  }
-
-  private static void drawMoon(
-      Canvas canvas, Palette palette, PointF centre, float radius, float phase
-  ) {
-    final float curveOffset = (float) Math.cos(phase * 2 * Math.PI) * radius;
-    final float crescentWidth = radius - Math.abs(curveOffset);
-    final boolean drawCurve = crescentWidth >= 0.25;
-    final boolean mostlyLit = phase > 0.25f && phase < 0.75f;
-    final boolean fullMoon = !drawCurve && mostlyLit;
-
-    if (fullMoon) {
-      canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonLitPaint());
-    } else {
-      canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonDarkPaint());
-    }
-    if (drawCurve) {
-      final boolean litOnRight = phase > 0.5f;
-      final boolean curveGoesRight = litOnRight ^ mostlyLit;
-      canvas.drawArc(centre.x - radius,
-          centre.y - radius,
-          centre.x + radius,
-          centre.y + radius,
-          litOnRight ? 90f : 270f,
-          180f,
-          true,
-          palette.getMoonLitPaint()
-      );
-      canvas.drawOval(centre.x - curveOffset,
-          centre.y - radius,
-          centre.x + curveOffset,
-          centre.y + radius,
-          mostlyLit ? palette.getMoonLitPaint() : palette.getMoonDarkPaint()
-      );
-      canvas.drawArc(centre.x - curveOffset,
-          centre.y - radius,
-          centre.x + curveOffset,
-          centre.y + radius,
-          curveGoesRight ? 90f : 270f,
-          180f,
-          false,
-          palette.getMoonLinePaint()
-      );
-    }
-    canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonLinePaint());
-  }
-
-  private static final float HOUR_HAND_LENGTH = 0.525f;
-  private static final float MINUTE_HAND_LENGTH = 0.9f;
-  private static final float SECOND_HAND_LENGTH = 0.9f;
-  private static final float HAND_CAP_RADIUS = 0.03f;
-  private static final float LARGE_TICK_LENGTH = 0.11f;
-  private static final float SMALL_TICK_LENGTH = 0.05f;
-  private static final float MINUTE_TICK_OUTER_RADIUS = 1f;
-
   private static void drawTicks(
       Canvas canvas,
       Palette palette,
@@ -290,47 +214,6 @@ class Painter {
 
   }
 
-  private static void drawTick(
-      Canvas canvas, PointF centre, float angle, float outerRadius, float length, Paint paint
-  ) {
-    PointF inside = cartesian(centre, angle, outerRadius - length);
-    PointF outside = cartesian(centre, angle, outerRadius);
-    canvas.drawLine(inside.x, inside.y, outside.x, outside.y, paint);
-  }
-
-  private static void drawAngledNumber(
-      Canvas canvas, PointF centre, String text, float angle, float outerRadius, Paint paint
-  ) {
-    final boolean flipText = angle > 90 && angle < 270;
-    final int flipConstant = flipText ? -1 : 1;
-
-    final PointF start = cartesian(centre, angle - flipConstant * 7.5f, outerRadius);
-    final PointF end = cartesian(centre, angle + flipConstant * 7.5f, outerRadius);
-    final float baseLineHeight = paint.getTextSize() * UBUNTU_REGULAR_BASELINE_RATIO;
-    final float verticalOffset = flipText ? 0 : (paint.getTextSize() - baseLineHeight);
-
-    final Path path = new Path();
-    path.moveTo(start.x, start.y);
-    path.lineTo(end.x, end.y);
-
-    canvas.drawTextOnPath(text, path, 0, verticalOffset, paint);
-  }
-
-  private static void drawUprightNumber(
-      Canvas canvas, PointF centre, String text, float angle, float outerRadius, Paint paint
-  ) {
-    final float baseLineHeight = paint.getTextSize() * UBUNTU_REGULAR_BASELINE_RATIO;
-    final float verticalOffset = (paint.getTextSize() - baseLineHeight) / 2;
-    final float lineLength = 0.4f * outerRadius;
-    final PointF lineCentre = cartesian(centre, angle, outerRadius - verticalOffset);
-
-    final Path path = new Path();
-    path.moveTo(lineCentre.x - lineLength / 2, lineCentre.y);
-    path.lineTo(lineCentre.x + lineLength / 2, lineCentre.y);
-
-    canvas.drawTextOnPath(text, path, 0, verticalOffset, paint);
-  }
-
   private static void drawHands(
       Canvas canvas,
       Palette palette,
@@ -380,6 +263,37 @@ class Painter {
     canvas.drawCircle(centre.x, centre.y, HAND_CAP_RADIUS * faceRadius, palette.getHandCapPaint());
   }
 
+  private static void drawSun(
+      Canvas canvas, Palette palette, PointF centre, float radius, boolean drawRealisticSun
+  ) {
+    if (drawRealisticSun) {
+      canvas.drawCircle(centre.x, centre.y, radius, palette.getRealisticSunPaint());
+      return;
+    }
+
+    canvas.drawCircle(centre.x, centre.y, radius, palette.getCartoonSunPaint());
+    final float rayOffset = radius * SUN_RAY_OFFSET;
+    final float rayLength = radius * SUN_RAY_LENGTH;
+    for (int rayIndex = 0; rayIndex < 12; rayIndex++) {
+      final float rayTipAngle = (float) (rayIndex * 360 / 12);
+      final PointF rayTip = cartesian(centre, rayTipAngle, radius + rayOffset + rayLength);
+      final float rayBottomRadius = (radius + rayOffset);
+      final RectF rayOffsetBoundingBox = new RectF(centre.x - rayBottomRadius,
+          centre.y - rayBottomRadius,
+          centre.x + rayBottomRadius,
+          centre.y + rayBottomRadius
+      );
+      final Path ray = new Path();
+      ray.moveTo(rayTip.x, rayTip.y);
+      ray.arcTo(rayOffsetBoundingBox,
+          rayTipAngle - SUN_RAY_WIDTH_DEGREES / 2 - 90,
+          SUN_RAY_WIDTH_DEGREES
+      );
+      ray.close();
+      canvas.drawPath(ray, palette.getCartoonSunPaint());
+    }
+  }
+
   /**
    * Convert radial coordinates to a cartesian point.
    */
@@ -387,5 +301,91 @@ class Painter {
     final float x = origin.x + (float) Math.sin(Math.toRadians(angle)) * radius;
     final float y = origin.y + (float) -Math.cos(Math.toRadians(angle)) * radius;
     return new PointF(x, y);
+  }
+
+  private static void drawMoon(
+      Canvas canvas, Palette palette, PointF centre, float radius, float phase
+  ) {
+    final float curveOffset = (float) Math.cos(phase * 2 * Math.PI) * radius;
+    final float crescentWidth = radius - Math.abs(curveOffset);
+    final boolean drawCurve = crescentWidth >= 0.25;
+    final boolean mostlyLit = phase > 0.25f && phase < 0.75f;
+    final boolean fullMoon = !drawCurve && mostlyLit;
+
+    if (fullMoon) {
+      canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonLitPaint());
+    } else {
+      canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonDarkPaint());
+    }
+    if (drawCurve) {
+      final boolean litOnRight = phase > 0.5f;
+      final boolean curveGoesRight = litOnRight ^ mostlyLit;
+      canvas.drawArc(centre.x - radius,
+          centre.y - radius,
+          centre.x + radius,
+          centre.y + radius,
+          litOnRight ? 90f : 270f,
+          180f,
+          true,
+          palette.getMoonLitPaint()
+      );
+      canvas.drawOval(centre.x - curveOffset,
+          centre.y - radius,
+          centre.x + curveOffset,
+          centre.y + radius,
+          mostlyLit ? palette.getMoonLitPaint() : palette.getMoonDarkPaint()
+      );
+      canvas.drawArc(centre.x - curveOffset,
+          centre.y - radius,
+          centre.x + curveOffset,
+          centre.y + radius,
+          curveGoesRight ? 90f : 270f,
+          180f,
+          false,
+          palette.getMoonLinePaint()
+      );
+    }
+    canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonLinePaint());
+  }
+
+  private static void drawTick(
+      Canvas canvas, PointF centre, float angle, float outerRadius, float length, Paint paint
+  ) {
+    PointF inside = cartesian(centre, angle, outerRadius - length);
+    PointF outside = cartesian(centre, angle, outerRadius);
+    canvas.drawLine(inside.x, inside.y, outside.x, outside.y, paint);
+  }
+
+  private static void drawAngledNumber(
+      Canvas canvas, PointF centre, String text, float angle, float outerRadius, Paint paint
+  ) {
+    final boolean flipText = angle > 90 && angle < 270;
+    final int flipConstant = flipText ? -1 : 1;
+
+    final PointF start = cartesian(centre, angle - flipConstant * 7.5f, outerRadius);
+    final PointF end = cartesian(centre, angle + flipConstant * 7.5f, outerRadius);
+    final float baseLineHeight = paint.getTextSize() * UBUNTU_REGULAR_BASELINE_RATIO;
+    final float verticalOffset = flipText ? 0 : (paint.getTextSize() - baseLineHeight);
+
+    final Path path = new Path();
+    path.moveTo(start.x, start.y);
+    path.lineTo(end.x, end.y);
+
+    canvas.drawTextOnPath(text, path, 0, verticalOffset, paint);
+  }
+
+  private static void drawUprightNumber(
+      Canvas canvas, PointF centre, String text, float angle, float outerRadius, Paint paint
+  ) {
+    final float baseLineHeight = paint.getTextSize() * UBUNTU_REGULAR_BASELINE_RATIO;
+    final float verticalOffset = (paint.getTextSize() - baseLineHeight) / 2;
+    final float lineLength = 0.4f * outerRadius;
+    final PointF lineCentre = cartesian(centre, angle, outerRadius - verticalOffset);
+
+    final Path path = new Path();
+    path.moveTo(lineCentre.x - lineLength / 2, lineCentre.y);
+    path.lineTo(lineCentre.x + lineLength / 2, lineCentre.y);
+
+    canvas.drawTextOnPath(text, path, 0, verticalOffset, paint);
   }
 }

@@ -18,15 +18,15 @@ import lombok.Getter;
 
 public class LocationCache {
 
-  private final FusedLocationProviderClient fusedLocationClient;
-  private Location cachedLocation;
-
   private static final Duration FASTEST_INTERVAL = Duration.ofSeconds(1);
   private static final Duration INTERVAL = Duration.ofHours(6);
   private static final float SMALLEST_DISPLACEMENT = 200_000f;
+
+  private final FusedLocationProviderClient fusedLocationClient;
+  private Location cachedLocation;
   @Getter
   private boolean updating = false;
-
+  
   private final LocationCallback locationCallback = new LocationCallback() {
     @Override
     public void onLocationResult(LocationResult locationResult) {

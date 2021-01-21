@@ -47,31 +47,6 @@ public class SettingsActivity extends FragmentActivity {
             (boolean) newValue));
   }
 
-  public static class SettingsFragment extends PreferenceFragmentCompat {
-
-    @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-      setPreferencesFromResource(R.xml.settings, rootKey);
-    }
-
-    public RecyclerView onCreateRecyclerView(
-        LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState
-    ) {
-      // This is mostly plagiarised from the method it overrides. The main difference is we use a *wearable* recycler view.
-      WearableRecyclerView wearableRecyclerView = (WearableRecyclerView) inflater.inflate(R.layout.settings_wearable_recycler_view,
-          parent,
-          false
-      );
-      wearableRecyclerView.setEdgeItemsCenteringEnabled(true);
-
-      wearableRecyclerView.setLayoutManager(onCreateLayoutManager());
-      wearableRecyclerView.setAccessibilityDelegateCompat(new PreferenceRecyclerViewAccessibilityDelegate(
-          wearableRecyclerView));
-
-      return wearableRecyclerView;
-    }
-  }
-
   private void onLocationPermissionAnswer(Map<String, Boolean> values) {
     boolean isGranted = values.containsValue(true);
     if (!isGranted) {
@@ -121,5 +96,30 @@ public class SettingsActivity extends FragmentActivity {
         getApplicationContext(),
         Manifest.permission.ACCESS_FINE_LOCATION
     ) == PackageManager.PERMISSION_GRANTED;
+  }
+
+  public static class SettingsFragment extends PreferenceFragmentCompat {
+
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+      setPreferencesFromResource(R.xml.settings, rootKey);
+    }
+
+    public RecyclerView onCreateRecyclerView(
+        LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState
+    ) {
+      // This is mostly plagiarised from the method it overrides. The main difference is we use a *wearable* recycler view.
+      WearableRecyclerView wearableRecyclerView = (WearableRecyclerView) inflater.inflate(R.layout.settings_wearable_recycler_view,
+          parent,
+          false
+      );
+      wearableRecyclerView.setEdgeItemsCenteringEnabled(true);
+
+      wearableRecyclerView.setLayoutManager(onCreateLayoutManager());
+      wearableRecyclerView.setAccessibilityDelegateCompat(new PreferenceRecyclerViewAccessibilityDelegate(
+          wearableRecyclerView));
+
+      return wearableRecyclerView;
+    }
   }
 }
