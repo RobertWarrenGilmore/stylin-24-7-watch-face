@@ -25,6 +25,7 @@ class Painter {
   private static final float SUN_AND_MOON_CENTRE_OFFSET = 0.3f;
   private static final float NUMBER_OUTER_RADIUS = 0.84f;
   public static final float UBUNTU_REGULAR_BASELINE_RATIO = 0.3f;
+  public static final float MINIMUM_DAYLIGHT_TO_SHOW_SUN = 0.2f;
 
   static void draw(
       Canvas canvas,
@@ -92,35 +93,44 @@ class Painter {
     final float dayLengthFraction = solarDayLength.getSeconds() / (24f * 60 * 60);
 
     final float sunriseOffsetFraction = noonOffsetDayFraction - (dayLengthFraction / 2);
-    canvas.drawArc(boundingBox,
-        90 + sunriseOffsetFraction * 360,
-        dayLengthFraction * 360,
-        true,
-        palette.getDaySectorPaint()
-    );
-    canvas.drawArc(boundingBox,
-        90 + sunriseOffsetFraction * 360 + dayLengthFraction * 360,
-        360 - dayLengthFraction * 360,
-        true,
-        palette.getNightSectorPaint()
-    );
+    System.out.println("dayLengthFraction == " + dayLengthFraction);
+    if (dayLengthFraction == 0) {
+      canvas.drawCircle(centre.x, centre.y, hourDiscRadius, palette.getNightSectorPaint());
+    } else if (dayLengthFraction == 1) {
+      canvas.drawCircle(centre.x, centre.y, hourDiscRadius, palette.getDaySectorPaint());
+    } else {
+      canvas.drawArc(boundingBox,
+          90 + sunriseOffsetFraction * 360,
+          dayLengthFraction * 360,
+          true,
+          palette.getDaySectorPaint()
+      );
+      canvas.drawArc(boundingBox,
+          90 + sunriseOffsetFraction * 360 + dayLengthFraction * 360,
+          360 - dayLengthFraction * 360,
+          true,
+          palette.getNightSectorPaint()
+      );
+    }
 
     final float noonAngle = noonOffsetDayFraction * 360 + 180;
 
-    drawSun(canvas,
-        palette,
-        cartesian(centre, noonAngle, SUN_AND_MOON_CENTRE_OFFSET * faceRadius),
-        SUN_AND_MOON_RADIUS * faceRadius,
-        drawRealisticSun
-    );
-    float lunarPhase = AstronomyCalculator.getLunarPhase(calendar);
-
-    drawMoon(canvas,
-        palette,
-        cartesian(centre, noonAngle + 180f, SUN_AND_MOON_CENTRE_OFFSET * faceRadius),
-        SUN_AND_MOON_RADIUS * faceRadius,
-        lunarPhase
-    );
+    if (dayLengthFraction > MINIMUM_DAYLIGHT_TO_SHOW_SUN) {
+      drawSun(canvas,
+          palette,
+          cartesian(centre, noonAngle, SUN_AND_MOON_CENTRE_OFFSET * faceRadius),
+          SUN_AND_MOON_RADIUS * faceRadius,
+          drawRealisticSun
+      );
+    }
+    if (dayLengthFraction < 1 - MINIMUM_DAYLIGHT_TO_SHOW_SUN) {
+      drawMoon(canvas,
+          palette,
+          cartesian(centre, noonAngle + 180f, SUN_AND_MOON_CENTRE_OFFSET * faceRadius),
+          SUN_AND_MOON_RADIUS * faceRadius,
+          AstronomyCalculator.getLunarPhase(calendar)
+      );
+    }
   }
 
   private static void drawSun(
