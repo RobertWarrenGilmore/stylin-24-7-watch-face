@@ -317,13 +317,13 @@ class Painter {
       canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonDarkPaint());
     }
     if (drawCurve) {
-      final boolean litOnRight = phase > 0.5f;
+      final boolean litOnRight = phase < 0.5f;
       final boolean curveGoesRight = litOnRight ^ mostlyLit;
       canvas.drawArc(centre.x - radius,
           centre.y - radius,
           centre.x + radius,
           centre.y + radius,
-          litOnRight ? 90f : 270f,
+          litOnRight ? 270f : 90f,
           180f,
           true,
           palette.getMoonLitPaint()
@@ -338,7 +338,7 @@ class Painter {
           centre.y - radius,
           centre.x + curveOffset,
           centre.y + radius,
-          curveGoesRight ? 90f : 270f,
+          curveGoesRight ? 270f : 90f,
           180f,
           false,
           palette.getMoonLinePaint()
