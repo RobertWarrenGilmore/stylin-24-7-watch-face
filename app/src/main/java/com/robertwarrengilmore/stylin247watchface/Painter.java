@@ -19,12 +19,12 @@ class Painter {
   private static final float HOUR_DISC_RADIUS = 0.667f;
   private static final float SUN_AND_MOON_CENTRE_OFFSET = 0.3f;
   private static final float SUN_AND_MOON_RADIUS = 0.15f;
-  public static final float SUN_RAY_WIDTH_DEGREES = 20;
-  public static final float SUN_RAY_LENGTH = 0.35f;
-  public static final float SUN_RAY_OFFSET = 0.2f;
-  public static final float MINIMUM_DAYLIGHT_TO_SHOW_SUN = 0.2f;
+  private static final float SUN_RAY_WIDTH_DEGREES = 20;
+  private static final float SUN_RAY_LENGTH = 0.35f;
+  private static final float SUN_RAY_OFFSET = 0.2f;
+  private static final float MINIMUM_DAYLIGHT_TO_SHOW_SUN = 0.2f;
 
-  public static final float UBUNTU_REGULAR_BASELINE_RATIO = 0.3f;
+  private static final float UBUNTU_REGULAR_BASELINE_RATIO = 0.3f;
   private static final float NUMBER_OUTER_RADIUS = 0.84f;
 
   private static final float HOUR_HAND_LENGTH = 0.525f;
