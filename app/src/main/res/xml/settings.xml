@@ -4,53 +4,45 @@
     <SwitchPreferenceCompat
         app:defaultValue="false"
         app:key="@string/settings_key_use_location"
-        app:singleLineTitle="false"
-        app:summary="@string/use_location_description"
-        app:title="@string/use_location"
+        app:summary="@string/use_location"
         app:widgetLayout="@layout/roundswitch" />
 
     <SwitchPreferenceCompat
         app:defaultValue="false"
         app:key="@string/settings_key_show_hour_numbers"
-        app:singleLineTitle="false"
-        app:title="@string/show_hour_numbers"
+        app:summary="@string/show_hour_numbers"
         app:widgetLayout="@layout/roundswitch" />
 
     <SwitchPreferenceCompat
         app:defaultValue="false"
         app:dependency="@string/settings_key_show_hour_numbers"
         app:key="@string/settings_key_angle_hour_numbers"
-        app:singleLineTitle="false"
-        app:title="@string/angle_hour_numbers"
+        app:summary="@string/angle_hour_numbers"
         app:widgetLayout="@layout/roundswitch" />
 
     <SwitchPreferenceCompat
         app:defaultValue="false"
         app:key="@string/settings_key_show_single_minute_ticks"
-        app:singleLineTitle="false"
-        app:title="@string/show_single_minute_ticks"
+        app:summary="@string/show_single_minute_ticks"
         app:widgetLayout="@layout/roundswitch" />
 
     <SwitchPreferenceCompat
         app:defaultValue="false"
         app:key="@string/settings_key_show_second_hand"
-        app:singleLineTitle="false"
-        app:title="@string/show_second_hand"
+        app:summary="@string/show_second_hand"
         app:widgetLayout="@layout/roundswitch" />
 
     <SwitchPreferenceCompat
         app:defaultValue="false"
         app:dependency="@string/settings_key_show_second_hand"
         app:key="@string/settings_key_animate_second_hand_smoothly"
-        app:singleLineTitle="false"
-        app:title="@string/animate_second_hand_smoothly"
+        app:summary="@string/animate_second_hand_smoothly"
         app:widgetLayout="@layout/roundswitch" />
 
     <SwitchPreferenceCompat
         app:defaultValue="false"
         app:key="@string/settings_key_draw_realistic_sun"
-        app:singleLineTitle="false"
-        app:title="@string/draw_realistic_sun"
+        app:summary="@string/draw_realistic_sun"
         app:widgetLayout="@layout/roundswitch" />
 
     <DropDownPreference
@@ -58,7 +50,7 @@
         app:entries="@array/settings_colour_scheme_names"
         app:entryValues="@array/settings_colour_scheme_values"
         app:key="@string/settings_key_colour_scheme"
-        app:title="@string/colour_scheme" />
+        app:summary="@string/colour_scheme" />
 
     <Preference
         app:selectable="false"
