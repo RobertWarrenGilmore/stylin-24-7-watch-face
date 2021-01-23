@@ -101,40 +101,43 @@ class Painter {
     final float dayLengthFraction = solarDayLength.getSeconds() / (24f * 60 * 60);
 
     final float sunriseOffsetFraction = noonOffsetDayFraction - (dayLengthFraction / 2);
+    Path daySector = new Path();
+    Path nightSector = new Path();
     if (dayLengthFraction == 0) {
-      canvas.drawCircle(centre.x, centre.y, hourDiscRadius, palette.getNightSectorPaint());
+      nightSector.addOval(boundingBox, Path.Direction.CW);
     } else if (dayLengthFraction == 1) {
-      canvas.drawCircle(centre.x, centre.y, hourDiscRadius, palette.getDaySectorPaint());
+      daySector.addOval(boundingBox, Path.Direction.CW);
     } else {
-      canvas.drawArc(boundingBox,
-          90 + sunriseOffsetFraction * 360,
-          dayLengthFraction * 360,
-          true,
-          palette.getDaySectorPaint()
-      );
-      canvas.drawArc(boundingBox,
+      daySector.moveTo(centre.x, centre.y);
+      daySector.arcTo(boundingBox, 90 + sunriseOffsetFraction * 360, dayLengthFraction * 360);
+      daySector.close();
+      nightSector.moveTo(centre.x, centre.y);
+      nightSector.arcTo(boundingBox,
           90 + sunriseOffsetFraction * 360 + dayLengthFraction * 360,
-          360 - dayLengthFraction * 360,
-          true,
-          palette.getNightSectorPaint()
+          360 - dayLengthFraction * 360
       );
+      nightSector.close();
     }
 
     final float noonAngle = noonOffsetDayFraction * 360 + 180;
 
-    if (dayLengthFraction > MINIMUM_DAYLIGHT_TO_SHOW_SUN) {
+    if (!daySector.isEmpty()) {
+      canvas.drawPath(daySector, palette.getDaySectorPaint());
       drawSun(canvas,
           palette,
           cartesian(centre, noonAngle, SUN_AND_MOON_CENTRE_OFFSET * faceRadius),
           SUN_AND_MOON_RADIUS * faceRadius,
+          daySector,
           drawRealisticSun
       );
     }
-    if (dayLengthFraction < 1 - MINIMUM_DAYLIGHT_TO_SHOW_SUN) {
+    if (!nightSector.isEmpty()) {
+      canvas.drawPath(nightSector, palette.getNightSectorPaint());
       drawMoon(canvas,
           palette,
           cartesian(centre, noonAngle + 180f, SUN_AND_MOON_CENTRE_OFFSET * faceRadius),
           SUN_AND_MOON_RADIUS * faceRadius,
+          nightSector,
           AstronomyCalculator.getLunarPhase(calendar)
       );
     }
@@ -263,34 +266,44 @@ class Painter {
   }
 
   private static void drawSun(
-      Canvas canvas, Palette palette, PointF centre, float radius, boolean drawRealisticSun
+      Canvas canvas,
+      Palette palette,
+      PointF centre,
+      float radius,
+      Path clip,
+      boolean drawRealisticSun
   ) {
+    canvas.save();
+    canvas.clipPath(clip);
+
     if (drawRealisticSun) {
       canvas.drawCircle(centre.x, centre.y, radius, palette.getRealisticSunPaint());
-      return;
+    } else {
+
+      canvas.drawCircle(centre.x, centre.y, radius, palette.getCartoonSunPaint());
+      final float rayOffset = radius * SUN_RAY_OFFSET;
+      final float rayLength = radius * SUN_RAY_LENGTH;
+      for (int rayIndex = 0; rayIndex < 12; rayIndex++) {
+        final float rayTipAngle = (float) (rayIndex * 360 / 12);
+        final PointF rayTip = cartesian(centre, rayTipAngle, radius + rayOffset + rayLength);
+        final float rayBottomRadius = (radius + rayOffset);
+        final RectF rayOffsetBoundingBox = new RectF(centre.x - rayBottomRadius,
+            centre.y - rayBottomRadius,
+            centre.x + rayBottomRadius,
+            centre.y + rayBottomRadius
+        );
+        final Path ray = new Path();
+        ray.moveTo(rayTip.x, rayTip.y);
+        ray.arcTo(rayOffsetBoundingBox,
+            rayTipAngle - SUN_RAY_WIDTH_DEGREES / 2 - 90,
+            SUN_RAY_WIDTH_DEGREES
+        );
+        ray.close();
+        canvas.drawPath(ray, palette.getCartoonSunPaint());
+      }
     }
 
-    canvas.drawCircle(centre.x, centre.y, radius, palette.getCartoonSunPaint());
-    final float rayOffset = radius * SUN_RAY_OFFSET;
-    final float rayLength = radius * SUN_RAY_LENGTH;
-    for (int rayIndex = 0; rayIndex < 12; rayIndex++) {
-      final float rayTipAngle = (float) (rayIndex * 360 / 12);
-      final PointF rayTip = cartesian(centre, rayTipAngle, radius + rayOffset + rayLength);
-      final float rayBottomRadius = (radius + rayOffset);
-      final RectF rayOffsetBoundingBox = new RectF(centre.x - rayBottomRadius,
-          centre.y - rayBottomRadius,
-          centre.x + rayBottomRadius,
-          centre.y + rayBottomRadius
-      );
-      final Path ray = new Path();
-      ray.moveTo(rayTip.x, rayTip.y);
-      ray.arcTo(rayOffsetBoundingBox,
-          rayTipAngle - SUN_RAY_WIDTH_DEGREES / 2 - 90,
-          SUN_RAY_WIDTH_DEGREES
-      );
-      ray.close();
-      canvas.drawPath(ray, palette.getCartoonSunPaint());
-    }
+    canvas.restore();
   }
 
   /**
@@ -303,13 +316,16 @@ class Painter {
   }
 
   private static void drawMoon(
-      Canvas canvas, Palette palette, PointF centre, float radius, float phase
+      Canvas canvas, Palette palette, PointF centre, float radius, Path clip, float phase
   ) {
     final float curveOffset = Math.abs((float) Math.cos(phase * 2 * Math.PI) * radius);
     final float crescentWidth = radius - curveOffset;
     final boolean drawCurve = crescentWidth >= 0.25;
     final boolean mostlyLit = phase > 0.25f && phase < 0.75f;
     final boolean fullMoon = !drawCurve && mostlyLit;
+
+    canvas.save();
+    canvas.clipPath(clip);
 
     if (fullMoon) {
       canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonLitPaint());
@@ -345,6 +361,8 @@ class Painter {
       );
     }
     canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonLinePaint());
+
+    canvas.restore();
   }
 
   private static void drawTick(
