@@ -64,6 +64,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   @Override
   public void onCreate() {
     super.onCreate();
+    PreferenceManager.setDefaultValues(getApplicationContext(), R.xml.settings, false);
     preferenceManager = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     turnOffUseLocationIfNoPermission();
     locationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
