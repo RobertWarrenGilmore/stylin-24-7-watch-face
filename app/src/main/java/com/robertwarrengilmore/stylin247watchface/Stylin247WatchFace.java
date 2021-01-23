@@ -100,10 +100,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
             PackageManager.PERMISSION_GRANTED) {
       return;
     }
-    locationClient.requestLocationUpdates(LOCATION_REQUEST,
-        locationCallback,
-        Looper.myLooper()
-    );
+    locationClient.requestLocationUpdates(LOCATION_REQUEST, locationCallback, Looper.myLooper());
   }
 
   private void stopLocationUpdates() {
