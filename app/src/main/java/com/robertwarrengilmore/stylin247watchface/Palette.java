@@ -3,6 +3,8 @@ package com.robertwarrengilmore.stylin247watchface;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 
 import androidx.core.content.res.ResourcesCompat;
 
@@ -69,11 +71,17 @@ class Palette {
     numberPaint.setTextAlign(Paint.Align.CENTER);
     numberPaint.setTypeface(ResourcesCompat.getFont(context, R.font.ubuntu_regular));
 
+    realisticSunPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP));
+    cartoonSunPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP));
+
     moonLinePaint.setStyle(Paint.Style.STROKE);
+    moonLinePaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP));
 
     moonDarkPaint.setStyle(Paint.Style.FILL);
+    moonDarkPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP));
 
     moonLitPaint.setStyle(Paint.Style.FILL);
+    moonLitPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP));
   }
 
   private void setAntiAlias(boolean value) {

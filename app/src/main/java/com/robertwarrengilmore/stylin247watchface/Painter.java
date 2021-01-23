@@ -1,5 +1,6 @@
 package com.robertwarrengilmore.stylin247watchface;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -101,45 +102,74 @@ class Painter {
     final float dayLengthFraction = solarDayLength.getSeconds() / (24f * 60 * 60);
 
     final float sunriseOffsetFraction = noonOffsetDayFraction - (dayLengthFraction / 2);
-    Path daySector = new Path();
-    Path nightSector = new Path();
+    Path daySectorPath = new Path();
+    Path nightSectorPath = new Path();
     if (dayLengthFraction == 0) {
-      nightSector.addOval(boundingBox, Path.Direction.CW);
+      nightSectorPath.addOval(boundingBox, Path.Direction.CW);
     } else if (dayLengthFraction == 1) {
-      daySector.addOval(boundingBox, Path.Direction.CW);
+      daySectorPath.addOval(boundingBox, Path.Direction.CW);
     } else {
-      daySector.moveTo(centre.x, centre.y);
-      daySector.arcTo(boundingBox, 90 + sunriseOffsetFraction * 360, dayLengthFraction * 360);
-      daySector.close();
-      nightSector.moveTo(centre.x, centre.y);
-      nightSector.arcTo(boundingBox,
+      daySectorPath.moveTo(centre.x, centre.y);
+      daySectorPath.arcTo(boundingBox, 90 + sunriseOffsetFraction * 360, dayLengthFraction * 360);
+      daySectorPath.close();
+      nightSectorPath.moveTo(centre.x, centre.y);
+      nightSectorPath.arcTo(boundingBox,
           90 + sunriseOffsetFraction * 360 + dayLengthFraction * 360,
           360 - dayLengthFraction * 360
       );
-      nightSector.close();
+      nightSectorPath.close();
     }
 
     final float noonAngle = noonOffsetDayFraction * 360 + 180;
 
-    if (!daySector.isEmpty()) {
-      canvas.drawPath(daySector, palette.getDaySectorPaint());
-      drawSun(canvas,
+    if (!daySectorPath.isEmpty()) {
+      Bitmap daySectorBitmap = Bitmap.createBitmap((int) (faceRadius * 2),
+          (int) (faceRadius * 2),
+          Bitmap.Config.ARGB_8888
+      );
+      Canvas daySectorCanvas = new Canvas(daySectorBitmap);
+      daySectorCanvas.drawPath(daySectorPath, palette.getDaySectorPaint());
+      if (palette.getDaySectorPaint().getStyle().equals(Paint.Style.STROKE)) {
+        daySectorCanvas.drawPath(daySectorPath, palette.getBackgroundPaint());
+      } else {
+        // This ensures that the sector is filled for the purpose of masking.
+        daySectorCanvas.drawPath(daySectorPath, palette.getDaySectorPaint());
+      }
+      drawSun(daySectorCanvas,
           palette,
           cartesian(centre, noonAngle, SUN_AND_MOON_CENTRE_OFFSET * faceRadius),
           SUN_AND_MOON_RADIUS * faceRadius,
-          daySector,
           drawRealisticSun
-      );
+      );// Apply the sector stroke last.
+      if (palette.getDaySectorPaint().getStyle().equals(Paint.Style.STROKE)) {
+        daySectorCanvas.drawPath(daySectorPath, palette.getDaySectorPaint());
+      }
+      canvas.drawBitmap(daySectorBitmap, 0, 0, null);
     }
-    if (!nightSector.isEmpty()) {
-      canvas.drawPath(nightSector, palette.getNightSectorPaint());
-      drawMoon(canvas,
+    if (!nightSectorPath.isEmpty()) {
+      Bitmap nightSectorBitmap = Bitmap.createBitmap((int) (faceRadius * 2),
+          (int) (faceRadius * 2),
+          Bitmap.Config.ARGB_8888
+      );
+      Canvas nightSectorCanvas = new Canvas(nightSectorBitmap);
+      nightSectorCanvas.drawPath(nightSectorPath, palette.getNightSectorPaint());
+      if (palette.getNightSectorPaint().getStyle().equals(Paint.Style.STROKE)) {
+        nightSectorCanvas.drawPath(nightSectorPath, palette.getBackgroundPaint());
+      } else {
+        // This ensures that the sector is filled for the purpose of masking.
+        nightSectorCanvas.drawPath(nightSectorPath, palette.getNightSectorPaint());
+      }
+      drawMoon(nightSectorCanvas,
           palette,
           cartesian(centre, noonAngle + 180f, SUN_AND_MOON_CENTRE_OFFSET * faceRadius),
           SUN_AND_MOON_RADIUS * faceRadius,
-          nightSector,
           AstronomyCalculator.getLunarPhase(calendar)
       );
+      // Apply the sector stroke last.
+      if (palette.getNightSectorPaint().getStyle().equals(Paint.Style.STROKE)) {
+        nightSectorCanvas.drawPath(nightSectorPath, palette.getNightSectorPaint());
+      }
+      canvas.drawBitmap(nightSectorBitmap, 0, 0, null);
     }
   }
 
@@ -266,44 +296,35 @@ class Painter {
   }
 
   private static void drawSun(
-      Canvas canvas,
-      Palette palette,
-      PointF centre,
-      float radius,
-      Path clip,
-      boolean drawRealisticSun
+      Canvas canvas, Palette palette, PointF centre, float radius, boolean drawRealisticSun
   ) {
-    canvas.save();
-    canvas.clipPath(clip);
-
     if (drawRealisticSun) {
       canvas.drawCircle(centre.x, centre.y, radius, palette.getRealisticSunPaint());
-    } else {
-
-      canvas.drawCircle(centre.x, centre.y, radius, palette.getCartoonSunPaint());
-      final float rayOffset = radius * SUN_RAY_OFFSET;
-      final float rayLength = radius * SUN_RAY_LENGTH;
-      for (int rayIndex = 0; rayIndex < 12; rayIndex++) {
-        final float rayTipAngle = (float) (rayIndex * 360 / 12);
-        final PointF rayTip = cartesian(centre, rayTipAngle, radius + rayOffset + rayLength);
-        final float rayBottomRadius = (radius + rayOffset);
-        final RectF rayOffsetBoundingBox = new RectF(centre.x - rayBottomRadius,
-            centre.y - rayBottomRadius,
-            centre.x + rayBottomRadius,
-            centre.y + rayBottomRadius
-        );
-        final Path ray = new Path();
-        ray.moveTo(rayTip.x, rayTip.y);
-        ray.arcTo(rayOffsetBoundingBox,
-            rayTipAngle - SUN_RAY_WIDTH_DEGREES / 2 - 90,
-            SUN_RAY_WIDTH_DEGREES
-        );
-        ray.close();
-        canvas.drawPath(ray, palette.getCartoonSunPaint());
-      }
+      return;
     }
 
-    canvas.restore();
+    canvas.drawCircle(centre.x, centre.y, radius, palette.getCartoonSunPaint());
+    final float rayOffset = radius * SUN_RAY_OFFSET;
+    final float rayLength = radius * SUN_RAY_LENGTH;
+    for (int rayIndex = 0; rayIndex < 12; rayIndex++) {
+      final float rayTipAngle = (float) (rayIndex * 360 / 12);
+      final PointF rayTip = cartesian(centre, rayTipAngle, radius + rayOffset + rayLength);
+      final float rayBottomRadius = (radius + rayOffset);
+      final RectF rayOffsetBoundingBox = new RectF(centre.x - rayBottomRadius,
+          centre.y - rayBottomRadius,
+          centre.x + rayBottomRadius,
+          centre.y + rayBottomRadius
+      );
+      final Path ray = new Path();
+      ray.moveTo(rayTip.x, rayTip.y);
+      ray.arcTo(rayOffsetBoundingBox,
+          rayTipAngle - SUN_RAY_WIDTH_DEGREES / 2 - 90,
+          SUN_RAY_WIDTH_DEGREES
+      );
+      ray.close();
+      canvas.drawPath(ray, palette.getCartoonSunPaint());
+    }
+
   }
 
   /**
@@ -316,16 +337,13 @@ class Painter {
   }
 
   private static void drawMoon(
-      Canvas canvas, Palette palette, PointF centre, float radius, Path clip, float phase
+      Canvas canvas, Palette palette, PointF centre, float radius, float phase
   ) {
     final float curveOffset = Math.abs((float) Math.cos(phase * 2 * Math.PI) * radius);
     final float crescentWidth = radius - curveOffset;
     final boolean drawCurve = crescentWidth >= 0.25;
     final boolean mostlyLit = phase > 0.25f && phase < 0.75f;
     final boolean fullMoon = !drawCurve && mostlyLit;
-
-    canvas.save();
-    canvas.clipPath(clip);
 
     if (fullMoon) {
       canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonLitPaint());
@@ -361,8 +379,6 @@ class Painter {
       );
     }
     canvas.drawCircle(centre.x, centre.y, radius, palette.getMoonLinePaint());
-
-    canvas.restore();
   }
 
   private static void drawTick(
