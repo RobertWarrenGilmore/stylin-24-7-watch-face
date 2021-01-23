@@ -305,8 +305,8 @@ class Painter {
   private static void drawMoon(
       Canvas canvas, Palette palette, PointF centre, float radius, float phase
   ) {
-    final float curveOffset = (float) Math.cos(phase * 2 * Math.PI) * radius;
-    final float crescentWidth = radius - Math.abs(curveOffset);
+    final float curveOffset = Math.abs((float) Math.cos(phase * 2 * Math.PI) * radius);
+    final float crescentWidth = radius - curveOffset;
     final boolean drawCurve = crescentWidth >= 0.25;
     final boolean mostlyLit = phase > 0.25f && phase < 0.75f;
     final boolean fullMoon = !drawCurve && mostlyLit;
