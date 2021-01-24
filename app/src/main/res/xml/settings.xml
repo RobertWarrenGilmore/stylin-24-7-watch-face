@@ -68,4 +68,8 @@
         app:key="@string/settings_key_go_to_developer_website"
         app:summary="@string/settings_footer_text" />
 
+    <Preference app:summary="licences">
+        <intent android:action="com.robertwarrengilmore.stylin247watchface.LICENCE" />
+    </Preference>
+
 </PreferenceScreen>

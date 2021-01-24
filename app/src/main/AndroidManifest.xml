@@ -20,6 +20,15 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
         <activity
+            android:name=".LicenceReaderActivity"
+            android:label="@string/title_activity_license_view">
+            <intent-filter>
+                <action android:name="com.robertwarrengilmore.stylin247watchface.LICENCE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".SettingsActivity"
             android:label="@string/settings_activty_name">
 
