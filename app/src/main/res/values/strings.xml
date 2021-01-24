@@ -18,5 +18,5 @@
     <string name="opening_developer_website">Opening developer website on phone.</string>
     <string name="full_version_nag">Some settings are only available in the full version.\n\nTap here to see the full version.</string>
     <string name="full_version_url" translatable="false">market://details?id=com.robertwarrengilmore.stylin247watchface.full</string>
-    <string name="title_activity_license_view">licence view</string>
+    <string name="title_activity_license_view">licences</string>
 </resources>

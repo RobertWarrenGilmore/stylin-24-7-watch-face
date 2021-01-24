@@ -6,15 +6,15 @@
     <string name="angle_hour_numbers">mostrar los números inclinados por la curva de la esfera</string>
     <string name="show_single_minute_ticks">mostrar marcas de solo minuto</string>
     <string name="show_second_hand">mostrar manecilla de segundos</string>
-    <string name="animate_second_hand_smoothly">animación suave de la manecilla de segundos</string>
-    <string name="draw_realistic_sun">gráfico realistico del sol</string>
-    <string name="use_location">mostrar horas locales de amanecer y atardecer\n\nEsta característica requiere permisión para acceder a la ubicación de forma pasiva.</string>
-    <string name="location_permission_denied">La permisión de ubicación fue negado.</string>
-    <string name="colour_scheme">combinación de colores</string>
+    <string name="animate_second_hand_smoothly">animación de la manecilla de segundos fluida</string>
+    <string name="draw_realistic_sun">imagen del sol realista</string>
+    <string name="use_location">mostrar horas locales de amanecer y atardecer\n\nEsta característica requiere permisos para acceder a la ubicación de forma pasiva.</string>
+    <string name="location_permission_denied">Se negaron los permisos de ubicación.</string>
+    <string name="colour_scheme">esquema de colores</string>
     <string name="colour_scheme_name_muted">apagada</string>
     <string name="colour_scheme_name_vivid">viva</string>
     <string name="full_version_nag">Algunos ajustes están disponibles solo en la versión completa.\n\nPulsa aquí para verla.</string>
     <string name="blog_post_url">http://www.robertwarrengilmore.com/es/</string>
     <string name="opening_developer_website">Navegando al sitio web del desarrollador en el móvil.</string>
-    <string name="title_activity_license_view">vista de licencia</string>
+    <string name="title_activity_license_view">licencias</string>
 </resources>
