@@ -69,7 +69,7 @@ public class SettingsActivity extends FragmentActivity {
     boolean isGranted = values.containsValue(true);
     if (!isGranted) {
       Toast.makeText(getApplicationContext(),
-          getString(R.string.location_permission_denied),
+          R.string.location_permission_denied,
           Toast.LENGTH_LONG
       ).show();
     } else {
