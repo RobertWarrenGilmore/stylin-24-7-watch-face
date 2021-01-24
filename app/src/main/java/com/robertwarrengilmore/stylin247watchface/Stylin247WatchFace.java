@@ -191,7 +191,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     public void onPropertiesChanged(Bundle properties) {
       super.onPropertiesChanged(properties);
       final boolean lowBitAmbient = properties.getBoolean(PROPERTY_LOW_BIT_AMBIENT, false);
-      final boolean burnInProtection = true;//properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
+      final boolean burnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
       ambientPalette.setLowBitAmbient(lowBitAmbient);
       ambientPalette.setBurnInProtection(burnInProtection);
     }
