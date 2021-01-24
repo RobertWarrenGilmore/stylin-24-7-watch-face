@@ -3,6 +3,7 @@
 
     <SwitchPreferenceCompat
         app:defaultValue="false"
+        app:enabled="@bool/is_full_version"
         app:key="@string/settings_key_use_location"
         app:summary="@string/use_location"
         app:widgetLayout="@layout/roundswitch" />
