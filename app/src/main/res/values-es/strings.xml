@@ -13,4 +13,6 @@
     <string name="colour_scheme">combinación de colores</string>
     <string name="colour_scheme_name_muted">apagada</string>
     <string name="colour_scheme_name_vivid">viva</string>
+    <string name="blog_post_url">http://www.robertwarrengilmore.com/es/</string>
+    <string name="opening_developer_website">Navegando al sitio web del desarrollador en el móvil.</string>
 </resources>

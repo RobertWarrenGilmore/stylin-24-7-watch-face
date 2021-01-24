@@ -53,7 +53,7 @@
         app:summary="@string/colour_scheme" />
 
     <Preference
-        app:selectable="false"
+        app:key="@string/settings_key_go_to_developer_website"
         app:summary="@string/settings_footer_text" />
 
 </PreferenceScreen>

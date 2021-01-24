@@ -1,7 +1,9 @@
 package com.robertwarrengilmore.stylin247watchface;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +20,8 @@ import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate;
 import androidx.preference.SwitchPreference;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.wear.widget.WearableRecyclerView;
+
+import com.google.android.wearable.intent.RemoteIntent;
 
 import java.util.Map;
 
@@ -45,6 +49,20 @@ public class SettingsActivity extends FragmentActivity {
         .findPreference(getString(R.string.settings_key_use_location))
         .setOnPreferenceChangeListener((Preference preference, Object newValue) -> allowChangeUseLocation(
             (boolean) newValue));
+
+    settingsFragment
+        .findPreference(getString(R.string.settings_key_go_to_developer_website))
+        .setOnPreferenceClickListener((preference) -> {
+          Toast.makeText(getApplicationContext(), R.string.opening_developer_website, Toast.LENGTH_LONG).show();
+          RemoteIntent.startRemoteActivity(
+              getApplicationContext(),
+              new Intent(Intent.ACTION_VIEW)
+                  .addCategory(Intent.CATEGORY_BROWSABLE)
+                  .setData(Uri.parse(getString(R.string.blog_post_url))),
+              null
+          );
+          return true;
+        });
   }
 
   private void onLocationPermissionAnswer(Map<String, Boolean> values) {
