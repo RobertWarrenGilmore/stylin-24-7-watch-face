@@ -8,8 +8,9 @@
         app:summary="@string/use_location"
         app:widgetLayout="@layout/roundswitch" />
 
-    <SwitchPreferenceCompat
+    <com.robertwarrengilmore.stylin247watchface.CustomSwitchPreference
         app:defaultValue="true"
+        app:enabled="@bool/is_full_version"
         app:key="@string/settings_key_show_hour_numbers"
         app:summary="@string/show_hour_numbers"
         app:widgetLayout="@layout/roundswitch" />
