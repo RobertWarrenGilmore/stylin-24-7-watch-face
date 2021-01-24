@@ -1,14 +1,25 @@
 <?xml version ="1.0" encoding ="utf-8"?><!--  Learn More about how to use App Actions: https://developer.android.com/guide/actions/index.html -->
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        app:isPreferenceVisible="@bool/is_free_version"
+        app:summary="@string/full_version_nag">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="@string/full_version_url" />
+    </Preference>
 
     <SwitchPreferenceCompat
         app:defaultValue="false"
+        app:enabled="@bool/is_full_version"
         app:key="@string/settings_key_use_location"
         app:summary="@string/use_location"
         app:widgetLayout="@layout/roundswitch" />
 
-    <SwitchPreferenceCompat
+    <com.robertwarrengilmore.stylin247watchface.CustomSwitchPreference
         app:defaultValue="true"
+        app:enabled="@bool/is_full_version"
         app:key="@string/settings_key_show_hour_numbers"
         app:summary="@string/show_hour_numbers"
         app:widgetLayout="@layout/roundswitch" />
@@ -47,6 +58,7 @@
 
     <DropDownPreference
         app:defaultValue="@string/settings_colour_scheme_value_muted"
+        app:enabled="@bool/is_full_version"
         app:entries="@array/settings_colour_scheme_names"
         app:entryValues="@array/settings_colour_scheme_values"
         app:key="@string/settings_key_colour_scheme"

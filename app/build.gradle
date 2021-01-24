@@ -25,6 +25,18 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    flavorDimensions "version"
+    productFlavors {
+        free {
+            dimension "version"
+            applicationIdSuffix ".free"
+            versionNameSuffix "-free"
+        }
+        full {
+            dimension "version"
+        }
+    }
 }
 
 dependencies {
