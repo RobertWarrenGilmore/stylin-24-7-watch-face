@@ -58,7 +58,7 @@ public class SettingsActivity extends FragmentActivity {
               getApplicationContext(),
               new Intent(Intent.ACTION_VIEW)
                   .addCategory(Intent.CATEGORY_BROWSABLE)
-                  .setData(Uri.parse(getString(R.string.blog_post_url))),
+                  .setData(Uri.parse(getString(R.string.developer_website_url))),
               null
           );
           return true;
