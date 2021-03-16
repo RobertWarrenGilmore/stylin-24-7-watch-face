@@ -68,9 +68,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     preferenceManager = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     turnOffUseLocationIfNoPermission();
     locationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-    if (preferenceManager.getBoolean(getString(R.string.settings_key_use_location), false)) {
       startLocationUpdates();
-    }
   }
 
   @Override
@@ -94,6 +92,9 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   }
 
   private void startLocationUpdates() {
+    if (!preferenceManager.getBoolean(getString(R.string.settings_key_use_location), false)) {
+      return;
+    }
     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
         PackageManager.PERMISSION_GRANTED &&
         ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) !=
