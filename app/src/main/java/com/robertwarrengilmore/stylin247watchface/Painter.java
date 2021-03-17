@@ -36,7 +36,9 @@ class Painter {
   private static final float SMALL_TICK_LENGTH = 0.05f;
   private static final float MINUTE_TICK_OUTER_RADIUS = 1f;
 
-  static void draw(
+  private Bitmap cachedBackground = null;
+
+  void draw(
       Canvas canvas,
       Rect bounds,
       Palette palette,
@@ -52,15 +54,19 @@ class Painter {
     final PointF centre = new PointF(bounds.width() / 2f, bounds.height() / 2f);
     final float faceRadius = bounds.width() / 2f;
 
-    drawBackground(canvas, palette, centre, faceRadius, calendar, location, drawRealisticSun);
-    drawTicks(canvas,
-        palette,
-        centre,
-        faceRadius,
-        showHourNumbers,
-        angleHourNumbers,
-        showSingleMinuteTicks
-    );
+    if (cachedBackground == null) {
+      cacheBackground(palette,
+          centre,
+          faceRadius,
+          calendar,
+          location,
+          drawRealisticSun,
+          showHourNumbers,
+          angleHourNumbers,
+          showSingleMinuteTicks
+      );
+    }
+    drawCachedBackground(canvas);
     drawHands(canvas,
         palette,
         centre,
@@ -71,6 +77,45 @@ class Painter {
     );
   }
 
+  private void cacheBackground(
+      Palette palette,
+      PointF centre,
+      float faceRadius,
+      Calendar calendar,
+      @Nullable Location location,
+      boolean drawRealisticSun,
+      boolean showHourNumbers,
+      boolean angleHourNumbers,
+      boolean showSingleMinuteTicks
+  ) {
+    System.out.println("Drawing bg from scratch.");
+    Bitmap backgroundBitmap = Bitmap.createBitmap((int) (faceRadius * 2),
+        (int) (faceRadius * 2),
+        Bitmap.Config.ARGB_8888
+    );
+    Canvas backgroundCanvas = new Canvas(backgroundBitmap);
+    drawBackground(backgroundCanvas,
+        palette,
+        centre,
+        faceRadius,
+        calendar,
+        location,
+        drawRealisticSun,
+        showHourNumbers,
+        angleHourNumbers,
+        showSingleMinuteTicks
+    );
+    cachedBackground = backgroundBitmap;
+  }
+
+  private void drawCachedBackground(Canvas canvas) {
+    canvas.drawBitmap(cachedBackground, 0, 0, null);
+  }
+
+  void invalidateCachedBackground() {
+    cachedBackground = null;
+  }
+
   private static void drawBackground(
       Canvas canvas,
       Palette palette,
@@ -78,7 +123,10 @@ class Painter {
       float faceRadius,
       Calendar calendar,
       @Nullable Location location,
-      boolean drawRealisticSun
+      boolean drawRealisticSun,
+      boolean showHourNumbers,
+      boolean angleHourNumbers,
+      boolean showSingleMinuteTicks
   ) {
     canvas.drawPaint(palette.getBackgroundPaint());
 
@@ -171,6 +219,15 @@ class Painter {
       }
       canvas.drawBitmap(nightSectorBitmap, 0, 0, null);
     }
+
+    drawTicks(canvas,
+        palette,
+        centre,
+        faceRadius,
+        showHourNumbers,
+        angleHourNumbers,
+        showSingleMinuteTicks
+    );
   }
 
   private static void drawTicks(

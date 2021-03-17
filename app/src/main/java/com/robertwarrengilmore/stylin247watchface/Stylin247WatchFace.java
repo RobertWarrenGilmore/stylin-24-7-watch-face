@@ -31,6 +31,7 @@ import com.google.android.gms.location.LocationServices;
 
 import java.lang.ref.WeakReference;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -41,6 +42,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
   private Location location;
   private SharedPreferences preferenceManager;
+  private final Painter painter = new Painter();
+  private Instant backgroundExpiration;
 
   /**
    * Handler message id for updating the time periodically in interactive mode.
@@ -57,6 +60,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     public void onLocationResult(LocationResult locationResult) {
       super.onLocationResult(locationResult);
       location = locationResult.getLastLocation();
+      invalidateCachedBackground();
     }
   };
   private FusedLocationProviderClient locationClient;
@@ -120,6 +124,11 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     }
   }
 
+  private void invalidateCachedBackground() {
+    painter.invalidateCachedBackground();
+    backgroundExpiration = Instant.now().plus(Duration.ofHours(1));
+  }
+
   @Override
   public Engine onCreateEngine() {
     return new Engine();
@@ -174,6 +183,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     @Override
     public void onCreate(SurfaceHolder holder) {
       super.onCreate(holder);
+      invalidateCachedBackground();
 
       setWatchFaceStyle(new WatchFaceStyle.Builder(Stylin247WatchFace.this)
           .setAcceptsTapEvents(false)
@@ -195,6 +205,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       final boolean burnInProtection = properties.getBoolean(PROPERTY_BURN_IN_PROTECTION, false);
       ambientPalette.setLowBitAmbient(lowBitAmbient);
       ambientPalette.setBurnInProtection(burnInProtection);
+      invalidateCachedBackground();
     }
 
     @Override
@@ -207,6 +218,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     public void onAmbientModeChanged(boolean inAmbientMode) {
       super.onAmbientModeChanged(inAmbientMode);
       ambient = inAmbientMode;
+      invalidateCachedBackground();
 
       /* Check and trigger whether or not timer should be running (only in interactive mode). */
       updateTimer();
@@ -230,6 +242,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     @Override
     public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
       super.onSurfaceChanged(holder, format, width, height);
+      invalidateCachedBackground();
 
       /*
        * Find the radius of the screen, and ignore the window insets, so that, on round watches with
@@ -275,8 +288,13 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
     @Override
     public void onDraw(Canvas canvas, Rect bounds) {
-      long now = System.currentTimeMillis();
-      calendar.setTimeInMillis(now);
+      Instant now = Instant.now();
+
+      if (now.isAfter(backgroundExpiration)) {
+        invalidateCachedBackground();
+      }
+
+      calendar.setTimeInMillis(now.toEpochMilli());
 
       String colourScheme = preferenceManager.getString(getString(R.string.settings_key_colour_scheme),
           getString(R.string.settings_colour_scheme_value_muted)
@@ -290,7 +308,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         palette = mutedPalette;
       }
 
-      Painter.draw(canvas,
+      painter.draw(canvas,
           bounds,
           palette,
           calendar,
