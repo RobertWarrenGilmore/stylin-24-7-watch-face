@@ -38,7 +38,8 @@ import java.util.TimeZone;
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class Stylin247WatchFace extends CanvasWatchFaceService {
+public class Stylin247WatchFace extends CanvasWatchFaceService
+    implements SharedPreferences.OnSharedPreferenceChangeListener {
 
   public static final Duration SMOOTH_UPDATE_RATE = Duration.ofSeconds(1).dividedBy(20);
   public static final Duration SECOND_UPDATE_RATE = Duration.ofSeconds(1);
@@ -68,6 +69,15 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   };
   private FusedLocationProviderClient locationClient;
 
+  private boolean showSecondHand;
+  private boolean animateSecondHandSmoothly;
+  private boolean useLocation;
+  private String colourScheme;
+  private boolean drawRealisticSun;
+  private boolean showHourNumbers;
+  private boolean angleHourNumbers;
+  private boolean showSingleMinuteTicks;
+
   @Override
   public void onCreate() {
     super.onCreate();
@@ -75,7 +85,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     preferenceManager = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     turnOffUseLocationIfNoPermission();
     locationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-      startLocationUpdates();
+    startLocationUpdates();
+    updatePreferences();
   }
 
   @Override
@@ -95,6 +106,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   public void onRebind(Intent intent) {
     turnOffUseLocationIfNoPermission();
     startLocationUpdates();
+    updatePreferences();
     super.onRebind(intent);
   }
 
@@ -135,6 +147,42 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
   @Override
   public Engine onCreateEngine() {
     return new Engine();
+  }
+
+  @Override
+  public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+    updatePreferences();
+  }
+
+  private void updatePreferences() {
+    showSecondHand = preferenceManager.getBoolean(getString(R.string.settings_key_show_second_hand),
+        false
+    );
+    animateSecondHandSmoothly = preferenceManager.getBoolean(getString(R.string.settings_key_animate_second_hand_smoothly),
+        false
+    );
+    useLocation = preferenceManager.getBoolean(
+        getString(R.string.settings_key_use_location),
+        false
+    );
+    colourScheme = preferenceManager.getString(getString(R.string.settings_key_colour_scheme),
+        getString(R.string.settings_colour_scheme_value_muted)
+    );
+    drawRealisticSun = preferenceManager.getBoolean(
+        getString(R.string.settings_key_draw_realistic_sun),
+        false
+    );
+    showHourNumbers = preferenceManager.getBoolean(
+        getString(R.string.settings_key_show_hour_numbers),
+        false
+    );
+    angleHourNumbers = preferenceManager.getBoolean(
+        getString(R.string.settings_key_angle_hour_numbers),
+        false
+    );
+    showSingleMinuteTicks = preferenceManager.getBoolean(getString(R.string.settings_key_show_single_minute_ticks),
+        false
+    );
   }
 
   private static class EngineHandler extends Handler {
@@ -283,7 +331,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
     }
 
     Location getLocationIfNeeded() {
-      if (preferenceManager.getBoolean(getString(R.string.settings_key_use_location), false)) {
+      if (useLocation) {
         return location;
       }
       return null;
@@ -299,9 +347,6 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
 
       calendar.setTimeInMillis(now.toEpochMilli());
 
-      String colourScheme = preferenceManager.getString(getString(R.string.settings_key_colour_scheme),
-          getString(R.string.settings_colour_scheme_value_muted)
-      );
       Palette palette;
       if (ambient) {
         palette = ambientPalette;
@@ -316,18 +361,12 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
           palette,
           calendar,
           getLocationIfNeeded(),
-          preferenceManager.getBoolean(getString(R.string.settings_key_draw_realistic_sun), false),
-          preferenceManager.getBoolean(getString(R.string.settings_key_show_hour_numbers), false),
-          preferenceManager.getBoolean(getString(R.string.settings_key_angle_hour_numbers), false),
-          preferenceManager.getBoolean(getString(R.string.settings_key_show_single_minute_ticks),
-              false
-          ),
-          preferenceManager.getBoolean(getString(R.string.settings_key_show_second_hand), false) &&
-              !ambient,
-          preferenceManager.getBoolean(getString(R.string.settings_key_show_second_hand), false) &&
-              preferenceManager.getBoolean(getString(R.string.settings_key_animate_second_hand_smoothly),
-                  false
-              ) && !ambient
+          drawRealisticSun,
+          showHourNumbers,
+          angleHourNumbers,
+          showSingleMinuteTicks,
+          showSecondHand && !ambient,
+          showSecondHand && animateSecondHandSmoothly && !ambient
       );
     }
 
@@ -339,6 +378,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
         registerReceiver();
         /* Update time zone in case it changed while we weren"t visible. */
         calendar.setTimeZone(TimeZone.getDefault());
+        updatePreferences();
         invalidate();
       } else {
         unregisterReceiver();
@@ -390,15 +430,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
       invalidate();
       if (shouldTimerBeRunning()) {
         Duration updateRate;
-        if (preferenceManager.getBoolean(getString(R.string.settings_key_show_second_hand),
-            false
-        )) {
-          if (preferenceManager.getBoolean(getString(R.string.settings_key_show_second_hand),
-              false
-          ) &&
-              preferenceManager.getBoolean(getString(R.string.settings_key_animate_second_hand_smoothly),
-                  false
-              )) {
+        if (showSecondHand) {
+          if (animateSecondHandSmoothly) {
             updateRate = SMOOTH_UPDATE_RATE;
           } else {
             updateRate = SECOND_UPDATE_RATE;
