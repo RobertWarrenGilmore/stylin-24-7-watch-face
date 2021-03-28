@@ -40,6 +40,9 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class Stylin247WatchFace extends CanvasWatchFaceService {
 
+  public static final Duration SMOOTH_UPDATE_RATE = Duration.ofSeconds(1).dividedBy(20);
+  public static final Duration SECOND_UPDATE_RATE = Duration.ofSeconds(1);
+  public static final Duration MINUTE_UPDATE_RATE = Duration.ofMinutes(1);
   private Location location;
   private SharedPreferences preferenceManager;
   private final Painter painter = new Painter();
@@ -396,12 +399,12 @@ public class Stylin247WatchFace extends CanvasWatchFaceService {
               preferenceManager.getBoolean(getString(R.string.settings_key_animate_second_hand_smoothly),
                   false
               )) {
-            updateRate = Duration.ofSeconds(1).dividedBy(20);
+            updateRate = SMOOTH_UPDATE_RATE;
           } else {
-            updateRate = Duration.ofSeconds(1);
+            updateRate = SECOND_UPDATE_RATE;
           }
         } else {
-          updateRate = Duration.ofMinutes(1);
+          updateRate = MINUTE_UPDATE_RATE;
         }
         long updateRateMs = (updateRate.getSeconds() * 1_000) + (updateRate.getNano() / 1_000_000);
         long timeMs = System.currentTimeMillis();
