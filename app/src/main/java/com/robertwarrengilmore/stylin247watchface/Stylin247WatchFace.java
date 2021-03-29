@@ -111,7 +111,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService
   }
 
   private void startLocationUpdates() {
-    if (!preferenceManager.getBoolean(getString(R.string.settings_key_use_location), false)) {
+    if (!useLocation) {
       return;
     }
     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
