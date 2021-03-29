@@ -85,8 +85,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService
     preferenceManager = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     turnOffUseLocationIfNoPermission();
     locationClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-    startLocationUpdates();
     updatePreferences();
+    startLocationUpdates();
   }
 
   @Override
@@ -105,8 +105,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService
   @Override
   public void onRebind(Intent intent) {
     turnOffUseLocationIfNoPermission();
-    startLocationUpdates();
     updatePreferences();
+    startLocationUpdates();
     super.onRebind(intent);
   }
 
