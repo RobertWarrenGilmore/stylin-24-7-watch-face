@@ -168,31 +168,34 @@ public class Stylin247WatchFace extends CanvasWatchFaceService
     animateSecondHandSmoothly = preferenceManager.getBoolean(getString(R.string.settings_key_animate_second_hand_smoothly),
         false
     );
-    useLocation = preferenceManager.getBoolean(
-        getString(R.string.settings_key_use_location),
+    useLocation = preferenceManager.getBoolean(getString(R.string.settings_key_use_location),
         false
     );
     colourScheme = preferenceManager.getString(getString(R.string.settings_key_colour_scheme),
         getString(R.string.settings_colour_scheme_value_muted)
     );
-    drawRealisticSun = preferenceManager.getBoolean(
-        getString(R.string.settings_key_draw_realistic_sun),
+    drawRealisticSun = preferenceManager.getBoolean(getString(R.string.settings_key_draw_realistic_sun),
         false
     );
-    showHourNumbers = preferenceManager.getBoolean(
-        getString(R.string.settings_key_show_hour_numbers),
+    showHourNumbers = preferenceManager.getBoolean(getString(R.string.settings_key_show_hour_numbers),
         false
     );
-    angleHourNumbers = preferenceManager.getBoolean(
-        getString(R.string.settings_key_angle_hour_numbers),
+    angleHourNumbers = preferenceManager.getBoolean(getString(R.string.settings_key_angle_hour_numbers),
         false
     );
     showSingleMinuteTicks = preferenceManager.getBoolean(getString(R.string.settings_key_show_single_minute_ticks),
         false
     );
-    if (preferenceManager.contains(getString(R.string.settings_key_last_latitude)) && preferenceManager.contains(getString(R.string.settings_key_last_longitude))) {
-      double latitude = preferenceManager.getFloat(getString(R.string.settings_key_last_latitude), 0);
-      double longitude = preferenceManager.getFloat(getString(R.string.settings_key_last_longitude), 0);
+    if (preferenceManager.contains(getString(R.string.settings_key_last_latitude)) &&
+        preferenceManager.contains(getString(R.string.settings_key_last_longitude))) {
+      double latitude = preferenceManager.getFloat(
+          getString(R.string.settings_key_last_latitude),
+          0
+      );
+      double longitude = preferenceManager.getFloat(
+          getString(R.string.settings_key_last_longitude),
+          0
+      );
       location = new Location("");
       location.setLatitude(latitude);
       location.setLongitude(longitude);
