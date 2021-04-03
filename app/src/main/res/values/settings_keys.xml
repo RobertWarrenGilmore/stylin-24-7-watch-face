@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="settings_key_use_location" translatable="false">use_location</string>
+    <string name="settings_key_last_latitude">last_latitude</string>
+    <string name="settings_key_last_longitude">last_longitude</string>
     <string name="settings_key_show_hour_numbers" translatable="false">show_hour_numbers</string>
     <string name="settings_key_angle_hour_numbers" translatable="false">angle_hour_numbers</string>
     <string name="settings_key_show_single_minute_ticks" translatable="false">show_single_minute_ticks</string>

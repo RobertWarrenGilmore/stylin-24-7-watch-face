@@ -63,7 +63,14 @@ public class Stylin247WatchFace extends CanvasWatchFaceService
     @Override
     public void onLocationResult(LocationResult locationResult) {
       super.onLocationResult(locationResult);
-      location = locationResult.getLastLocation();
+      if (locationResult.getLastLocation() != null) {
+        preferenceManager.edit().putFloat(getString(R.string.settings_key_last_latitude),
+            (float) locationResult.getLastLocation().getLatitude()
+        ).putFloat(getString(R.string.settings_key_last_longitude),
+            (float) locationResult.getLastLocation().getLongitude()
+        ).commit();
+        updatePreferences();
+      }
       invalidateCachedBackground();
     }
   };
@@ -183,6 +190,13 @@ public class Stylin247WatchFace extends CanvasWatchFaceService
     showSingleMinuteTicks = preferenceManager.getBoolean(getString(R.string.settings_key_show_single_minute_ticks),
         false
     );
+    if (preferenceManager.contains(getString(R.string.settings_key_last_latitude)) && preferenceManager.contains(getString(R.string.settings_key_last_longitude))) {
+      double latitude = preferenceManager.getFloat(getString(R.string.settings_key_last_latitude), 0);
+      double longitude = preferenceManager.getFloat(getString(R.string.settings_key_last_longitude), 0);
+      location = new Location("");
+      location.setLatitude(latitude);
+      location.setLongitude(longitude);
+    }
   }
 
   private static class EngineHandler extends Handler {
