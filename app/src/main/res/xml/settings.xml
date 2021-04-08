@@ -56,6 +56,12 @@
         app:summary="@string/draw_realistic_sun"
         app:widgetLayout="@layout/roundswitch" />
 
+    <SwitchPreferenceCompat
+        app:defaultValue="false"
+        app:key="@string/settings_key_draw_stars"
+        app:summary="@string/draw_stars"
+        app:widgetLayout="@layout/roundswitch" />
+
     <DropDownPreference
         app:defaultValue="@string/settings_colour_scheme_value_muted"
         app:enabled="@bool/is_full_version"

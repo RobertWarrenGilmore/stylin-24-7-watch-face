@@ -39,6 +39,7 @@ class Palette {
   private final Paint moonLitPaint = new Paint();
   private final Paint moonDarkPaint = new Paint();
   private final Paint moonLinePaint = new Paint();
+  private final Paint starPaint = new Paint();
 
   private final float scaleFactor;
 
@@ -82,6 +83,9 @@ class Palette {
 
     moonLitPaint.setStyle(Paint.Style.FILL);
     moonLitPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP));
+
+    starPaint.setStyle(Paint.Style.FILL);
+    starPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP));
   }
 
   private void setAntiAlias(boolean value) {
@@ -155,6 +159,8 @@ class Palette {
 
     palette.moonDarkPaint.setColor(Color.BLACK);
 
+    palette.starPaint.setColor(Color.HSVToColor(new float[]{230f, 0.1f, 0.85f}));
+
     palette.backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.3f}));
 
     palette.largeTickPaint.setColor(Color.BLACK);
@@ -184,6 +190,8 @@ class Palette {
     palette.moonLitPaint.setColor(Color.WHITE);
 
     palette.moonDarkPaint.setColor(Color.BLACK);
+
+    palette.starPaint.setColor(Color.HSVToColor(new float[]{217f, 0.1f, 0.8f}));
 
     palette.backgroundPaint.setColor(Color.HSVToColor(new float[]{0f, 0f, 0.3f}));
 
@@ -233,6 +241,8 @@ class Palette {
     palette.moonLitPaint.setColor(Color.DKGRAY);
 
     palette.moonDarkPaint.setColor(Color.BLACK);
+
+    palette.starPaint.setColor(Color.TRANSPARENT);
 
     palette.hourHandPaint.setColor(Color.LTGRAY);
     palette.hourHandPaint.clearShadowLayer();

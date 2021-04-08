@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Calendar;
+import java.util.Random;
 
 class Painter {
 
@@ -49,7 +50,8 @@ class Painter {
       boolean angleHourNumbers,
       boolean showSingleMinuteTicks,
       boolean showSecondHand,
-      boolean animateSecondHandSmoothly
+      boolean animateSecondHandSmoothly,
+      boolean showStars
   ) {
     final PointF centre = new PointF(bounds.width() / 2f, bounds.height() / 2f);
     final float faceRadius = bounds.width() / 2f;
@@ -63,7 +65,8 @@ class Painter {
           drawRealisticSun,
           showHourNumbers,
           angleHourNumbers,
-          showSingleMinuteTicks
+          showSingleMinuteTicks,
+          showStars
       );
     }
     drawCachedBackground(canvas);
@@ -86,7 +89,8 @@ class Painter {
       boolean drawRealisticSun,
       boolean showHourNumbers,
       boolean angleHourNumbers,
-      boolean showSingleMinuteTicks
+      boolean showSingleMinuteTicks,
+      boolean showStars
   ) {
     System.out.println("Drawing bg from scratch.");
     Bitmap backgroundBitmap = Bitmap.createBitmap((int) (faceRadius * 2),
@@ -103,7 +107,8 @@ class Painter {
         drawRealisticSun,
         showHourNumbers,
         angleHourNumbers,
-        showSingleMinuteTicks
+        showSingleMinuteTicks,
+        showStars
     );
     cachedBackground = backgroundBitmap;
   }
@@ -126,7 +131,8 @@ class Painter {
       boolean drawRealisticSun,
       boolean showHourNumbers,
       boolean angleHourNumbers,
-      boolean showSingleMinuteTicks
+      boolean showSingleMinuteTicks,
+      boolean showStars
   ) {
     canvas.drawPaint(palette.getBackgroundPaint());
 
@@ -207,6 +213,9 @@ class Painter {
         // This ensures that the sector is filled for the purpose of masking.
         nightSectorCanvas.drawPath(nightSectorPath, palette.getNightSectorPaint());
       }
+      if(showStars) {
+        drawStars(nightSectorCanvas, palette, boundingBox);
+      }
       drawMoon(nightSectorCanvas,
           palette,
           cartesian(centre, noonAngle + 180f, SUN_AND_MOON_CENTRE_OFFSET * faceRadius),
@@ -228,6 +237,20 @@ class Painter {
         angleHourNumbers,
         showSingleMinuteTicks
     );
+  }
+
+  private static void drawStars(Canvas canvas, Palette palette, RectF boundingBox) {
+    Random random = new Random(1);
+    for (int i = 0; i < 300; ++i) {
+      float x = boundingBox.left + boundingBox.width() * random.nextFloat();
+      float y = boundingBox.top + boundingBox.height() * random.nextFloat();
+      canvas.drawCircle(
+          x,
+          y,
+          boundingBox.width() / (random.nextFloat() * 300 + 300),
+          palette.getStarPaint()
+      );
+    }
   }
 
   private static void drawTicks(

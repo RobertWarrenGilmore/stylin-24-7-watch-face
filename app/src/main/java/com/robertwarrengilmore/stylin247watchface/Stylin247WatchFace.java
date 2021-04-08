@@ -84,6 +84,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService
   private boolean showHourNumbers;
   private boolean angleHourNumbers;
   private boolean showSingleMinuteTicks;
+  private boolean showStars;
 
   @Override
   public void onCreate() {
@@ -177,6 +178,7 @@ public class Stylin247WatchFace extends CanvasWatchFaceService
     drawRealisticSun = preferenceManager.getBoolean(getString(R.string.settings_key_draw_realistic_sun),
         false
     );
+    showStars = preferenceManager.getBoolean(getString(R.string.settings_key_draw_stars), false);
     showHourNumbers = preferenceManager.getBoolean(getString(R.string.settings_key_show_hour_numbers),
         false
     );
@@ -188,12 +190,10 @@ public class Stylin247WatchFace extends CanvasWatchFaceService
     );
     if (preferenceManager.contains(getString(R.string.settings_key_last_latitude)) &&
         preferenceManager.contains(getString(R.string.settings_key_last_longitude))) {
-      double latitude = preferenceManager.getFloat(
-          getString(R.string.settings_key_last_latitude),
+      double latitude = preferenceManager.getFloat(getString(R.string.settings_key_last_latitude),
           0
       );
-      double longitude = preferenceManager.getFloat(
-          getString(R.string.settings_key_last_longitude),
+      double longitude = preferenceManager.getFloat(getString(R.string.settings_key_last_longitude),
           0
       );
       location = new Location("");
@@ -383,7 +383,8 @@ public class Stylin247WatchFace extends CanvasWatchFaceService
           angleHourNumbers,
           showSingleMinuteTicks,
           showSecondHand && !ambient,
-          showSecondHand && animateSecondHandSmoothly && !ambient
+          showSecondHand && animateSecondHandSmoothly && !ambient,
+          showStars
       );
     }
 

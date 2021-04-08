@@ -13,6 +13,7 @@
     <string name="settings_colour_scheme_value_muted" translatable="false">colour_scheme_muted</string>
     <string name="settings_colour_scheme_value_vivid" translatable="false">colour_scheme_vivid</string>
     <string name="settings_key_go_to_developer_website" translatable="false">go_to_developer_website</string>
+    <string name="settings_key_draw_stars">draw_stars</string>
     <array name="settings_colour_scheme_values">
         <item>@string/settings_colour_scheme_value_muted</item>
         <item>@string/settings_colour_scheme_value_vivid</item>
